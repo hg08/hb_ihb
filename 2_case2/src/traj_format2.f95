@@ -120,6 +120,7 @@ CONTAINS
                 !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
                 !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
                 !-------------------------------------------------------------------------------------------------------
+                WRITE(*,*)"Debug: CHECK_HEAD:", head_char, i_sample, y
                 WRITE(*,*)"read_traj():", head_char, y
                 BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                 read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
