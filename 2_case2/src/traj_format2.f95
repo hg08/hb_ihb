@@ -101,14 +101,26 @@ CONTAINS
         !WRITE(*,*)"head_char AND y:", head_char, y
         !------------------------------------------ 
         PRE_CHECK:IF (head_char=="i = ") THEN
+            !WRITE(*,*)"Debug: PRE_CHECK head_char:", head_char
+            !WRITE(*,*)"Debug: PRE_CHECK i_sample:",  i_sample
             BACKSPACE(UNIT=indx) ! Because I am not able to read other lines with the format '(A4,I8)', and have not find any good way, so I try to read it in '(A4)' first 
             !read(indx, '(A4,I8)') head_char, y
             read(indx, '(1X,A4,I8)') head_char, y
-            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
+            !WRITE(*,*)"Debug: PRE_CHECK y:", y 
+            !WRITE(*,*)"Debug: PRE_CHECK nmo_start-1:", nmo_start-1 
+            !WRITE(*,*)"Debug: PRE_CHECK nmo_end+1:", nmo_end+1 
+            !WRITE(*,*)"Debug: PRE_CHECK MOD(y-(nmo_start-1),ns):", MOD(y-(nmo_start-1),ns)
+            WRITE(*,*)"Debug: PRE_CHECK ns:", ns
+            !CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
+            !Jie: For special case of ns=1, MOD(y-(nmo_start-1),ns) is always 0. Hence, it needs to be checked separately. 
+            !Use ‘&’ to continue the line to avoid Fortran maximum line length of 132 characters. (Stupid Fortran!)
+            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. &
+                            (ns == 1 .or. MOD(y-(nmo_start-1),ns) == 1))  THEN 
                 !-------------------------------------------------------------------------------------------------------
                 !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
                 !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
                 !-------------------------------------------------------------------------------------------------------
+                WRITE(*,*)"Debug: CHECK_HEAD:", head_char, i_sample, y
                 WRITE(*,*)"read_traj():", head_char, y
                 BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                 read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
