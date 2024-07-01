@@ -239,7 +239,8 @@ for s in range(0,nb_steps,ns):
         file_i.readline()
         file_i.readline()
         
-        file_o2.write("i = {0:5d}\n".format(s))    
+        #file_o2.write("i = {0:5d}\n".format(s))    
+        file_o2.write("i = {}\n".format(s))    
 
         name0="".join([name_split[0],str(s),'.cube'])
         file_o = open(name0, 'w') #the cube file as output
@@ -325,7 +326,7 @@ for s in range(0,nb_steps,ns):
                 if k%6 != 5:
                     file_o.write("\n")
 
-        print("rho from list:{}".format(rho)) 
+        #print("rho from list:{}".format(rho)) 
         print("The 1000-th element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10 -1]))
         print("The 1001-st element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10]))
         print("The 1002nd element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10 +1]))
@@ -402,6 +403,7 @@ for s in range(0,nb_steps,ns):
         #=======================
         # Print the index number 
         #=======================
+        #file_o2.write("i = {0:5d}\n".format(s))    
         file_o2.write("i = {}\n".format(s))    
 
         #====================
