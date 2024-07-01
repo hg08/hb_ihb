@@ -402,7 +402,7 @@ for s in range(0,nb_steps,ns):
         #=======================
         # Print the index number 
         #=======================
-        file_o2.write("i = {0:5d}\n".format(s))    
+        file_o2.write("i = {}\n".format(s))    
 
         #====================
         #Determine isosurface
