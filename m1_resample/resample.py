@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import sys 
 
-if len(sys.argv) < 2:
-    print("Ooops. Usage:\n" + sys.argv[0] + ' 128w-pos-1.xyz')
+if len(sys.argv) != 2:
+    print("Ooops. Usage:\n" + 'python ' + sys.argv[0] + ' 128w-pos-1.xyz')
     exit()
 
 # Input file
