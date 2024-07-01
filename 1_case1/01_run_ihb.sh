@@ -15,6 +15,11 @@ for d in {1..6}
 do
   cp input_template input_main_sample_128w_itp_$d
   sed -i "s/THICKNESS/$d/g" input_main_sample_128w_itp_$d
+done
+
+# --- Run the program
+for d in {1..6}
+do
   ./ihb_sulpizi < input_main_sample_128w_itp_$d
 done
 
