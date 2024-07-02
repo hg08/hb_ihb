@@ -67,6 +67,9 @@ done
 for d in {1..6}
 do 
   ./main_interface_c_format2 < input_main_sample_128w_itp_${d}
+  ./main_interface_k_format2 < input_main_sample_128w_itp_${d}
+  ./main_interface_n_format2 < input_main_sample_128w_itp_${d}
+  #./main_interface_s_format2 < input_main_sample_128w_itp_${d}
 done
 
 # --- Clean
