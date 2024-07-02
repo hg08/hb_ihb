@@ -1,1 +1,1 @@
-gnuplot Fig1.gp
+gnuplot plot_fig1.gp
