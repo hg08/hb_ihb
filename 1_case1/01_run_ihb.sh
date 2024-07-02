@@ -24,7 +24,6 @@ do
 done
 
 # --- Move output files to output folder
-rm -rf output
 mkdir -p output
 mv 128w_* output/
 mv recentered_traj_pos_sampled.xyz output/

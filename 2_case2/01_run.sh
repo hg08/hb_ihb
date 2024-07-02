@@ -73,6 +73,5 @@ do
 done
 
 # --- Clean
-rm -rf output
 mkdir output
 mv 128w_* output/
