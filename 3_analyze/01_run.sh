@@ -1,5 +1,6 @@
 mkdir -p output
-for scenario in 1_case1 2_case2;
+#for scenario in 1_case1 2_case2;
+for scenario in 2_case2
 do
 	echo "Processing ${scenario}..."
 	# Create symbolic links to the output files
