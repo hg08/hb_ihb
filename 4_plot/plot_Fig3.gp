@@ -29,16 +29,16 @@ set ylabel "{c}(t*), {c}^{(s)}(t*)"
 #set label 2 "ADH criterion" right at graph 0.40, graph 0.95
 plot [xmin:xmax] \
              '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 0 u 1:2:3 w yerrorbars ls 10021 notitle,\
-             '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 0 u 1:2 with linespoints ls 10021 title "t*= 1 ps",\
+             '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 0 u 1:2 with linespoints ls 20021 notitle "t*= 1 ps",\
              '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 1 u 1:2:3 w yerrorbars ls 10022 notitle,\
-             '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 1 u 1:2 with linespoints ls 10022 title "    2 ps",\
+             '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 1 u 1:2 with linespoints ls 20022 notitle "    2 ps",\
              '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 2 u 1:2:3 w yerrorbars ls 10023 notitle,\
-             '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 2 u 1:2 with linespoints ls 10023 title "    5 ps",\
+             '../3_analyze/output/1_case1_layers_c_at_ref.dat' i 2 u 1:2 with linespoints ls 20023 notitle "    5 ps",\
              '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 0 u 1:2:3 w yerrorbars ls 10021 notitle,\
-             '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 0 u 1:2 with linespoints ls 20021 notitle "t*= 1 ps",\
+             '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 0 u 1:2 with linespoints ls 10021 title "t*= 1 ps",\
              '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 1 u 1:2:3 w yerrorbars ls 10022 notitle,\
-             '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 1 u 1:2 with linespoints ls 20022 notitle "t*= 2 ps",\
+             '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 1 u 1:2 with linespoints ls 10022 title "t*= 2 ps",\
              '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 2 u 1:2:3 w yerrorbars ls 10023 notitle,\
-             '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 2 u 1:2 with linespoints ls 20023 notitle "t*= 5 ps"
+             '../3_analyze/output/2_case2_layers_c_at_ref.dat' i 2 u 1:2 with linespoints ls 10023 title "t*= 5 ps"
 unset multiplot
 set term wxt
