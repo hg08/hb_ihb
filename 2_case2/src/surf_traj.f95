@@ -40,15 +40,15 @@ CONTAINS
                 !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
                 !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
                 !-------------------------------------------------------------------------------------------------------
-                WRITE(*,*)"read_traj():", head_char, y
+                !WRITE(*,*)"read_traj():", head_char, y
                 BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                 READ(indx,*) ! skip one line in the unit=indx
                 131 FORMAT (11X,2F13.6)
                 inner: do i_grid= 1, n_grid
                   read (indx,131) surf_info(i_grid,i_sample)%coord(1), & 
                     surf_info(i_grid,i_sample)%coord(2)
-                    WRITE (*,131) surf_info(i_grid,i_sample)%coord(1), &
-                    surf_info(i_grid, i_sample)%coord(2)
+                    !WRITE (*,131) surf_info(i_grid,i_sample)%coord(1), &
+                    !surf_info(i_grid, i_sample)%coord(2)
                 enddo inner
                 i_sample = i_sample + 1 ! The position is important. It must be located before ENDIF MATCH
             ENDIF CHECK_HEAD

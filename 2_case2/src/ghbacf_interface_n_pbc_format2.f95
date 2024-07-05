@@ -1,5 +1,5 @@
       SUBROUTINE ghbacf_interface_n_pbc_format2(boxsize, delta_t0, &
-          filename, pos_filename,list_filename,n_samples,nat, ns, &
+          filename, pos_filename, list_filename, n_samples, nat, ns, &
           criterion)
       !2020-5-29: simplifying the definition of hb (without r13)
       !2020-9-18: In this function, we define interfacial HB. 
@@ -56,18 +56,19 @@
       real,parameter :: rooc=12.25                 ! cutoff distance of rOO (3.5**2 )
       real,parameter :: cosPhiC123=0.866           ! 1.732/2; phiC=pi/6.
       real,parameter :: cosPhiC132=-0.5            ! -1./2; phiC132=2pi/3.
-      real(kind=rk),parameter :: h_min=0.5  ! condition for the existence of a h-bond for a step
+      real(kind=rk),parameter :: h_min=0.5 ! condition for the existence of a h-bond for a step
       real(kind=rk),parameter :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
-      real(kind=rk) :: r13, cosphi, pm, cosphi_, pm_
+      real(kind=rk) :: r13, cosphi, pm, cosphi_, pm_, norm_rr
       real(kind=rk) :: r21, r31, r32, r23 ! For the second criterion of HB
       real(kind=rk) ::qj, tot_hb, delta_t, delta_t0, hb_per_frame, ave_h
       real(kind=rk), dimension(3) :: r1, r2, r3 ! pbc 
       integer :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs,ns
       real(kind=rk),allocatable,dimension (:)  :: h,h_d,hb,corr_n
+      real(kind=rk), allocatable,dimension (:) :: sq_corr_n ! stand.err: sq_corr_n[i]
       real,allocatable,dimension (:,:)         :: x,y,z
       integer,allocatable,dimension(:)         :: ndx_1,ndx_2,nhb_exist
       integer,dimension(4)   :: ndx_3_list
-      real(kind=rk)  :: scalar 
+      real(kind=rk)  :: scalar, sq, tmp 
       logical,allocatable,dimension (:)  :: hb_exist
       INTEGER  :: nmo  ! nmo is not necessary, we set nmo = n_samples, because we do not want to change too much
       INTEGER :: nwat ! number of water molecules
@@ -78,8 +79,8 @@
       !==============
       !Initialization
       !==============
-      ave_h =0.0; scalar =0.0
-      pm =0.0; cosphi =0.0
+      ave_h = 0.0; scalar = 0.0; sq = 0.0
+      pm = 0.0; cosphi = 0.0
       r21 = 0.0; r23 = 0.0
       r31 = 0.0; r13= 0.0; r32 = 0.0
       hb_per_frame = 0.0; tot_hb = 0.0
@@ -89,7 +90,8 @@
       index_mol1=0; index_mol2=0
       condition1=.FALSE.
       condition2=.FALSE.
-
+      norm_rr = 0.0 ! a temporary variable
+      tmp = 0.0 ! a temporay variable 
       !To obtain the total number of water pairs
       nwat=get_nwat(list_filename)
       write(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
@@ -106,13 +108,14 @@
       !============================
 
       delta_t=ns*delta_t0  ! unit: ps
+      write(*,*) "New time step (delta_t):", delta_t
       write(*,*) "New total steps (nmo):", nmo
       allocate(x(nat,nmo))
       allocate(y(nat,nmo))
       allocate(z(nat,nmo))
       allocate(h(nmo))
       allocate(h_d(nmo))
-      allocate(hb(nwat)) ! Average H-bonded population 
+      allocate(hb(nwat))    ! Average H-bonded population 
       allocate(nhb_exist(nwat))
       !============================
       !read in surf trajectory file 
@@ -123,8 +126,10 @@
       ! Calculate correlation n_HB(t)  
       !==============================      
       allocate(corr_n(nmo))
+      allocate(sq_corr_n(nmo))
       allocate(hb_exist(nmo))
       corr_n(:)=0.0      
+      sq_corr_n=0.0      
       tot_hb=0.0
       tot_nhb=0
       h=0.0; h_d=0.0
@@ -189,8 +194,9 @@
                       r13 = dist2(r3, r1, boxsize) 
                       pm = pmADH(r1,r2,r3,boxsize)  ! if H is bound to O2
                       pm_ = pmADH(r2,r1,r3,boxsize) ! if H is bound to O1
-                      cosphi= pm/(sqrt(r21*r23))
-                      cosphi_= pm_/(sqrt(r21*r23))
+                      norm_rr=sqrt(r21*r23)
+                      cosphi= pm/norm_rr
+                      cosphi_= pm_/norm_rr
                       IF (r21 .lt. rooc ) then
                           h_d(jj)=1.0 
                       ENDIF
@@ -234,11 +240,15 @@
         if (hb(k)>hb_min) then
             do mt=0,nmo-1    ! time interval
                 scalar=0.d0
+                sq=0.d0 ! For calculate the square of correlation at each time, ie., mt.
                 !do j=1,nmo-mt-1
                 do j=1,nmo-mt
-                    scalar=scalar+h(j)*(1-h(j+mt))*h_d(j+mt)  
+                    tmp=h(j)*(1-h(j+mt))*h_d(j+mt)
+                    scalar=scalar+tmp  
+                    sq=sq+tmp**2  
                 enddo
-                corr_n(mt+1)=corr_n(mt+1)+scalar !sum_C_k(t)
+                corr_n(mt+1)=corr_n(mt+1)+scalar !sum_n_k(t)
+                sq_corr_n(mt+1)=sq_corr_n(mt+1)+sq !sum_n^2_k(t)
             enddo
         endif
       enddo kLOOP   
@@ -262,6 +272,7 @@
       !==============================
       do mt=0,nmo-1! time interval
           corr_n(mt+1)=corr_n(mt+1)/(nmo-mt)
+          sq_corr_n(mt+1)=SQRT(sq_corr_n(mt+1)/((ave_h**2)*(nmo-mt)*nwat) - corr_n(mt+1)**2)/SQRT(REAL((nmo-mt)*nwat,rk))
       enddo
       corr_n = corr_n /nwat
       !Normalization step2
@@ -275,7 +286,7 @@
       open(10,file=trim(filename)//'_wat_pair_hbacf_n_ihb_'//&
         char_thickness//'.dat')
         do i=1,nmo
-            write(10,*)(i-1)*delta_t,corr_n(i)
+            write(10,*) REAL(i-1)*delta_t, corr_n(i)
         enddo
         write(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_n_ihb_'//char_thickness//'.dat'
@@ -287,7 +298,7 @@
       open(10,file=trim(filename)//'_wat_pair_hbacf_log_n_ihb_'//&
         char_thickness//'.dat')
         do i=1,nmo
-            write(10,*)(i-1)*delta_t,log(corr_n(i))
+            write(10,*) REAL(i-1)*delta_t,log(corr_n(i))
         enddo
         write(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_log_n_ibh_'//char_thickness//'.dat'

@@ -1,6 +1,6 @@
       SUBROUTINE ghbacf_interface_c_pbc_format2(boxsize, delta_t0, &
-          filename, pos_filename,list_filename,n_samples,nat,&
-          ns, criterion)
+          filename, pos_filename, list_filename, n_samples, nat, ns, &
+          criterion)
       !2020-5-29: simplifying the definition of hb (without r13)
       !========================================================================
       !Purpose: to obtain C_HB(t): C_{HB}(t)= <h(0)h(t)>/<h> for interfacial HB
@@ -40,8 +40,6 @@
       !==========
       integer,parameter :: rk=8 ! local 
 
-      !character(LEN=*),INTENT(IN) :: accepter 
-      !character(LEN=*),INTENT(IN) :: donor 
       character(LEN=200),INTENT(INOUT) :: filename,pos_filename
       character(LEN=200),INTENT(IN) :: list_filename
       integer,INTENT(IN) :: criterion
@@ -51,13 +49,13 @@
 
       !Local variables
       real,parameter :: rooc=12.25                 ! cutoff distance of rOO (3.5**2 )
-      real,parameter :: cosPhiC123=0.866              ! 1.732/2; phiC=pi/6.
+      real,parameter :: cosPhiC123=0.866           ! 1.732/2; phiC=pi/6.
       real,parameter :: cosPhiC132=-0.5            ! -1./2; phiC132=2pi/3.
       real(kind=rk),parameter :: h_min=0.5 ! condition for the existence of a h-bond for a step
       real(kind=rk),parameter :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
       real(kind=rk) :: r13,cosphi,pm,cosphi_,pm_,norm_rr
       real(kind=rk) :: r21,r31,r32,r23 ! For the second criterion of HB
-      real(kind=rk) :: qj,tot_hb,delta_t,delta_t0,hb_per_frame,ave_h
+      real(kind=rk) :: qj, tot_hb, delta_t, delta_t0, hb_per_frame, ave_h
       real(kind=rk), dimension(3) :: r1, r2, r3 ! pbc 
       integer :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs,ns
       real(kind=rk),allocatable,dimension (:)  :: h,hb,corr_h
@@ -65,7 +63,7 @@
       real,allocatable,dimension (:,:)         :: x,y,z
       integer,allocatable,dimension(:)         :: ndx_1,ndx_2,nhb_exist
       integer,dimension(4)   :: ndx_3_list
-      real(kind=rk)  :: scalar, sq 
+      real(kind=rk)  :: scalar, sq, tmp 
       logical,allocatable,dimension (:)  :: hb_exist
       INTEGER  :: nmo  ! nmo is not necessary, we set nmo = n_samples, because we do not want to change too much
       INTEGER :: nwat ! number of water molecules
@@ -77,18 +75,19 @@
       !==============
       !Initialization
       !==============
-      ave_h =0.0; scalar = 0.0; sq = 0.0;
-      pm =0.0; cosphi =0.0
+      ave_h = 0.0; scalar = 0.0; sq = 0.0
+      pm = 0.0; cosphi = 0.0
       r21 = 0.0; r23 = 0.0
       r31 = 0.0; r13= 0.0; r32 = 0.0
       hb_per_frame = 0.0; tot_hb = 0.0
       r1 = 0.0; r2 = 0.0; r3 = 0.0
-      nmo = n_samples; nwat=0 
+      nmo = n_samples; nwat = 0 
       ndx_3_list=0
-      norm_rr = 0.0 ! a temporary variable
       index_mol1=0; index_mol2=0
       condition1=.FALSE.
       condition2=.FALSE.
+      norm_rr = 0.0 ! a temporary variable
+      tmp = 0.0 ! a temporay variable 
 
       !To obtain the total number of water pairs
       nwat=get_nwat(list_filename)
@@ -235,8 +234,9 @@
                 sq=0.d0 ! For calculate the square of correlation at each time, ie., mt.
                 !do j=1,nmo-mt-1
                 do j=1,nmo-mt
-                    scalar=scalar+h(j)*h(j+mt)  
-                    sq=sq+(h(j)*h(j+mt))**2  
+                    tmp=h(j)*h(j+mt)
+                    scalar=scalar + tmp 
+                    sq=sq + tmp**2  
                 enddo
                 !scalar=scalar/(nmo-mt) ! You can not use this line, because we have to calculate the average later 
                 corr_h(mt+1)=corr_h(mt+1)+scalar !sum_C_k(t)
@@ -275,7 +275,7 @@
       open(10,file=trim(filename)//'_wat_pair_hbacf_h_ihb_' &
         //char_thickness//'.dat')
         do i=1,nmo
-            write(10,*)REAL(i-1,rk)*delta_t, corr_h(i), sq_corr_h(i)
+            write(10,*) REAL(i-1,rk)*delta_t, corr_h(i), sq_corr_h(i)
         enddo
         write(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_h_ihb_'//char_thickness//'.dat'
@@ -287,7 +287,7 @@
       open(10,file=trim(filename)//'_wat_pair_hbacf_log_h_ihb_'//&
         char_thickness//'.dat')
         do i=1,nmo
-            write(10,*)(i-1)*delta_t,log(corr_h(i))
+            write(10,*) REAL(i-1)*delta_t,log(corr_h(i))
         enddo
         write(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_log_h_ihb_'//char_thickness//'.dat'

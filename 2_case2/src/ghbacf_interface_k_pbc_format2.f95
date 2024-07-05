@@ -110,6 +110,8 @@
 
       delta_t=ns*delta_t0  ! unit: ps
       ddelta_t= 2*delta_t ! ddelta_t will be used in calculate k(t)
+      write(*,*) "delta_t:", delta_t
+      write(*,*) "ddelta_t:", ddelta_t
       write(*,*) "New total steps (nmo):", nmo
       allocate(x(nat,nmo))
       allocate(y(nat,nmo))
@@ -160,7 +162,7 @@
           ! Check if the pairs are located in one of the interfaces 
           index_mol1 =grid_index(atom_info(m1,jj)%coord(1), &
               atom_info(m1,jj)%coord(2),divx,divy,nb_divx) 
-          WRITE(*,*) "index_mol1 = ",index_mol1
+          !WRITE(*,*) "index_mol1 = ",index_mol1
           index_mol2 =grid_index(atom_info(m2,jj)%coord(1), &
               atom_info(m2,jj)%coord(2),divx,divy,nb_divx) 
 
@@ -175,7 +177,7 @@
               atom_info(m1,jj)%coord(3), &
               surf_info(index_mol2,jj)%coord(2), &
               atom_info(m2,jj)%coord(3),thickness ) 
-          WRITE(*,*) condition1, condition2 
+          !WRITE(*,*) condition1, condition2 
 
           !This condition is the additional condition for the establishment 
           ! of interface hydrogen bonds, which is the core of this method. 
@@ -201,7 +203,7 @@
                       if ((r21 .lt. rooc ).and. ( (cosphi .gt. cosPhiC123) .or. &
                           (cosphi_ .gt. cosPhiC123) )                      &
                          ) then
-                          WRITE(*,*) "# of HB along time: ", qj+1    
+                          !WRITE(*,*) "# of HB along time: ", qj+1    
                           h(jj)=1.0 
                           hb_exist(jj) = .True.
                           qj=qj+h(jj) ! To calculate ave population of HB over all starting points for one pair of water                           
@@ -300,7 +302,7 @@
       open(10,file=trim(filename)//'_wat_pair_hbacf_k_ihb_'//&
         char_thickness//'.dat')
         do i=1,nmo
-            write(10,*)(i-1)*delta_t,dc(i)
+            write(10,*) REAL(i-1,rk)*delta_t, dc(i)
         enddo
         write(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_k_ihb_'//char_thickness//'.dat'
