@@ -1,0 +1,128 @@
+############################################################################
+#cr
+#cr            (C) Copyright 1995-2007 The Board of Trustees of the
+#cr                        University of Illinois
+#cr                         All Rights Reserved
+#cr
+############################################################################
+############################################################################
+# RCS INFORMATION:
+#
+#       $RCSfile: .vmdrc,v $
+#       $Author: johns $        $Locker:  $                $State: Exp $
+#       $Revision: 1.9 $      $Date: 2007/01/12 20:12:44 $
+#
+############################################################################
+# DESCRIPTION:
+#
+# VMD startup script.  The commands here are executed as soon as VMD starts up
+############################################################################
+# add personalized keyboard shortcuts 
+user add key E echo on
+user add key e echo off
+user add key g display reset
+user add key A stage location bottom
+user add key m mol list
+# position the stage and axes
+axes location lowerleft
+stage location off
+# start the scene a-rockin'
+#rock y by 1
+# turn on lights 0 and 1
+light 0 on
+light 1 on
+light 2 off
+#light 3 off
+# Default background color
+color Display Background white
+# Default axes label color
+color Axes labels black
+# Orthographic display
+display projection Orthographic
+# CPK
+mol modstyle 0 0 CPK 1.000000 0.300000 10.000000 10.000000 
+# position and turn on menus
+menu main     move 5   225
+menu display  move 395 30
+menu graphics move 395 500
+menu color    move 125 225
+menu files    move 125 325
+menu labels   move 125 525
+menu render   move 125 525
+menu animate move 124 7
+menu edit move 125 196
+menu mol move 5 745
+menu main     on
+#menu display  on
+#menu graphics on
+#menu color    on
+#menu labels   on
+#menu render   on
+#menu files    on
+# start the scene a-rockin'
+# rock y by 1
+# User's default values for newly loaded molecules/reps, etc
+#  mol default color {colorID 5}
+#  mol default style {NewCartoon 0.300000 6.000000 4.100000 0}
+#  mol default selection {name CA}
+#  mol default material {Transparent}
+display projection orthographic
+#after idle {
+#   foreach molid [molinfo list] {
+#       mol delrep 0 $molid
+#       set sel [atomselect $molid {protein}]
+#       if {[$sel num]} {
+#           mol selection {protein}
+#           mol representation newcartoon
+#           mol addrep $molid
+#           mol modcolor 0 $molid structure
+#           mol selection {protein and (name CA or not backbone)}
+#           mol representation lines
+#           mol addrep $molid
+#           mol modcolor 1 $molid resid
+#       }
+#       set sel [atomselect $molid {nucleic}]
+#       if {[$sel num]} {
+#           mol selection {nucleic}
+#           mol representation newribbons
+#           mol addrep $molid
+#           mol modcolor 0 $molid resid
+#       }
+#
+#       set sel [atomselect $molid {water}]
+#       set num [$sel num]
+#       if {$num} {
+#           mol selection {water}
+#           if {$num <900 } {
+#               #mol representation Lines
+#               mol representation CPK
+#           } else {
+#               mol representation CPK
+#               #mol representation Points
+#           }
+#           mol addrep $molid
+#       }
+#
+#       set txt "not(numbonds=0 or water or resname DA or resname DG or resname DT or resname DC or resname ALA or resname ARG or resname ASN or resname ASP or resname CYS or resname GLN or resname GLU or resname GLY or resname HIS or resname HOH or resname ILE or resname LEU or resname LYS or resname MET or resname PHE or resname PRO or resname SER or resname THR or resname TRP or resname TYR or resname VAL)"
+#       set sel [atomselect $molid "$txt"]
+#       set num [$sel num]
+#       if {$num} {
+#           if {$num <500 } {
+#               mol representation CPK
+#           } else {
+#               mol representation CPK
+#               #mol representation Lines
+#           }
+#           mol selection "$txt"
+#           mol addrep $molid
+#       }
+#       set txt "numbonds=0"
+#       set sel [atomselect $molid "$txt"]
+#       if {[$sel num]} {
+#           mol selection "$txt"
+#           mol representation VDW
+#           mol addrep $molid
+#       }
+#   }
+#   pbc box
+#}
