@@ -24,5 +24,5 @@ cd ..
 #rm -rf c2_*.dat
 # Format the output file
 ./formatting.py output/layers_c2_at_ref_temp.dat  output/layers_c2_at_ref.dat
-rm output/layers_c2_at_ref_temp.dat
+#rm output/layers_c2_at_ref_temp.dat
 
