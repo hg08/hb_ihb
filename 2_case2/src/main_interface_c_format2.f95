@@ -19,7 +19,7 @@ PROGRAM main_interface_c
   !==========
   !parameters
   !==========
-  integer,parameter :: rk=8              
+  integer,parameter :: rk=8 
   INTEGER :: iatom, imovie
   INTEGER :: ns  ! Get one sample from the trajectory every ns step.
   CHARACTER(LEN=2) :: atom_type
