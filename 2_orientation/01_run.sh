@@ -32,4 +32,3 @@ rm gmon.out
 rm recentered_traj_pos_sampled.xyz 
 rm 128w_itp_OH_at_interface_list.dat
 
-
