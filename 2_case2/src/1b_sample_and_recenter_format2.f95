@@ -108,11 +108,11 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
         IF (atom_info(iatom,i)%coord(3) < 0) THEN
            atom_info(iatom,i)%coord(3) = atom_info(iatom,i)%coord(3) + boxsize(3) 
         ENDIF
-        !atom_info(iatom,i)%coord(3)=mod(atom_info(iatom,i)%coord(3),boxsize(3))
-        WRITE(10,200) TRIM(atom_info(iatom, i)%atom_name), &
-        atom_info(iatom,i)%coord(1), &
-        atom_info(iatom,i)%coord(2), &
-        atom_info(iatom,i)%coord(3)
+        !!atom_info(iatom,i)%coord(3)=mod(atom_info(iatom,i)%coord(3),boxsize(3))
+        !WRITE(10,200) TRIM(atom_info(iatom, i)%atom_name), &
+        !atom_info(iatom,i)%coord(1), &
+        !atom_info(iatom,i)%coord(2), &
+        !atom_info(iatom,i)%coord(3)
     ENDDO
   enddo step
 

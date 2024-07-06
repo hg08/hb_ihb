@@ -1,6 +1,6 @@
 mkdir -p output
-#for scenario in 1_case1 2_case2;
-for scenario in 2_case2
+rm *png
+for scenario in 1_case1 2_case2;
 do
 	echo "Processing ${scenario}..."
 	# Create symbolic links to the output files
@@ -49,5 +49,8 @@ do
 			${filePath}/128w_itp_wat_pair_hbacf_k_ihb_${i}*.dat >> $kkprime
 	done
 
+        # Add the THICKNESS
+	awk '{print NR, $0}' $kkprime > tmp
+	mv tmp $kkprime
 done
 

@@ -47,13 +47,13 @@ CONTAINS
       read(indx,*)!Neglect data of this line
       read(indx,120) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
       120 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
-      write(*,*) 'the step:', imovie
+      !write(*,*) 'the step:', imovie
       inner: do iatom= 1,nat
         read (indx,*) atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), & 
           atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
-        WRITE (*,*) & 
-        atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), &
-        atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
+        !WRITE (*,*) & 
+        !atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), &
+        !atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
       enddo inner
       ! ns should be non-negative
       IF (ns < 0) THEN
@@ -110,7 +110,7 @@ CONTAINS
             !WRITE(*,*)"Debug: PRE_CHECK nmo_start-1:", nmo_start-1 
             !WRITE(*,*)"Debug: PRE_CHECK nmo_end+1:", nmo_end+1 
             !WRITE(*,*)"Debug: PRE_CHECK MOD(y-(nmo_start-1),ns):", MOD(y-(nmo_start-1),ns)
-            WRITE(*,*)"Debug: PRE_CHECK ns:", ns
+            !WRITE(*,*)"Debug: PRE_CHECK ns:", ns
             !CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
             !Jie: For special case of ns=1, MOD(y-(nmo_start-1),ns) is always 0. Hence, it needs to be checked separately. 
             !Use ‘&’ to continue the line to avoid Fortran maximum line length of 132 characters. (Stupid Fortran!)
@@ -120,8 +120,8 @@ CONTAINS
                 !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
                 !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
                 !-------------------------------------------------------------------------------------------------------
-                WRITE(*,*)"Debug: CHECK_HEAD:", head_char, i_sample, y
-                WRITE(*,*)"read_traj():", head_char, y
+                !WRITE(*,*)"Debug: CHECK_HEAD:", head_char, i_sample, y
+                !WRITE(*,*)"read_traj():", head_char, y
                 BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                 read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
                 130 FORMAT (5X,I8,9X,F12.3,6X,F20.10)

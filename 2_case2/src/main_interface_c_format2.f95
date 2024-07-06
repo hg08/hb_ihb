@@ -19,10 +19,10 @@ PROGRAM main_interface_c
   !==========
   !parameters
   !==========
-  integer,parameter :: rk=8              
+  integer,parameter :: rk=8 
   INTEGER :: iatom, imovie
   INTEGER :: ns  ! Get one sample from the trajectory every ns step.
-  CHARACTER(2) :: atom_type
+  CHARACTER(LEN=2) :: atom_type
   INTEGER :: nmo_start
   INTEGER :: i
   INTEGER :: nmo_end
@@ -33,7 +33,7 @@ PROGRAM main_interface_c
   character(LEN=200) :: surf_filename
   character(LEN=200) :: filename, pos_filename,list_oxygen_pairs
   CHARACTER(LEN=2) :: guest_atom, host_atom
-  real(kind=rk), dimension(3) :: boxsize
+  real(KIND=rk), dimension(3) :: boxsize
   integer :: criterion
   !===============
   ! Initialization
@@ -63,7 +63,8 @@ PROGRAM main_interface_c
   !CALL sample_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples)
   !CASE2: If we have to recenter, we call sample_and_recenter_format2()
   CALL sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize)
-  ! After running the sample() subroutine, now we have a new sampled trajectory file (stored in atom_info), which is generally shorter than the original one.
+  ! After running the sample() subroutine, now we have a new sampled trajectory file 
+  !(stored in atom_info), which is generally shorter than the original one.
   
   !====================
   !read surf trajectory
@@ -74,10 +75,11 @@ PROGRAM main_interface_c
   close(20)
 
   CALL ghbond(filename,pos_filename,list_oxygen_pairs,nat) ! O-O pairs
-  !Calculate n_HB(t) for pure water system. If the format of data is different, one may use another funtion, eg ghbacf_n_pbc_format2(),which is very similar to this one.
+  !Calculate n_HB(t) for pure water system. If the format of data is different, one may use another funtion, 
+  !eg, ghbacf_n_pbc_format2(),which is very similar to this one.
   CALL ghbacf_interface_c_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
            n_samples,nat,ns,criterion)
   call system_clock(end_time,rat)
   write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
 
-END PROGRAM 
+END PROGRAM
