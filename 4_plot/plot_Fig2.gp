@@ -1,7 +1,7 @@
-#load '/home/dylan/bin/vdos_template.gnuplot'
 load 'colorstyle.gnuplot'
 set term postscript eps color solid linewidth 2 "Arial" 32 enhanced
 set output "Fig2.eps"
+set encoding iso_8859_1
 set size square 2.2,1.4
 
 set multiplot layout 2,2

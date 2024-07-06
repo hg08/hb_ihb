@@ -30,7 +30,6 @@ simTime = simTime[timeMask]
 c = data_c[timeMask,1]
 n = data_n[timeMask,1]
 k = data_k[timeMask,1]
-print('k', k)
 
 A = np.stack((c, n), 1)
 # If we write $c(t)$, $n(t)$ and $k(t)$ as vectors,and denote 
@@ -40,14 +39,10 @@ A = np.stack((c, n), 1)
 # We can obtain $k$ and $k'$ by
 # $[k ,\ -k']^T= (A^T A)^{-1} A^T {\bf k}$.
 A_trans = A.T 
-print('A_trans', A_trans)
 B = np.matmul(A_trans, A)
 B_inv = np.linalg.inv(B)
-print('B_inv', B_inv)
 b1 = np.matmul(A_trans,k)
-print('b1', b1)
 x = np.matmul(B_inv, b1)
-print(x)
 plt.plot(simTime, x[0]*c +x[1]*n, '--')
 plt.plot(simTime, k, 'r-')
 # 

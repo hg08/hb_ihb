@@ -73,5 +73,5 @@ do
 done
 
 # --- Clean
-mkdir output
+mkdir -p output
 mv 128w_* output/
