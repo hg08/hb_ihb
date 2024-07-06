@@ -2,9 +2,9 @@
 
 Source codes for the paper [Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics](https://arxiv.org/abs/2204.13941)
 
-![](4_plot/TOC.png)
-
+<p align='center'>
 <img src="4_plot/TOC.png" width="60%"/>
+</p>
 
 ## Abstract
 
