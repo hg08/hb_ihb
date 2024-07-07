@@ -15,7 +15,6 @@ do
 
     echo Processing system $system ...
     trajFile=$system.xyz 
-    metaFile=$system.json
 
 #    # Step m1: Resample trajectory 
 #    cd m1_resample # (
@@ -68,42 +67,40 @@ do
 #    #for start_frame in 0 10000 20000 30000 40000 50000
 #    for start_frame in 0 
 #    do 
-#	# a. Prepare input trajectory and parameter file
-#	subTraj=${system}_s${start_frame}
-#	subTrajFile=${subTraj}.xyz
-#	sufTrajFile=surf_${subTraj}.dat
-#	rm -rf $subTrajFile $sufTrajFile 
-#	ln -s ../m1_resample/output/$subTrajFile .
-#	ln -s ../0_prepare/output/$sufTrajFile .
-#	for d in {1..6}
-#	do 
-#	    inputFile=input_${subTraj}_${d}
-#            cp input_template $inputFile
-#	    sed -i "s/SIZEX/${sizeX}/g" $inputFile
-#	    sed -i "s/SIZEY/${sizeY}/g" $inputFile
-#	    sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
-#	    sed -i "s/SYSTEM/${subTraj}/g" $inputFile
-#	    sed -i "s/SUBTRAJ/${subTraj}/g" $inputFile
-#	    sed -i "s/NUMATOM/${numAtom}/g" $inputFile
-#	    sed -i "s/SUFTRAJFILE/${surfTrajFile}/g" $inputFile
-#	    sed -i "s/THICKNESS/${d}/g" $inputFile
-#	done
-#
-#	# b. Run Chandler
-#	for d in {1..6}
-#	do 
-#	    inputFile=input_${subTraj}_${d}
-#	    ./ihb_sulpizi < $inputFile 
-#	done
-#
-#	# c. Clean up
-#	mkdir -p output
-#	mv ${subTraj}_* output/
-#	mv recentered*.xyz output/
-#
+# 		# a. Prepare input trajectory and parameter file
+# 		subTraj=${system}_s${start_frame}
+# 		subTrajFile=${subTraj}.xyz
+# 		surfTrajFile=surf_${subTraj}.dat
+# 		rm -rf $subTrajFile $surfTrajFile 
+# 		ln -s ../m1_resample/output/$subTrajFile .
+# 		ln -s ../0_prepare/output/$surfTrajFile .
+# 		for d in {1..6}
+# 		do 
+# 			inputFile=input_${subTraj}_${d}
+# 			cp input_template $inputFile
+# 			sed -i "s/SIZEX/${sizeX}/g" $inputFile
+# 			sed -i "s/SIZEY/${sizeY}/g" $inputFile
+# 			sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
+# 			sed -i "s/SYSTEM/${subTraj}/g" $inputFile
+# 			sed -i "s/SUBTRAJ/${subTraj}/g" $inputFile
+# 			sed -i "s/NUMATOM/${numAtom}/g" $inputFile
+# 			sed -i "s/SURFTRAJFILE/${surfTrajFile}/g" $inputFile
+# 			sed -i "s/THICKNESS/${d}/g" $inputFile
+# 		done
+
+# 		# b. Run Chandler
+# 		for d in {1..6}
+# 		do 
+# 			inputFile=input_${subTraj}_${d}
+# 			./ihb_sulpizi < $inputFile 
+# 		done
+
+# 		# c. Clean up
+# 		mkdir -p output
+# 		mv ${subTraj}_* output/
+# 		mv recentered*.xyz output/
 #    done
-#    cd .. # )
-#    # End 1_case1
+#    cd .. # ) # End 1_case1
 
     # 2_case2
     cd 2_case2 # (
@@ -112,40 +109,88 @@ do
     #for start_frame in 0 10000 20000 30000 40000 50000
     for start_frame in 0 
     do 
-	# a. Prepare input trajectory and parameter file
-	subTraj=${system}_s${start_frame}
-	subTrajFile=${subTraj}.xyz
-	sufTrajFile=surf_${subTraj}.dat
-	rm -rf $subTrajFile $sufTrajFile 
-	ln -s ../m1_resample/output/$subTrajFile .
-	ln -s ../0_prepare/output/$sufTrajFile .
-	for d in {1..6}
-	do 
-	    inputFile=input_${subTraj}_${d}
-            cp input_template $inputFile
-	    sed -i "s/SIZEX/${sizeX}/g" $inputFile
-	    sed -i "s/SIZEY/${sizeY}/g" $inputFile
-	    sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
-	    sed -i "s/SYSTEM/${subTraj}/g" $inputFile
-	    sed -i "s/SUBTRAJ/${subTraj}/g" $inputFile
-	    sed -i "s/NUMATOM/${numAtom}/g" $inputFile
-	    sed -i "s/SUFTRAJFILE/${surfTrajFile}/g" $inputFile
-	    sed -i "s/THICKNESS/${d}/g" $inputFile
-	done
+		# a. Prepare input trajectory and parameter file
+		subTraj=${system}_s${start_frame}
+		subTrajFile=${subTraj}.xyz
+		surfTrajFile=surf_${subTraj}.dat
+		rm -rf $subTrajFile $surfTrajFile 
+		ln -s ../m1_resample/output/$subTrajFile .
+		ln -s ../0_prepare/output/$surfTrajFile .
+		for d in {1..6}
+		do 
+			inputFile=input_${subTraj}_${d}
+				cp input_template $inputFile
+			sed -i "s/SIZEX/${sizeX}/g" $inputFile
+			sed -i "s/SIZEY/${sizeY}/g" $inputFile
+			sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
+			sed -i "s/SYSTEM/${subTraj}/g" $inputFile
+			sed -i "s/SUBTRAJ/${subTraj}/g" $inputFile
+			sed -i "s/NUMATOM/${numAtom}/g" $inputFile
+			sed -i "s/SURFTRAJFILE/${surfTrajFile}/g" $inputFile
+			sed -i "s/THICKNESS/${d}/g" $inputFile
+		done
 
-	# b. Run ihb 
-	for d in {1..6}
-	do 
-	    inputFile=input_${subTraj}_${d}
-	    ./main_interface_c_format2 < $inputFile
-  	    ./main_interface_k_format2 < $inputFile
-            ./main_interface_n_format2 < $inputFile
-	done
-	
-	# c. Clean up
-	mkdir -p output
-	mv ${subTraj}_* output/
+		# b. Run ihb 
+		for d in {1..6}
+		do 
+			inputFile=input_${subTraj}_${d}
+			./main_interface_c_format2 < $inputFile
+			./main_interface_k_format2 < $inputFile
+				./main_interface_n_format2 < $inputFile
+		done
 
-    cd .. # ) # End 2_case2
+		# c. Clean up
+		mkdir -p output
+		mv ${subTraj}_* output/
+
     done
+    cd .. # ) # End 2_case2
+
+    # # 2_orientation
+    # cd 2_orientation # (
+    # # --- Compile and clean up
+    # rm -f iad_sulpizi
+	# mkdir -p obj
+	# make
+	# rm -rf obj
+	# rm module_ihb.mod
+    # #for start_frame in 0 10000 20000 30000 40000 50000
+    # for start_frame in 0 
+    # do 
+	# 	# a. Prepare input trajectory and parameter file
+	# 	subTraj=${system}_s${start_frame}
+	# 	subTrajFile=${subTraj}.xyz
+	# 	surfTrajFile=surf_${subTraj}.dat
+	# 	rm -rf $subTrajFile $surfTrajFile 
+	# 	ln -s ../m1_resample/output/$subTrajFile .
+	# 	ln -s ../0_prepare/output/$surfTrajFile .
+	# 	for d in {1..6}
+	# 	do 
+	# 		inputFile=input_${subTraj}_${d}
+	# 		cp input_template $inputFile
+	# 		sed -i "s/SIZEX/${sizeX}/g" $inputFile
+	# 		sed -i "s/SIZEY/${sizeY}/g" $inputFile
+	# 		sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
+	# 		sed -i "s/SYSTEM/${subTraj}/g" $inputFile
+	# 		sed -i "s/SUBTRAJ/${subTraj}/g" $inputFile
+	# 		sed -i "s/NUMATOM/${numAtom}/g" $inputFile
+	# 		sed -i "s/SUFTRAJFILE/${surfTrajFile}/g" $inputFile
+	# 		sed -i "s/THICKNESS/${d}/g" $inputFile
+	# 	done
+
+	# 	# b. Run 
+	# 	for d in {1..6}
+	# 	do 
+	# 		inputFile=input_${subTraj}_${d}
+	# 		./iad_sulpizi < $inputFile
+	# 	done
+		
+	# 	# c. Clean up
+	# 	mkdir -p output
+	# 	mv ${subTraj}_c2*dat output/
+	# 	rm gmon.out
+	# 	rm recentered_traj_pos_sampled.xyz
+	# 	rm ${subTraj}_*_list.dat
+    # done
+    # cd .. # ) # End 2_case2
 done
