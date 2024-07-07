@@ -17,7 +17,7 @@ trajectories = [
 # Write metadata to json file
 for traj in trajectories:
     metaFile = traj["name"].replace(".xyz", ".json") 
-    metaFile = os.path.join('m1_resample', metaFile)
+    metaFile = os.path.join('m2_traj', metaFile)
     with open(metaFile, "w") as outfile:
         json.dump(traj, outfile, indent=4)
     print(f"Metadata written to {metaFile}")
