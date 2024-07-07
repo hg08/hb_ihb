@@ -45,15 +45,10 @@ set label 1 "(a)" right at graph 0.1, graph 0.95
 set label 2 "scenario 1 (LC)" left at graph 0.13, graph 0.95
 #set arrow 1 ls 4 from graph 0.4, graph 0.25 to graph 0.4, graph 0.75 
 plot [0.0:xmax] \
-     '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_1.0.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10021 notitle,\
      '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_1.0.dat' every plot_interval::0 u 1:2 w l ls 10021 title "1 \305",\
-     '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_2.0.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10022 notitle,\
      '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_2.0.dat' every plot_interval::0 u 1:2 w l ls 10022 title "2 \305",\
-     '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_3.0.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10023 notitle,\
      '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_3.0.dat' every plot_interval::0 u 1:2 w l ls 10023 title "3 \305",\
-     '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_4.0.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10024 notitle,\
      '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_4.0.dat' every plot_interval::0 u 1:2 w l ls 10024 title "4 \305",\
-     '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_5.0.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10028 notitle,\
      '../1_case1/output/128w_itp_wat_pair_hbacf_h_ihb_5.0.dat' every plot_interval::0 u 1:2 w l ls 10028 title "5 \305"
 
 #====
@@ -68,15 +63,10 @@ set ylabel "c^{(s)}(t)"
 set label 1 "(b)" right at graph 0.1, graph 0.95
 set label 2 "scenario 2 (IHB)" left at graph 0.13, graph 0.95
 plot [0.0:xmax] \
-     '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_1.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10021 notitle,\
      '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_1.dat' every plot_interval::0 u 1:2 w l ls 10021 title "1 \305",\
-     '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_2.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10022 notitle,\
      '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_2.dat' every plot_interval::0 u 1:2 w l ls 10022 title "2 \305",\
-     '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_3.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10023 notitle,\
      '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_3.dat' every plot_interval::0 u 1:2 w l ls 10023 title "3 \305",\
-     '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_4.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10024 notitle,\
      '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_4.dat' every plot_interval::0 u 1:2 w l ls 10024 title "4 \305",\
-     '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_5.dat' every plot_interval::0 u 1:2:3 w yerrorbars  ls 10028 notitle,\
      '../2_case2/output/128w_itp_wat_pair_hbacf_h_ihb_5.dat' every plot_interval::0 u 1:2 w l ls 10028 title "5 \305"
 
 

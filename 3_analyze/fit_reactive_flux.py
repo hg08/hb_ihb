@@ -46,6 +46,6 @@ x = np.matmul(B_inv, b1)
 plt.plot(simTime, x[0]*c +x[1]*n, '--')
 plt.plot(simTime, k, 'r-')
 # 
-plt.savefig('kkprime_fit_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f") + '.png')
+#plt.savefig('kkprime_fit_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f") + '.png')
 
 print("{} {}".format(x[0], -x[1]))

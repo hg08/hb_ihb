@@ -46,6 +46,6 @@ tau2 = -1.0/x
 plt.plot(simTime, x*simTime, '--')
 plt.plot(simTime, lnc2, 'r-')
 # 
-plt.savefig('c2_decay_rate_fit_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f") + '.png')
+#plt.savefig('c2_decay_rate_fit_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f") + '.png')
 
 print("{}".format(tau2))
