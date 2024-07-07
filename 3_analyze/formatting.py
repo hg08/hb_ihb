@@ -18,7 +18,7 @@ def write2file(block, t, f):
     f.write("#t={} ps\n".format(t))
     for i in range(block.shape[0]):
         d = i + 1 # This is the layer number
-        f.write("{}        {}        {}\n".format(d, block[i, 1], block[i, 2])) 
+        f.write("{}        {}\n".format(d, block[i, 1])) 
     f.write("\n\n")
 
 # Create a file to write the data
