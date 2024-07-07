@@ -40,13 +40,15 @@ set origin 1.05, 0
 set size 1.1, 1.4
 set xrange [xmin : xmax]
 #set yrange [1.3 : 2.3]
-set yrange [2.0 : 4.5]
+#set yrange [2.0 : 4.5]
+unset yrange
+set ytics 0.2 
 set xlabel "d (\305)" 
 set border 1+2+4+8
 set label 1 "(b)" left at graph 0.01, graph 0.95
 set ylabel "{/Symbol t}_2 (ps)"
 plot \
-      'tau2_of_d.dat' u 1:2 with line ls 1000 notitle
+      '../3_analyze/output/tau2.dat' u 1:2 with line ls 1000 notitle
 
 unset multiplot
 set term wxt
