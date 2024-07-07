@@ -1,5 +1,5 @@
 mkdir -p output
-rm *png
+rm -f *png
 
 echo "Processing C2 decay rate..."
 

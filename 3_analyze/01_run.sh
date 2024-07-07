@@ -1,5 +1,5 @@
 mkdir -p output
-rm *png
+rm -f *png
 for scenario in 1_case1 2_case2;
 do
 	echo "Processing ${scenario}..."

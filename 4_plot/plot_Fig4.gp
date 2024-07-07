@@ -1,4 +1,4 @@
-load '~/bin/vdos_colorstyle.gnuplot'
+load 'colorstyle.gnuplot'
 set term postscript eps color solid linewidth 2 "Arial" 32 enhanced
 set output "Fig4.eps"
 set encoding iso_8859_1
@@ -30,10 +30,8 @@ set arrow 3 from 1.0,0.142 to 6,0.142 nohead ls 4
 set label 6 "k_{bulk}=0.14 ps^{-1}" left at graph 0.02, graph 0.10
 set label 7 "0.14" at 0.25,0.14 textcolor rgb '#000000'
 plot [xmin:xmax] \
-     '../3_analyze/output/1_case1_kkprime.dat' u 1:2 with linespoints ls 20022 title "scenario 1  (LC)",\
-     '../3_analyze/output/2_case2_kkprime.dat' u 1:2 with linespoints ls 10022 title "scenario 2 (IHB)"
-     #'../3_analyze/output/1_case1_kkprime.dat' u 1:2:5 w yerrorbars ls 10022 notitle,\
-     #'../3_analyze/output/2_case2_kkprime.dat' u 1:2:5 w yerrorbars ls 10022 notitle,\
+     '../3_analyze/output/1_case1_kkprime.dat' u 1:2 with line ls 20022 title "scenario 1  (LC)",\
+     '../3_analyze/output/2_case2_kkprime.dat' u 1:2 with line ls 10022 title "scenario 2 (IHB)"
 
 unset multiplot
 set term wxt
