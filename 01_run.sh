@@ -1,8 +1,13 @@
-# Gennerate meta data for trajectory data
-python genMeta.py
+# Systems
+systems=("128w-pos-1")
+sizeX=("15.6404")
+sizeY=("15.6404")
+sizeZ=("31.2808")
 
-for system in 128w-pos-1 
+# Workflow 
+for i in "${!systems[@]}" 
 do
+    system=${systems[$i]}
     echo Processing system $system ...
     trajFile=$system.xyz 
     metaFile=$system.json
@@ -20,6 +25,16 @@ do
     cd .. # )
     # End Step m1
 
-
+#    # Step 0: Generate surface trajectory
+#    cd 0_prepare # (
+#    #for start_frame in 0 10000 20000 30000 40000 50000
+#    for start_frame in 0 
+#    do
+#	subTrajFile=${system}_s${start_frame}.xyz
+#	rm -f $subTrajFile 
+#	ln -s ../m1_resample/output/$subTrajFile .
+#	python 1_chandler_fast.py < 
+#    done
+#    cd .. # )
 done
 
