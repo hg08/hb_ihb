@@ -1,0 +1,13 @@
+SUBTRAJ.xyz
+SIZEX SIZEY SIZEZ
+0.5
+2
+375
+1
+
+# SUBTRAJ.xyz (position file)
+# SIZEX SIZEY SIZEZ (lattice parameter, a b c in Angstram)
+# 0.5 (size of grid in Angstram)
+# 2 (index of normal axis, 0: x, 1: y, 2: z)
+# 375 (number of frames)
+# 1 (resample every n frames, so-called 'ns' in code) 
