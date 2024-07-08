@@ -106,7 +106,7 @@
       OPEN(10,file=list_filename,STATUS='OLD',ACTION='READ')     
       DO k=1,nwat
           READ(10,*)ndx_1(k),ndx_2(k)
-      enddo
+      ENDDO
       CLOSE(10)
       !============================
 
@@ -242,10 +242,10 @@
                 !DO j=1,nmo-mt-1
                 DO j=1,nmo-mt
                     scalar=scalar+h(j)*h(j+mt)  
-                enddo
+                ENDDO
                 !scalar=scalar/(nmo-mt) ! You can not use this line, because we have to calculate the average later 
                 corr_h(mt+1)=corr_h(mt+1)+scalar !sum_C_k(t)
-            enddo
+            ENDDO
         ENDIF
       ENDDO kLOOP   
       DEALLOCATE(hb_exist,nhb_exist)
@@ -262,13 +262,13 @@
           IF (hb(k)>hb_min) THEN
               n_bonded_pairs=n_bonded_pairs+1      
           ENDIF
-      enddo
+      ENDDO
       !==============================
       !Normalization of C_HB(t) step1
       !==============================
       DO mt=0,nmo-1! time interval
           corr_h(mt+1)=corr_h(mt+1)/REAL(nmo-mt,rk)
-      enddo
+      ENDDO
       corr_h = corr_h /REAL(nwat,rk)
       !Normalization step2
       corr_h = corr_h/ave_h
@@ -291,7 +291,7 @@
           ELSE
               dc(jj)=-corr_h(jj-1)+corr_h(jj+1)
           ENDIF
-      enddo
+      ENDDO
       dc=-dc/ddelta_t ! divided by ddelta_t altogether
      !======================
      !Write the correlation
@@ -303,7 +303,7 @@
         char_thickness//'.dat')
         DO i=1,nmo
             WRITE(10,*) REAL(i-1,rk) * delta_t,dc(i)
-        enddo
+        ENDDO
         WRITE(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_k_ihb_'//char_thickness//'.dat'
       CLOSE(10)

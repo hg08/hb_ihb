@@ -51,8 +51,8 @@
           ENDDO
           i_O=i
           i_H=ii
-          WRITE(6,*)'Number of O','    Number of H'
-          WRITE(6,*)i_O,i_H
+          !WRITE(6,*)'Number of O','    Number of H'
+          !WRITE(6,*)i_O,i_H
           CLOSE(10)
           !=======================================================
           ! Calculate the number of O (H) atoms in water molecules

@@ -15,7 +15,7 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
   INTEGER,INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns) KEEP
   INTEGER,INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
   INTEGER,INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
-  REAL(kind=8),DIMENSION(2,n_grid,n_samples),INTENT(INOUT) :: surf_info
+  REAL(KIND=8),DIMENSION(2,n_grid,n_samples),INTENT(INOUT) :: surf_info
   CHARACTER(LEN=4) :: head_char
   CHARACTER(LEN=200) :: surf_filename
   INTEGER :: y
@@ -40,7 +40,7 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
                   !WRITE(*,*)"read_traj():", head_char, y
                   BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                   READ(indx,*) ! skip one line in the unit=indx
-                  inner: do i_grid= 1, n_grid
+                  INNER: do i_grid= 1, n_grid
                     READ (indx,131,IOSTAT=ierror) surf_info(1,i_grid,i_sample), & 
                       surf_info(2,i_grid,i_sample)
                     !WRITE (*,131) surf_info(1,i_grid,i_sample),surf_info(2,i_grid,i_sample)

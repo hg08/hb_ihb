@@ -95,7 +95,7 @@
 
       !To obtain the total number of water pairs
       nwat=get_total_number_of_lines(list_filename)
-      WRITE(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
+      !WRITE(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
       ALLOCATE(ndx_1(nwat))          
       ALLOCATE(ndx_2(nwat))          
       !============================
@@ -109,7 +109,7 @@
       !============================
 
       delta_t=REAL(ns,rk)*delta_t0  ! unit: ps
-      WRITE(*,*) "New total steps (nmo):", nmo
+      !WRITE(*,*) "New total steps (nmo):", nmo
       ALLOCATE(x(nat,nmo))
       ALLOCATE(y(nat,nmo))
       ALLOCATE(z(nat,nmo))

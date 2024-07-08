@@ -7,7 +7,7 @@ MODULE module_ihb
   ! write subroutines in seperate files.
 
   INTEGER,PARAMETER,PUBLIC :: rk=8                                     ! For setting the type of real variables 
-  real(KIND=rk),PARAMETER :: rate=0.8d0                                ! For cutting off autocorrelation functions
+  REAL(KIND=rk),PARAMETER :: rate=0.8d0                                ! For cutting off autocorrelation functions
   INTEGER,PARAMETER,public :: num_coord_max=20                         ! For setting size of the neighbors_indices 
   INTEGER,PARAMETER,public :: num_coord_mol_max=20                     ! For setting size of the wat_neighbors_indices 
   REAL(KIND=rk),PARAMETER,PUBLIC :: alpha = 1.d0                       ! For rescaling the radius of spheres (atoms)
@@ -119,7 +119,7 @@ INTERFACE
       IMPLICIT NONE
       ! P2: 2-order Legendre polynomial
       INTEGER,PARAMETER :: rk=8  
-      real(KIND=rk),INTENT(IN) :: x
+      REAL(KIND=rk),INTENT(IN) :: x
   END FUNCTION P2 
 
   REAL(KIND=8) FUNCTION diff_axis_v1(u1,u2,a)
@@ -170,13 +170,13 @@ INTERFACE
       REAL(KIND=rk), DIMENSION(3), INTENT(IN) :: boxsize
       !Local 
       REAL(KIND=rk), DIMENSION(3) :: r_a, r_b
-      real(KIND=rk), parameter :: r_ohc=1.21d0   ! rOH (1.1**2)
-      real(KIND=rk) :: r ! distance between O and H.
+      REAL(KIND=rk), parameter :: r_ohc=1.21d0   ! rOH (1.1**2)
+      REAL(KIND=rk) :: r ! distance between O and H.
       INTEGER :: i,j,nmovie,iatom,& 
                     m1,m2,m3,i_H,&
                     i1,i2,ii,jj,i_OW, num
       INTEGER, DIMENSION(4) :: hydrogen_ndx_list
-      real(KIND=rk), allocatable, DIMENSION(:,:) :: x,y,z
+      REAL(KIND=rk), allocatable, DIMENSION(:,:) :: x,y,z
       CHARACTER(LEN=3), allocatable, DIMENSION(:) :: atom_type
       INTEGER, allocatable, DIMENSION(:) :: ndx_OW,ndx_H
   END FUNCTION hydrogen_ndx_list
@@ -194,25 +194,25 @@ INTERFACE
       REAL(KIND=rk),DIMENSION(3),INTENT(IN) :: boxsize
       !Local 
       REAL(KIND=rk),DIMENSION(3) :: r_a, r_b
-      real(KIND=rk),PARAMETER :: r_ohc=1.21d0   ! rOH (1.1**2)
-      real(KIND=rk) :: r ! distance between O and H.
+      REAL(KIND=rk),PARAMETER :: r_ohc=1.21d0   ! rOH (1.1**2)
+      REAL(KIND=rk) :: r ! distance between O and H.
       INTEGER :: i,j,nmovie,iatom,& 
               m1,m2,m3,i_H,&
               i1,i2,ii,jj,i_O,num
       INTEGER,DIMENSION(2) :: hydrogen_ndx_list_XO ! the length is 2, because there are 2 Hydrogen are bonded to ndx_oxygen_2 but no Hydrogen is bonded to ndx_X
-      real(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
+      REAL(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
       CHARACTER(LEN=3),ALLOCATABLE,DIMENSION(:) :: atom_type
       INTEGER,ALLOCATABLE,DIMENSION(:) :: ndx_O,ndx_H
   END FUNCTION hydrogen_ndx_list_XO
 
   FUNCTION hydrogen_ndx_list_for_oxygen(ndx_oxygen_1, & 
            pos_filename,natoms,boxsize) 
-      implicit none
+      IMPLICIT NONE
       INTEGER,PARAMETER :: rk=8  
       INTEGER,INTENT(IN) :: ndx_oxygen_1
       CHARACTER(LEN=200),INTENT(IN) :: pos_filename        ! specific trajectory filename to analyz data
       INTEGER,INTENT(IN) :: natoms
-      real(KIND=rk),DIMENSION(3),INTENT(IN) :: boxsize
+      REAL(KIND=rk),DIMENSION(3),INTENT(IN) :: boxsize
       !Local 
       REAL(KIND=rk) :: distance2
       INTEGER :: get_number_of_oxygen,get_number_of_hydrogen
@@ -220,16 +220,16 @@ INTERFACE
                     m1,m3,i_H,&
                     i1,ii,jj,i_OW, num
       INTEGER, DIMENSION(2) :: hydrogen_ndx_list_for_oxygen
-      real(KIND=rk), allocatable,dimension (:,:) :: x,y,z
+      REAL(KIND=rk), allocatable,dimension (:,:) :: x,y,z
       CHARACTER(LEN=3), allocatable, dimension (:) :: atom_type
       INTEGER, allocatable, dimension (:) :: ndx_OW,ndx_H
-      real(KIND=rk), DIMENSION(3) :: r_a, r_b
-      real(KIND=rk), parameter :: r_ohc=1.21d0   ! rOH (1.1**2)
-      real(KIND=rk) :: r ! distance between O and H.
+      REAL(KIND=rk), DIMENSION(3) :: r_a, r_b
+      REAL(KIND=rk), parameter :: r_ohc=1.21d0   ! rOH (1.1**2)
+      REAL(KIND=rk) :: r ! distance between O and H.
   END FUNCTION hydrogen_ndx_list_for_oxygen
 
   FUNCTION get_ndx_of_oxygen(pos_filename, natoms) 
-      implicit none
+      IMPLICIT NONE
       !Parameters 
       INTEGER, PARAMETER :: rk=8
 
@@ -239,7 +239,7 @@ INTERFACE
       INTEGER, DIMENSION(natoms) :: get_ndx_of_oxygen 
       !Local 
       INTEGER :: i,nmovie,iatom,imovie
-      real(KIND=rk), allocatable, dimension (:,:)  :: x,y,z
+      REAL(KIND=rk), allocatable, dimension (:,:)  :: x,y,z
       CHARACTER(LEN=3), allocatable, dimension (:) :: atom_type
   END FUNCTION get_ndx_of_oxygen
 
@@ -253,7 +253,7 @@ INTERFACE
       INTEGER :: get_number_of_oxygen 
       !Local 
       INTEGER :: i,nmovie,iatom,imovie
-      real(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
+      REAL(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
       CHARACTER(LEN=3),ALLOCATABLE,DIMENSION(:) :: atom_type
   END FUNCTION get_number_of_oxygen
 
@@ -265,7 +265,7 @@ INTERFACE
       INTEGER :: get_number_of_hydrogen
       !Local 
       INTEGER :: i,nmovie,iatom,imovie
-      real(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
+      REAL(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
       CHARACTER(LEN=3),ALLOCATABLE,DIMENSION(:) :: atom_type
   END FUNCTION get_number_of_hydrogen
 
@@ -277,7 +277,7 @@ INTERFACE
       INTEGER :: get_number_of_iodine 
       !Local 
       INTEGER :: i,nmovie,iatom,imovie
-      real(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
+      REAL(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
       CHARACTER(LEN=3),ALLOCATABLE,DIMENSION(:) :: atom_type
   END FUNCTION get_number_of_iodine
 
@@ -315,7 +315,7 @@ INTERFACE
       !These Nitrete O -- WaterO pairs help one to define Nitrate O -- OW Hydrogen bonds; 
       ! and these Water O -- Water O pairs helps to define OW-OW hydrogen bonds.
       ! This code modified from '/home/gang/Github/hbacf/__hbacf_continuous/__hbond_all_pair_lino3/ghbond_lino3.f95'.
-      implicit none
+      IMPLICIT NONE
       !==========
       !Parameters
       !==========
@@ -330,13 +330,13 @@ INTERFACE
       INTEGER, INTENT(IN) :: natoms
       REAL(KIND=rk),DIMENSION(3), INTENT(INOUT) :: boxsize  ! box size
       ! Local variables
-      real(KIND=rk),PARAMETER :: r_ohc=1.44d0      ! rOH (1.2**2)
-      real(KIND=rk),PARAMETER :: r_onc=2.25d0      ! rOH (1.5**2)
-      real(KIND=rk) :: r23
+      REAL(KIND=rk),PARAMETER :: r_ohc=1.44d0      ! rOH (1.2**2)
+      REAL(KIND=rk),PARAMETER :: r_onc=2.25d0      ! rOH (1.5**2)
+      REAL(KIND=rk) :: r23
       INTEGER :: i,ii,i4,i5,i6,j,nmovie,iatom,& 
                     imovie,m1,m2,m3,&
                     i_O,i_H,i_N,i_ON,i_OW
-      real(KIND=rk), allocatable,dimension (:,:) :: x,y,z
+      REAL(KIND=rk), allocatable,dimension (:,:) :: x,y,z
       CHARACTER(LEN=3),ALLOCATABLE,dimension (:) :: atom_type
       INTEGER,ALLOCATABLE,DIMENSION (:) :: ndx_O,ndx_H,&
           ndx_N,ndx_OW,ndx_ON
@@ -359,7 +359,7 @@ INTERFACE
   END FUNCTION grid_index
 
   LOGICAL FUNCTION oh_in_surf1(surf1_mol1,z1,thickness)
-      implicit none
+      IMPLICIT NONE
       INTEGER, PARAMETER :: rk=8
       LOGICAL :: mol1_in_surf1
       REAL(KIND=rk), INTENT(IN) :: surf1_mol1
@@ -368,7 +368,7 @@ INTERFACE
   END FUNCTION oh_in_surf1    
 
   LOGICAL FUNCTION oh_in_surf2(surf2_mol1,z1,thickness)
-      implicit none
+      IMPLICIT NONE
       INTEGER, PARAMETER :: rk=8
       LOGICAL :: mol1_in_surf2
       REAL(KIND=rk), INTENT(IN) :: surf2_mol1
@@ -601,8 +601,8 @@ INTERFACE
       !Local variables
       CHARACTER(LEN=1) :: char_thickness ! for saving the thickness in the files' names
       LOGICAL :: condition1, condition2
-      real(KIND=rk),PARAMETER :: cosPhiC123=0.866d0 ! 1.732/2; phiC=pi/6.
-      real(KIND=rk),PARAMETER :: cosPhiC132=-0.5d0 ! -1./2; phiC132=2pi/3.
+      REAL(KIND=rk),PARAMETER :: cosPhiC123=0.866d0 ! 1.732/2; phiC=pi/6.
+      REAL(KIND=rk),PARAMETER :: cosPhiC132=-0.5d0 ! -1./2; phiC132=2pi/3.
       REAL(KIND=rk),PARAMETER :: h_min=0.5d0 ! condition for the existence of a h-bond for a step
       REAL(KIND=rk),PARAMETER :: hb_min=0.5d0 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk) :: r13,cosphi,pm, cosphi_, pm_
@@ -611,16 +611,16 @@ INTERFACE
       REAL(KIND=rk),DIMENSION(3) :: r1, r2, r3 ! pbc 
       INTEGER :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs,ns
       REAL(KIND=rk),ALLOCATABLE,DIMENSION(:) :: h,hb,corr_h
-      real(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
+      REAL(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
       INTEGER,ALLOCATABLE,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
       INTEGER,DIMENSION(4) :: ndx_3_list
       REAL(KIND=rk) :: scalar 
-      logical,ALLOCATABLE,DIMENSION(:) :: hb_exist
+      LOGICAL,ALLOCATABLE,DIMENSION(:) :: hb_exist
       INTEGER :: nmo  ! nmo is not necessary, we set nmo = n_samples, because we do not want to change too much
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i,j,jj,k 
       INTEGER :: index_mol1, index_mol2
-      real(KIND=rk),PARAMETER :: rooc=12.25d0 ! cutoff distance of rOO (3.5**2 )
+      REAL(KIND=rk),PARAMETER :: rooc=12.25d0 ! cutoff distance of rOO (3.5**2 )
   END SUBROUTINE 
 
   SUBROUTINE ghbacf_interface_n_pbc_format2(boxsize,delta_t0, &
@@ -642,9 +642,9 @@ INTERFACE
       REAL(KIND=rk),INTENT(IN) :: divx, divy,divz
       REAL(KIND=rk),DIMENSION(2,n_grid,n_samples),INTENT(IN) :: surf_info
       !Local variables
-      real(KIND=rk),PARAMETER :: rooc=12.25d0                 ! cutoff distance of rOO (3.5**2 )
-      real(KIND=rk),PARAMETER :: cosPhiC123=0.866d0           ! 1.732/2; phiC=pi/6.
-      real(KIND=rk),PARAMETER :: cosPhiC132=-0.5d0            ! -1./2; phiC132=2pi/3.
+      REAL(KIND=rk),PARAMETER :: rooc=12.25d0                 ! cutoff distance of rOO (3.5**2 )
+      REAL(KIND=rk),PARAMETER :: cosPhiC123=0.866d0           ! 1.732/2; phiC=pi/6.
+      REAL(KIND=rk),PARAMETER :: cosPhiC132=-0.5d0            ! -1./2; phiC132=2pi/3.
       REAL(KIND=rk),PARAMETER :: h_min=0.5d0  ! condition for the existence of a h-bond for a step
       REAL(KIND=rk),PARAMETER :: hb_min=0.5d0 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_
@@ -653,11 +653,11 @@ INTERFACE
       REAL(KIND=rk),DIMENSION(3) :: r1, r2, r3 ! pbc 
       INTEGER :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs,ns
       REAL(KIND=rk),ALLOCATABLE,DIMENSION(:)  :: h,h_d,hb,corr_n
-      real(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
+      REAL(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
       INTEGER,ALLOCATABLE,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
       INTEGER,DIMENSION(4) :: ndx_3_list
       REAL(KIND=rk) :: scalar 
-      logical,ALLOCATABLE,DIMENSION(:)  :: hb_exist
+      LOGICAL,ALLOCATABLE,DIMENSION(:)  :: hb_exist
       INTEGER :: nmo  ! nmo is not necessary, we set nmo = n_samples, because we do not want to change too much
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i,j,k,jj 
@@ -686,9 +686,9 @@ INTERFACE
       REAL(KIND=rk),INTENT(IN) :: divx, divy, divz
       REAL(KIND=rk),DIMENSION(2,n_grid,n_samples),INTENT(IN) :: surf_info
       !Local variables
-      real(KIND=rk),PARAMETER :: rooc=12.25d0                 ! cutoff distance of rOO (3.5**2 )
-      real(KIND=rk),PARAMETER :: cosPhiC123=0.866d0              ! 1.732/2; phiC=pi/6.
-      real(KIND=rk),PARAMETER :: cosPhiC132=-0.5d0            ! -1./2; phiC132=2pi/3.
+      REAL(KIND=rk),PARAMETER :: rooc=12.25d0                 ! cutoff distance of rOO (3.5**2 )
+      REAL(KIND=rk),PARAMETER :: cosPhiC123=0.866d0              ! 1.732/2; phiC=pi/6.
+      REAL(KIND=rk),PARAMETER :: cosPhiC132=-0.5d0            ! -1./2; phiC132=2pi/3.
       REAL(KIND=rk),PARAMETER :: h_min=0.5d0 ! condition for the existence of a h-bond for a step
       REAL(KIND=rk),PARAMETER :: hb_min=0.5d0 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk) :: r13,cosphi,pm, cosphi_, pm_
@@ -697,12 +697,12 @@ INTERFACE
       REAL(KIND=rk),DIMENSION(3) :: r1,r2,r3 ! pbc 
       INTEGER :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs,ns
       REAL(KIND=rk),ALLOCATABLE,DIMENSION(:) :: h,hb,corr_h,dc
-      real(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
+      REAL(KIND=rk),ALLOCATABLE,DIMENSION(:,:) :: x,y,z
       INTEGER,ALLOCATABLE,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
       INTEGER,DIMENSION(4) :: ndx_3_list
       CHARACTER(LEN=1) :: char_thickness ! for saving the thickness in the files' names
       REAL(KIND=rk) :: scalar 
-      logical,ALLOCATABLE,DIMENSION(:) :: hb_exist
+      LOGICAL,ALLOCATABLE,DIMENSION(:) :: hb_exist
       INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we do not want to change too much
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i,j,k,jj 
@@ -723,7 +723,7 @@ INTERFACE
 
     INTEGER :: i, j
     INTEGER,INTENT(IN) :: nat, n_samples
-    real(KIND=rk), DIMENSION(3), INTENT(IN) :: boxsize
+    REAL(KIND=rk), DIMENSION(3), INTENT(IN) :: boxsize
     TYPE(sphere),DIMENSION(nat,n_samples),INTENT(INOUT) :: sphere_info
     INTEGER,DIMENSION(nat),INTENT(INOUT) :: neighbors_number
     INTEGER,DIMENSION(nat,num_coord_max),INTENT(INOUT) :: neighbors_indices
@@ -767,7 +767,7 @@ INTERFACE
     INTEGER :: i, j, n_count
     CHARACTER(LEN=*),INTENT(IN) :: atom_name 
     INTEGER,INTENT(IN) :: nat,n_samples
-    real(KIND=rk), DIMENSION(3), INTENT(IN) :: boxsize
+    REAL(KIND=rk), DIMENSION(3), INTENT(IN) :: boxsize
     TYPE(sphere),DIMENSION(nat,n_samples),INTENT(INOUT) :: sphere_info
     INTEGER,DIMENSION(nat),INTENT(INOUT) :: wat_neighbors_number
     INTEGER,DIMENSION(nat,num_coord_mol_max),INTENT(INOUT) :: wat_neighbors_indices ! The max coord. number of molecules 
