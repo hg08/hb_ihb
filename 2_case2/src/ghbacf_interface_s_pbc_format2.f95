@@ -49,27 +49,27 @@
       INTEGER,INTENT(IN) :: nat ! number of atoms
       INTEGER,INTENT(IN) :: n_samples  !n_samples=INT(nmo/ns)
       INTEGER,INTENT(IN) :: ns  
-      real(kind=rk),dimension(3),INTENT(IN) :: boxsize
+      REAL(kind=rk),dimension(3),INTENT(IN) :: boxsize
       REAL(KIND=rk),INTENT(IN) :: delta_t0 
 
       !Local variables
-      real(kind=rk),parameter :: rooc=12.25                 ! cutoff distance of rOO (3.5**2 )
-      real(kind=rk),parameter :: cosPhiC123=0.866           ! 1.732/2;phiC=pi/6.
-      real(kind=rk),parameter :: cosPhiC132=-0.5            ! -1./2;phiC132=2pi/3.
-      real(kind=rk),parameter :: h_min=0.5 ! condition for the existence of a h-bond for a step
-      real(kind=rk),parameter :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
-      real(kind=rk) :: r13,cosphi,pm,cosphi_,pm_,norm_rr
-      real(kind=rk) :: r21,r31,r32,r23 ! For the second criterion of HB
-      real(kind=rk) :: qj,tot_hb,delta_t,hb_per_frame,ave_h,hh
-      real(kind=rk),dimension(3) :: r1,r2,r3 ! pbc 
+      REAL(kind=rk),parameter :: rooc=12.25                 ! cutoff distance of rOO (3.5**2 )
+      REAL(kind=rk),parameter :: cosPhiC123=0.866           ! 1.732/2;phiC=pi/6.
+      REAL(kind=rk),parameter :: cosPhiC132=-0.5            ! -1./2;phiC132=2pi/3.
+      REAL(kind=rk),parameter :: h_min=0.5 ! condition for the existence of a h-bond for a step
+      REAL(kind=rk),parameter :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
+      REAL(kind=rk) :: r13,cosphi,pm,cosphi_,pm_,norm_rr
+      REAL(kind=rk) :: r21,r31,r32,r23 ! For the second criterion of HB
+      REAL(kind=rk) :: qj,tot_hb,delta_t,hb_per_frame,ave_h,hh
+      REAL(kind=rk),dimension(3) :: r1,r2,r3 ! pbc 
       integer :: m,m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs
-      real(kind=rk),allocatable,dimension (:)  :: h,hb,corr_hh
-      real(kind=rk),allocatable,dimension (:,:) :: x,y,z
+      REAL(kind=rk),allocatable,dimension (:)  :: h,hb,corr_hh
+      REAL(kind=rk),allocatable,dimension (:,:) :: x,y,z
       integer,allocatable,dimension(:) :: ndx_1,ndx_2,nhb_exist,&
           nhb_start
       integer,dimension(4) :: ndx_3_list
-      real(kind=rk) :: scalar_hh 
-      real(kind=rk) :: tau_a ! average lifetime of HBs 
+      REAL(kind=rk) :: scalar_hh 
+      REAL(kind=rk) :: tau_a ! average lifetime of HBs 
       logical,allocatable,dimension (:)  :: hb_exist,hb_start
       INTEGER :: nmo  ! nmo is not necessary,we set nmo=n_samples,because we do not want to change too much
       INTEGER :: nwat ! number of water molecules
@@ -99,13 +99,13 @@
 
       !To obtain the total number of water pairs
       nwat=get_nwat(list_filename)
-      write(*,*) 'ghbacf_c: # of water pairs (nwat)=',nwat
+      WRITE(*,*) 'ghbacf_c: # of water pairs (nwat)=',nwat
       allocate(ndx_1(nwat))          
       allocate(ndx_2(nwat))          
       !============================
       !read data from the list file
       !============================
-      open(10,file=list_filename)     
+      OPEN(10,file=list_filename)     
       do k=1,nwat
           read(10,*)ndx_1(k),ndx_2(k)
       enddo
@@ -113,7 +113,7 @@
       !============================
 
       delta_t=ns*delta_t0  ! unit: ps
-      write(*,*) "New total steps (nmo):",nmo
+      WRITE(*,*) "New total steps (nmo):",nmo
       allocate(x(nat,nmo))
       allocate(y(nat,nmo))
       allocate(z(nat,nmo))
@@ -147,9 +147,8 @@
         nqj=0 ! The number of bonded times for k-th form of quasi-HB 
         m1=ndx_1(k)
         m2=ndx_2(k)
-        !write(*,*) "ghbacf_c: pos_filename: ",pos_filename
         ndx_3_list=h_ndx_list(ndx_1(k),ndx_2(k),pos_filename,nat,boxsize)
-        write(*,*) "The ",k,"-th pair: ndx_of H (1st,2nd,3rd,4th):",& 
+        WRITE(*,*) "The ",k,"-th pair: ndx_of H (1st,2nd,3rd,4th):",& 
             ndx_3_list(1),ndx_3_list(2),ndx_3_list(3),ndx_3_list(4)
         ! Calculate h(j)
         ! A LOOP on ndx_3_list
@@ -287,10 +286,10 @@
       enddo kLOOP   
       deallocate(hb_exist,nhb_exist)
       hb_per_frame=tot_hb/nmo
-      write(*,*) "Total H-bonds exists in history: ",tot_hb
+      WRITE(*,*) "Total H-bonds exists in history: ",tot_hb
       ave_h=hb_per_frame/nwat 
-      write(*,*) "hb per frame:",hb_per_frame
-      write(*,*) "<h>=",ave_h
+      WRITE(*,*) "hb per frame:",hb_per_frame
+      WRITE(*,*) "<h>=",ave_h
       !=========================================
       !Calculate the number of ever bonded pairs
       !=========================================
@@ -315,14 +314,14 @@
      !S_HB(t) for the iterfacial HB (ihb)    
      !===================================
       char_thickness=nth(str(nint(thickness)),1)
-      write(char_criterion,'(i1)') criterion
-      open(10,file=trim(filename)//&
+      WRITE(char_criterion,'(i1)') criterion
+      OPEN(10,file=trim(filename)//&
         '_'//donor//accepter//'_hbacf_hh_ihb_'//&
         char_thickness//"_"//char_criterion//'.dat')
         do i=1,nmo
-            write(10,*)(i-1)*delta_t,corr_hh(i)
+            WRITE(10,*)(i-1)*delta_t,corr_hh(i)
         enddo
-        write(6,*)'written in '//trim(filename)//&
+        WRITE(6,*)'written in '//trim(filename)//&
         '_'//donor//accepter//'_hbacf_hh_ihb_'//char_thickness//&
         "_"//char_criterion//'.dat'
       close(10)
@@ -331,15 +330,15 @@
      !<tau_a>
      !=====================
       tau_a=0.0
-      open(10,file=trim(filename)//&
+      OPEN(10,file=trim(filename)//&
         '_'//donor//accepter//'_hbacf_tau_a_shb_'//&
         char_thickness//&
         "_"//char_criterion//'.dat')
         do i=1,nmo
             tau_a=tau_a + delta_t * corr_hh(i)
         enddo
-        write(10,*) "HB lifetime (tau_a) (unit: ps): ", tau_a 
-        write(6,*)'written in '//trim(filename)//&
+        WRITE(10,*) "HB lifetime (tau_a) (unit: ps): ", tau_a 
+        WRITE(6,*)'written in '//trim(filename)//&
           '_'//donor//accepter//'_hbacf_tau_a_shb_'//char_thickness//&
           "_"//char_criterion//'.dat'
       close(10)
@@ -347,25 +346,25 @@
      !Write the correlation
      !ln(S_HB(t))     
      !=====================
-      open(10,file=trim(filename)//&
+      OPEN(10,file=trim(filename)//&
         '_'//donor//accepter//'_hbacf_log_hh_ihb_'//&
         char_thickness//"_"//char_criterion//'.dat')
         do i=1,nmo
-            write(10,*)(i-1)*delta_t,log(corr_hh(i))
+            WRITE(10,*)(i-1)*delta_t,log(corr_hh(i))
         enddo
-        write(6,*)'written in '//trim(filename)//&
+        WRITE(6,*)'written in '//trim(filename)//&
         '_'//donor//accepter//'_hbacf_log_hh_ihb_'//char_thickness//&
         "_"//char_criterion//'.dat'
       close(10)
      !===========
      ! Print <h>      
      !===========     
-      open(10,file=trim(filename)//&
+      OPEN(10,file=trim(filename)//&
         '_'//donor//accepter//'_ave_h_by_S_ihb_'//&
         char_thickness//"_"//char_criterion//'.dat')
-        write(10,*) 'Ave. No. bonds:',hb_per_frame
-        write(10,*) '<h>:',ave_h
-        write(6,*)'written in '//trim(filename)//&
+        WRITE(10,*) 'Ave. No. bonds:',hb_per_frame
+        WRITE(10,*) '<h>:',ave_h
+        WRITE(6,*)'written in '//trim(filename)//&
         '_'//donor//accepter//'_ave_h_by_S_ihb_'//char_thickness//&
         "_"//char_criterion//'.dat'
       close(10)

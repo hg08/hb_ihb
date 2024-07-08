@@ -19,7 +19,7 @@ PROGRAM main_interface_s
   !==========
   !parameters
   !==========
-  integer,parameter :: rk=8              
+  INTEGER,PARAMETER :: rk=8              
   INTEGER :: iatom, imovie
   INTEGER :: ns  ! Get one sample from the trajectory every ns step.
   CHARACTER(2) :: atom_type
@@ -30,11 +30,11 @@ PROGRAM main_interface_s
   INTEGER :: nwat ! number of water molecules
   INTEGER :: n_samples   ! n_samples = INT(nmo/ns)
   REAL(KIND=rk) :: delta_t0   ! For reading data
-  character(LEN=200) :: surf_filename
-  character(LEN=200) :: filename, pos_filename,list_oxygen_pairs
+  CHARACTER(LEN=200) :: surf_filename
+  CHARACTER(LEN=200) :: filename, pos_filename,list_oxygen_pairs
   CHARACTER(LEN=2) :: guest_atom, host_atom
-  real(kind=rk), dimension(3) :: boxsize
-  integer :: criterion
+  REAL(KIND=rk), dimension(3) :: boxsize
+  INTEGER :: criterion
   !===============
   ! Initialization
   !===============
@@ -50,14 +50,14 @@ PROGRAM main_interface_s
   filename=""; pos_filename=""; sampled_pos_filename=""
   surf_filename=""
   list_oxygen_pairs=""
-  call system_clock(begin_time,rat) !To get the starting time
+  CALL system_clock(begin_time,rat) !To get the starting time
   
   !============================================
   ! To read the required controlling parameters
   !============================================
   CALL read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start,nmo_end,nat,ns,&
            criterion,surf_filename) 
-  write(*,*)delta_t0
+  WRITE(*,*)delta_t0
   !========================
   ! Sampling the trajectory
   !========================
@@ -70,16 +70,16 @@ PROGRAM main_interface_s
   !====================
   !read surf trajectory
   !====================
-  open(20,file=trim(surf_filename))
-      !CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
-      CALL read_surf_traj(20,0,999,1,n_grid,1000)
-  close(20)
+  OPEN(20,file=trim(surf_filename))
+      CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
+      !CALL read_surf_traj(20,0,999,1,n_grid,1000)
+  CLOSE(20)
 
   CALL ghbond(filename,pos_filename,list_oxygen_pairs,nat) ! O-O pairs
-  !Calculate n_HB(t) for pure water system. If the format of data is different, one may use another funtion, eg ghbacf_n_pbc_format2(),which is very similar to this one.
+  !Calculate n_HB(t) for pure water system. If the format of data is different, we may use another funtion, eg ghbacf_n_pbc_format2(),which is very similar to this one.
   CALL ghbacf_interface_s_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
            n_samples,nat,ns,criterion,"W","W")
-  call system_clock(end_time,rat)
-  write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
+  CALL system_clock(end_time,rat)
+  WRITE(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
 
 END PROGRAM 

@@ -19,7 +19,7 @@ PROGRAM main_interface_n
   !==========
   !parameters
   !==========
-  integer,parameter :: rk=8              
+  INTEGER,PARAMETER :: rk=8              
   INTEGER :: iatom, imovie
   INTEGER :: ns  ! Get one sample from the trajectory every ns step.
   CHARACTER(LEN=2) :: atom_type
@@ -30,11 +30,11 @@ PROGRAM main_interface_n
   INTEGER :: nwat ! number of water molecules
   INTEGER :: n_samples   ! n_samples = INT(nmo/ns)
   REAL(KIND=rk) :: delta_t0   ! For reading data
-  character(LEN=200) :: surf_filename
-  character(LEN=200) :: filename, pos_filename,list_oxygen_pairs
+  CHARACTER(LEN=200) :: surf_filename
+  CHARACTER(LEN=200) :: filename, pos_filename,list_oxygen_pairs
   CHARACTER(LEN=2) :: guest_atom, host_atom
-  real(KIND=rk), dimension(3) :: boxsize
-  integer :: criterion
+  REAL(KIND=rk), DIMENSION(3) :: boxsize
+  INTEGER :: criterion
   !===============
   ! Initialization
   !===============
@@ -49,7 +49,7 @@ PROGRAM main_interface_n
   filename=""; pos_filename=""; sampled_pos_filename=""
   surf_filename=""
   list_oxygen_pairs=""
-  call system_clock(begin_time,rat) !To get the starting time
+  CALL system_clock(begin_time,rat) !To get the starting time
   
   !============================================
   ! To read the required controlling parameters
@@ -70,8 +70,8 @@ PROGRAM main_interface_n
   !read surf trajectory
   !====================
   open(20,file=trim(surf_filename))
-      !CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
-      CALL read_surf_traj(20,0,999,1,n_grid,1000)
+      CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
+      !CALL read_surf_traj(20,0,999,1,n_grid,1000)
   close(20)
 
   CALL ghbond(filename,pos_filename,list_oxygen_pairs,nat) ! O-O pairs
@@ -79,7 +79,7 @@ PROGRAM main_interface_n
   !eg, ghbacf_n_pbc_format2(),which is very similar to this one.
   CALL ghbacf_interface_n_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
            n_samples,nat,ns,criterion)
-  call system_clock(end_time,rat)
-  write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
+  CALL system_clock(end_time,rat)
+  WRITE(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
 
 END PROGRAM

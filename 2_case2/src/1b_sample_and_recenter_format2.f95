@@ -34,8 +34,8 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   i = 0 
   num_wat_pairs = 0
   nb_divx = nint(boxsize(1)/whish_size) ! round the argument to the nearest integer.
-  nb_divy = nint(boxsize(2)/whish_size) ! round the argument to the nearest integer.
-  nb_divz = nint(boxsize(3)/whish_size) ! round the argument to the nearest integer.
+  nb_divy = nint(boxsize(2)/whish_size) ! - 
+  nb_divz = nint(boxsize(3)/whish_size) ! -
   divx = boxsize(1)/nb_divx
   divy = boxsize(2)/nb_divy
   divz = boxsize(3)/nb_divz
