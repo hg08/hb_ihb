@@ -1,4 +1,4 @@
-load '~/bin/vdos_colorstyle.gnuplot'
+load 'colorstyle.gnuplot'
 set term postscript eps color solid linewidth 2 "Arial" 32 enhanced
 set output "Fig4.eps"
 set encoding iso_8859_1
