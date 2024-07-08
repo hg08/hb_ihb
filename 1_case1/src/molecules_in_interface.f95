@@ -11,9 +11,9 @@
         !         the 2nd axis: atom's labels (m) 
         !=========================================================
         !Modules
-        use module_ihb, ONLY: grid_index, mol_in_surf1, mol_in_surf2,&
+        USE module_ihb, ONLY: grid_index, mol_in_surf1, mol_in_surf2,&
                               str,nth,atom
-        implicit none
+        IMPLICIT NONE
         !==========
         !parameters
         !==========
@@ -48,7 +48,7 @@
         !=============      
         MOLECULE: DO jj =1, n_samples
           n = 0
-          WRITE(*,*) "NAT= ", nat, "(in molecules_in_interface_v3())"
+          !WRITE(*,*) "NAT= ", nat, "(in molecules_in_interface_v3())"
           DO m=1,nat
             ! We use Oxygen atom to idenfy the water molecule
             IF (TRIM(atom_info(m,jj)%atom_name) == "O") THEN

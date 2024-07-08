@@ -143,9 +143,9 @@ SUBROUTINE read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start
     thickness = 3.d0
   ELSE
     READ(line, *, iostat = ierr) thickness
-    WRITE(*,*) "READ thickness: ", thickness
-    WRITE(*,*) "READ thickness: ", thickness
-    WRITE(*,*) "READ thickness: ", thickness
+    !WRITE(*,*) "READ thickness: ", thickness
+    !WRITE(*,*) "READ thickness: ", thickness
+    !WRITE(*,*) "READ thickness: ", thickness
   ENDIF  
 
 END SUBROUTINE read_interface_input

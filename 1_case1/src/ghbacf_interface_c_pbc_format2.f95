@@ -92,7 +92,7 @@
 
       !To obtain the total number of water pairs
       nwat=get_total_number_of_lines(list_filename)
-      WRITE(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
+      !WRITE(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
       ALLOCATE(ndx_1(nwat))          
       ALLOCATE(ndx_2(nwat))          
       !============================
@@ -106,7 +106,7 @@
       !============================
 
       delta_t=REAL(ns,rk)*delta_t0  ! unit: ps
-      WRITE(*,*) "New total steps (nmo):", nmo
+      !WRITE(*,*) "New total steps (nmo):", nmo
       ALLOCATE(x(nat,nmo))
       ALLOCATE(y(nat,nmo))
       ALLOCATE(z(nat,nmo))
@@ -141,8 +141,8 @@
         m2=ndx_2(k)
         !WRITE(*,*) "ghbacf_c: pos_filename: ", pos_filename
         ndx_3_list=hydrogen_ndx_list(ndx_1(k),ndx_2(k),pos_filename,nat,boxsize)
-        WRITE(*,*) "The ",k,"-th pair: ndx_of H (1st,2nd,3rd,4th):",& 
-            ndx_3_list(1), ndx_3_list(2), ndx_3_list(3), ndx_3_list(4)
+        !WRITE(*,*) "The ",k,"-th pair: ndx_of H (1st,2nd,3rd,4th):",& 
+        !    ndx_3_list(1), ndx_3_list(2), ndx_3_list(3), ndx_3_list(4)
         ! Calculate h(j)
         ! A LOOP on ndx_3_list
         TIME: DO jj =1, nmo
