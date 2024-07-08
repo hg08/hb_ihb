@@ -34,7 +34,7 @@
       !parameters
       !==========
       INTEGER, PARAMETER :: rk=8 ! local 
-      INTEGER, PARAMETER :: d_len=3 ! for storing the length of the character which represents the thickness of the interface
+      INTEGER, PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       
       character(LEN=200), INTENT(INOUT) :: filename,pos_filename
       character(LEN=200), INTENT(IN) :: list_filename
@@ -67,11 +67,11 @@
       INTEGER, allocatable,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
       INTEGER, DIMENSION(4)   :: ndx_3_list
       REAL(KIND=rk)  :: scalar, sq 
-      logical,allocatable,DIMENSION (:)  :: hb_exist
+      LOGICAL,allocatable,DIMENSION (:)  :: hb_exist
       INTEGER  :: nmo  ! nmo is not necessary, we set nmo = n_samples, because we do not want to change too much
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i,j,k,jj 
-      CHARACTER(len=d_len) :: char_thickness ! for saving the thickness in the files' names
+      CHARACTER(LEN=d_len) :: char_thickness ! for saving the thickness in the files' names
       INTEGER :: index_mol1, index_mol2
       LOGICAL :: condition1, condition2
       !REAL(KIND=rk) :: distance2
@@ -266,18 +266,6 @@
         ENDDO 
         WRITE(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_h_ihb_'//char_thickness//'.dat'
-      CLOSE(10)
-     !=====================
-     !Write the correlation
-     !ln(C_HB(t))     
-     !=====================
-      OPEN(10,file=trim(filename)//'_wat_pair_hbacf_log_h_ihb_'//&
-        char_thickness//'.dat')
-        DO i=1,nmo
-            WRITE(10,*) REAL(i-1,rk)*delta_t,log(corr_h(i))
-        ENDDO  
-        WRITE(6,*)'written in '//trim(filename)//&
-                  '_wat_pair_hbacf_log_h_ihb_'//char_thickness//'.dat'
       CLOSE(10)
      !===========
      ! Print <h>      

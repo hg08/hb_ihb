@@ -46,6 +46,7 @@
       !PARAMETERS
       !==========
       INTEGER,PARAMETER :: rk=8 ! local 
+      INTEGER, PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       CHARACTER(LEN=200),INTENT(INOUT) :: filename, pos_filename
       CHARACTER(LEN=200),INTENT(IN) :: list_filename
       INTEGER,INTENT(IN) :: criterion
@@ -69,12 +70,12 @@
       REAL,ALLOCATABLE,DIMENSION (:,:) :: x, y, z
       INTEGER,ALLOCATABLE,DIMENSION(:) :: ndx_1, ndx_2, nhb_exist
       INTEGER,DIMENSION(4) :: ndx_3_list
-      CHARACTER(LEN=1) :: char_thickness ! for saving the thickness in the files' names
       REAL(KIND=rk) :: scalar, tmp 
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: hb_exist
       INTEGER :: nmo 
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i,j,k,jj 
+      CHARACTER(LEN=d_len) :: char_thickness ! for saving the thickness in the files' names
       INTEGER :: index_mol1, index_mol2
       LOGICAL :: condition1, condition2
 
@@ -93,10 +94,10 @@
       condition2 = .FALSE.
       norm_rr = 0.0 ! a temporary variable
       tmp = 0.0 ! a temporay variable 
+      char_thickness = ''
 
       !To obtain the total number of water pairs
       nwat = get_nwat(list_filename)
-      WRITE(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
       ALLOCATE(ndx_1(nwat))          
       ALLOCATE(ndx_2(nwat))          
       !============================
@@ -286,7 +287,7 @@
      !Write the correlation
      !k_HB(t)     
      !======================
-      char_thickness = nth(str(nint(thickness)),1)
+      char_thickness = nth(str(nint(thickness)),d_len)
       OPEN(10, file=trim(filename)//'_wat_pair_hbacf_k_ihb_'//&
         char_thickness//'.dat')
         DO i = 1, nmo

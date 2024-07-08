@@ -41,7 +41,7 @@
       !parameters
       !==========
       INTEGER, PARAMETER :: rk=8 ! local 
-      INTEGER, PARAMETER :: d_len=3 ! for storing the length of the character which represents the thickness of the interface
+      INTEGER, PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
 
       character(LEN=200), INTENT(INOUT) :: filename,pos_filename
       character(LEN=200), INTENT(IN) :: list_filename
@@ -67,14 +67,14 @@
       REAL(KIND=rk) :: r21,r31,r32,r23 ! For the second criterion of HB
       REAL(KIND=rk) :: qj,tot_hb,delta_t,ddelta_t,hb_per_frame,ave_h
       REAL(KIND=rk),DIMENSION(3) :: r1, r2, r3 ! pbc 
-      integer :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs,ns
+      INTEGER :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs,ns
       REAL(KIND=rk), ALLOCATABLE,DIMENSION (:)  :: h,hb,corr_h,dc
       REAL(KIND=rk), ALLOCATABLE,DIMENSION (:,:)         :: x,y,z
       INTEGER, ALLOCATABLE,DIMENSION(:)         :: ndx_1,ndx_2,nhb_exist
       INTEGER, DIMENSION(4)   :: ndx_3_list
       CHARACTER(len=d_len) :: char_thickness ! for saving the thickness in the files' names
       REAL(KIND=rk)  :: scalar 
-      logical,ALLOCATABLE,DIMENSION (:)  :: hb_exist
+      LOGICAL,ALLOCATABLE,DIMENSION (:)  :: hb_exist
       INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we DO not want to change too much
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i,j,k,jj 

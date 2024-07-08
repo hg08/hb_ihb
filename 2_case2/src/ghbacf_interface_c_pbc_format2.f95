@@ -39,7 +39,7 @@
       !PARAMETERS
       !==========
       INTEGER,PARAMETER :: rk=8 ! local 
-
+      INTEGER,PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       CHARACTER(LEN=200),INTENT(INOUT) :: filename, pos_filename
       CHARACTER(LEN=200),INTENT(IN) :: list_filename
       INTEGER,INTENT(IN) :: criterion
@@ -69,7 +69,7 @@
       INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we DO not want to change too much
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i, j, k, jj 
-      CHARACTER(LEN=1) :: char_thickness ! for saving the thickness in the files' names
+      CHARACTER(LEN=d_len) :: char_thickness ! for saving the thickness in the files' names
       INTEGER :: index_mol1, index_mol2
       LOGICAL :: condition1, condition2
 
@@ -89,10 +89,10 @@
       condition2 = .FALSE.
       norm_rr = 0.0 ! a temporary variable
       tmp = 0.0 ! a temporay variable 
+      char_thickness = ''
 
       !To obtain the total number of water pairs
       nwat=get_nwat(list_filename)
-      WRITE(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
       allocate(ndx_1(nwat))          
       allocate(ndx_2(nwat))          
       !============================
@@ -261,7 +261,7 @@
      !Write the correlation
      !C_HB(t) for the iterfacial HB (ihb)    
      !===================================
-      char_thickness = nth(str(nint(thickness)),1)
+      char_thickness = nth(str(nint(thickness)),d_len)
       OPEN(10,file=trim(filename)//'_wat_pair_hbacf_h_ihb_' &
         //char_thickness//'.dat')
         DO i =1, nmo
@@ -269,18 +269,6 @@
         ENDDO
         WRITE(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_h_ihb_'//char_thickness//'.dat'
-      close(10)
-     !=====================
-     !Write the correlation
-     !ln(C_HB(t))     
-     !=====================
-      OPEN(10,file=trim(filename)//'_wat_pair_hbacf_log_h_ihb_'//&
-        char_thickness//'.dat')
-        DO i=1,nmo
-            WRITE(10,*) REAL(i-1) * delta_t, log(corr_h(i))
-        ENDDO
-        WRITE(6,*)'written in '//trim(filename)//&
-                  '_wat_pair_hbacf_log_h_ihb_'//char_thickness//'.dat'
       close(10)
      !===========
      ! Print <h>      

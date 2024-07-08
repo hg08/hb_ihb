@@ -46,7 +46,7 @@ MODULE surf_module
 IMPLICIT NONE
 TYPE :: surf
   INTEGER :: grid_index_x, grid_index_y 
-  REAL(kind=8), DIMENSION(2) :: coord ! upper and lower location of the isosurface two real values.
+  REAL(KIND=8), DIMENSION(2) :: coord ! upper and lower location of the isosurface two real values.
 END TYPE surf
 
 ! The array surf_info can be shared by subroutines  
@@ -124,14 +124,14 @@ END MODULE surf_traj
       CONTAINS
  
       REAL FUNCTION direct_dist2(u1,v1,w1,u2,v2,w2)
-          real(kind=rk), INTENT(IN) :: u1,v1,w1,u2,v2,w2
+          real(KIND=rk), INTENT(IN) :: u1,v1,w1,u2,v2,w2
           direct_dist2 = (u2-u1)**2 + (v2-v1)**2 + (w2-w1)**2
       END FUNCTION direct_dist2
       
       REAL FUNCTION distance2(r1,r2,boxsize)
-          real(kind=rk), DIMENSION(3), INTENT(IN) :: r1,r2
-          real(kind=rk), DIMENSION(3), INTENT(IN) :: boxsize
-          REAL(kind=rk) :: dx,dy,dz
+          real(KIND=rk), DIMENSION(3), INTENT(IN) :: r1,r2
+          real(KIND=rk), DIMENSION(3), INTENT(IN) :: boxsize
+          REAL(KIND=rk) :: dx,dy,dz
           dx = r1(1) - r2(1)
           if (abs(dx) > boxsize(1)*0.5) then
               dx = boxsize(1) - dx
@@ -148,7 +148,7 @@ END MODULE surf_traj
       END FUNCTION distance2
      
       REAL FUNCTION dist2(u1,v1,w1,u2,v2,w2,a,b,c)
-          real(kind=rk),INTENT(INOUT) :: u1,v1,w1,u2,v2,w2,a,b,c
+          real(KIND=rk),INTENT(INOUT) :: u1,v1,w1,u2,v2,w2,a,b,c
           logical :: A1,A2,A3,B1,B2,B3,C1,C2,C3
           A1 = (abs(u1-u2) > a/2 .AND. u1 > u2)
           A2 = (abs(u1-u2) > a/2 .AND. u2 > u1)
@@ -272,9 +272,9 @@ END MODULE surf_traj
 
       REAL FUNCTION diff_axis(u1,u2,h)
           ! u2 is used as origin
-          real(kind=rk),INTENT(IN) :: u1, u2
-          real(kind=rk),INTENT(IN) :: h
-          real(kind=rk) :: du 
+          real(KIND=rk),INTENT(IN) :: u1, u2
+          real(KIND=rk),INTENT(IN) :: h
+          real(KIND=rk) :: du 
           du = u1-u2
           if (abs(du) > 0.5*h) then
               du = h - du 
@@ -283,8 +283,8 @@ END MODULE surf_traj
       END FUNCTION diff_axis
       
       REAL FUNCTION pmADH(r1,r2,r3,boxsize)
-          real(kind=rk),DIMENSION(3), INTENT(IN) :: r1,r2,r3
-          real(kind=rk),DIMENSION(3), INTENT(IN) :: boxsize 
+          real(KIND=rk),DIMENSION(3), INTENT(IN) :: r1,r2,r3
+          real(KIND=rk),DIMENSION(3), INTENT(IN) :: boxsize 
           pmADH= diff_axis(r3(1),r2(1),boxsize(1))*           &
                  diff_axis(r1(1),r2(1),boxsize(1))+      &
                  diff_axis(r3(2),r2(2),boxsize(2))*      &
@@ -294,8 +294,8 @@ END MODULE surf_traj
       END FUNCTION pmADH
 
       REAL FUNCTION pmAHD(r1,r2,r3,boxsize)
-          real(kind=rk),DIMENSION(3), INTENT(IN) :: r1,r2,r3
-          real(kind=rk),DIMENSION(3), INTENT(IN) :: boxsize 
+          real(KIND=rk),DIMENSION(3), INTENT(IN) :: r1,r2,r3
+          real(KIND=rk),DIMENSION(3), INTENT(IN) :: boxsize 
           pmAHD= diff_axis(r1(1),r3(1),boxsize(1))*           &
                  diff_axis(r2(1),r3(1),boxsize(1))+      &
                  diff_axis(r1(2),r3(2),boxsize(2))*      &
@@ -306,8 +306,8 @@ END MODULE surf_traj
       
       REAL FUNCTION diff_axis_v1(u1,u2,a)
           logical :: A1,A2,A3
-          real(kind=rk),INTENT(INOUT) :: u1, u2
-          real(kind=rk),INTENT(IN) :: a
+          real(KIND=rk),INTENT(INOUT) :: u1, u2
+          real(KIND=rk),INTENT(IN) :: a
           A1 = (abs(u1-u2) > a/2 .AND. u1 > u2)
           A2 = (abs(u1-u2) > a/2 .AND. u2 > u1)
           A3 = (abs(u1-u2) < a/2)
@@ -351,10 +351,10 @@ END MODULE surf_traj
       INTEGER, INTENT(IN) :: ndx_oxygen_1, ndx_oxygen_2
       character(LEN=200),INTENT(IN) :: pos_filename        ! specific trajectory filename to analyz data
       INTEGER, INTENT(IN) :: natoms
-      real(kind=rk), dimension(3), INTENT(IN) :: boxsize
+      real(KIND=rk), dimension(3), INTENT(IN) :: boxsize
       
       !Local 
-      real(kind=rk), dimension(3) :: r_a, r_b
+      real(KIND=rk), dimension(3) :: r_a, r_b
       integer,parameter :: rk=4              
       real,parameter :: r_ohc=1.21   ! rOH (1.1**2)
       real           :: r ! distance between O and H.
@@ -454,10 +454,10 @@ END MODULE surf_traj
       INTEGER, INTENT(IN) :: ndx_X, ndx_oxygen_2
       character(LEN=200),INTENT(IN) :: pos_filename      ! specific trajectory filename to analyz data
       INTEGER, INTENT(IN) :: natoms
-      real(kind=rk), dimension(3), INTENT(IN) :: boxsize
+      real(KIND=rk), dimension(3), INTENT(IN) :: boxsize
       
       !Local 
-      real(kind=rk), dimension(3) :: r_a, r_b
+      real(KIND=rk), dimension(3) :: r_a, r_b
       integer,parameter :: rk=4              
       real,parameter :: r_ohc=1.21   ! rOH (1.1**2)
       real :: r ! distance between O and H.
@@ -551,10 +551,10 @@ END MODULE surf_traj
      ! INTEGER, INTENT(IN) :: ndx_oxygen_1, ndx_oxygen_2
      ! character(LEN=200),INTENT(IN) :: pos_filename        ! specific trajectory filename to analyz data
      ! INTEGER, INTENT(IN) :: natoms
-     ! real(kind=rk), dimension(3), INTENT(IN) :: boxsize
+     ! real(KIND=rk), dimension(3), INTENT(IN) :: boxsize
      ! 
      ! !Local 
-     ! real(kind=rk), dimension(3) :: r_a, r_b
+     ! real(KIND=rk), dimension(3) :: r_a, r_b
      ! integer,parameter :: rk=4              
      ! real,parameter :: r_ohc=1.21   ! rOH (1.1**2)
      ! real           :: r ! distance between O and H.
@@ -803,7 +803,7 @@ END MODULE surf_traj
       END FUNCTION grid_index
 
       LOGICAL FUNCTION pair_in_surf1(surf1_mol1,z1,surf1_mol2,z2,thickness)
-          REAL(kind=8), INTENT(IN) :: surf1_mol1,surf1_mol2
+          REAL(KIND=8), INTENT(IN) :: surf1_mol1,surf1_mol2
           REAL, INTENT(IN) :: z1,z2,thickness
           LOGICAL :: mol1_in_surf1, mol2_in_surf1
 
@@ -816,7 +816,7 @@ END MODULE surf_traj
       END FUNCTION pair_in_surf1    
 
       LOGICAL FUNCTION pair_in_surf2(surf2_mol1,z1,surf2_mol2,z2,thickness)
-          REAL(kind=8), INTENT(IN) :: surf2_mol1,surf2_mol2
+          REAL(KIND=8), INTENT(IN) :: surf2_mol1,surf2_mol2
           REAL, INTENT(IN) :: z1,z2,thickness
           LOGICAL :: mol1_in_surf2, mol2_in_surf2
 
@@ -830,7 +830,7 @@ END MODULE surf_traj
 
       LOGICAL FUNCTION mol_in_surf1(surf1_mol,z1,thickness)
           !Check if a molecule is in the surf1 ( the lower layer)
-          REAL(kind=8), INTENT(IN) :: surf1_mol
+          REAL(KIND=8), INTENT(IN) :: surf1_mol
           REAL, INTENT(IN) :: z1,thickness
           !LOGICAL :: mol_in_surf1
 
@@ -841,7 +841,7 @@ END MODULE surf_traj
 
       LOGICAL FUNCTION mol_in_surf2(surf2_mol,z2,thickness)
           !Check if a molecule is in the surf2 ( the upper layer)
-          REAL(kind=8), INTENT(IN) :: surf2_mol
+          REAL(KIND=8), INTENT(IN) :: surf2_mol
           REAL, INTENT(IN) :: z2,thickness
           !LOGICAL :: mol_in_surf2
 
@@ -850,35 +850,24 @@ END MODULE surf_traj
 
       END FUNCTION mol_in_surf2    
       
-      character(len=20) function str(k)
-          !  "Convert an integer to string."
-          integer, intent(in) :: k
+      CHARACTER(LEN=20) function str(k)
+          !  "Convert an integer/real to string."
+          REAL(KIND=8), INTENT(IN) :: k
           write (str, *) k
           str = adjustl(str)
       end function str
       
       FUNCTION nth(k, n )
-      !
-      ! Purpose:
-      !  To return a string containing the first N characters
-      !  of the alphabet.
-      !
-      !  Record of revisions:
-      !     Date        Programmer               Description of change
-      !     ====        ==========               =====================
-      !   2020-9-18     G. Huang                 Original code
-      !
-      IMPLICIT NONE
-      
-       ! Declaring calling parameters:
-       INTEGER, INTENT(IN) :: n            ! Length of string to return
-       CHARACTER(len=20), INTENT(IN) :: k  ! String which is adjustl-ed
-
-       CHARACTER(len=n) nth                ! Returned string
-       ! Declaring local variables:
-       
-       ! Get string to return
-       nth = k(1:n)
+          IMPLICIT NONE
+          
+          ! Declaring calling parameters:
+          INTEGER, INTENT(IN) :: n            ! Length of string to return
+          CHARACTER(len=20), INTENT(IN) :: k  ! String which is adjustl-ed
+          CHARACTER(len=n) nth                ! Returned string
+          ! Declaring local variables:
+          
+          ! Get string to return
+          nth = k(1:n)
       END FUNCTION nth
 
       END MODULE 

@@ -45,7 +45,7 @@
       !PARAMETERS
       !==========
       INTEGER,PARAMETER :: rk=8 ! local 
-
+      INTEGER, PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       CHARACTER(LEN=200),INTENT(INOUT) :: filename, pos_filename
       CHARACTER(LEN=200),INTENT(IN) :: list_filename
       INTEGER,INTENT(IN) :: criterion
@@ -75,7 +75,7 @@
       INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we DO not want to change too much
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i, j, k, jj 
-      CHARACTER(LEN=1) :: char_thickness ! for saving the thickness in the files' names
+      CHARACTER(LEN=d_len) :: char_thickness ! for saving the thickness in the files' names
       INTEGER :: index_mol1, index_mol2
       LOGICAL :: condition1, condition2
       !==============
@@ -94,6 +94,8 @@
       condition2 = .FALSE.
       norm_rr = 0.0 ! a temporary variable
       tmp = 0.0 ! a temporay variable 
+      char_thickness = ''
+
       !To obtain the total number of water pairs
       nwat = get_nwat(list_filename)
       ALLOCATE(ndx_1(nwat))          
@@ -271,7 +273,7 @@
      !Write the correlation
      !n_HB(t) for the interfacial HB (ihb)     
      !====================================
-      char_thickness = nth(str(nint(thickness)),1)
+      char_thickness = nth(str(nint(thickness)),d_len)
       OPEN(10,file=trim(filename)//'_wat_pair_hbacf_n_ihb_'//&
         char_thickness//'.dat')
         DO i = 1, nmo
@@ -279,18 +281,6 @@
         ENDDO
         WRITE(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_n_ihb_'//char_thickness//'.dat'
-      CLOSE(10)
-     !=====================
-     !Write the correlation
-     !ln(n_HB(t))     
-     !=====================
-      OPEN(10,file=trim(filename)//'_wat_pair_hbacf_log_n_ihb_'//&
-        char_thickness//'.dat')
-        DO i = 1, nmo
-            WRITE(10,*) REAL(i-1)*delta_t, log(corr_n(i))
-        ENDDO
-        WRITE(6,*)'written in '//trim(filename)//&
-                  '_wat_pair_hbacf_log_n_ibh_'//char_thickness//'.dat'
       CLOSE(10)
      !===========
      ! Print <h>      
