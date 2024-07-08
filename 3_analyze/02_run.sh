@@ -1,4 +1,5 @@
 # 1. Calculate C2(t_f).
+
 # Extract C2(t_f) from files `c2_${i}.dat`, where t_f = 0, 1, 2,... ps.
 # ns = 1, dt = 0.04 ps, unit = 1 ps, rows = unit/(dt*ns)
 rowNum=25

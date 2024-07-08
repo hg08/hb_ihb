@@ -1,3 +1,5 @@
+# Calculate k, k_prime
+
 mkdir -p output
 rm -f *png
 for scenario in 1_case1 2_case2;
