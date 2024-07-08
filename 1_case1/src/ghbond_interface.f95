@@ -18,8 +18,8 @@
       !========================
       !Parameters and variables
       !========================
-      character(LEN=200),INTENT(IN) :: filename            ! specific filename to analyz data
-      character(LEN=200),INTENT(INOUT) :: list
+      CHARACTER(LEN=200),INTENT(IN) :: filename            ! specific filename to analyz data
+      CHARACTER(LEN=200),INTENT(INOUT) :: list
       INTEGER,INTENT(IN) :: nmo ! steps of trajectory
       INTEGER,INTENT(IN) :: nat ! number of atoms
       !To save the indices of the molecules for generating list file, we define an array for each time point (jj, in this code)
@@ -28,8 +28,8 @@
       ! Local variables
       INTEGER,PARAMETER :: step=100 ! The parameter 'step' should not be too small, otherwise, you will waste your time on many repeated calculation. 
                                     ! Here, 100 means : "We select the molecules in interface every 100*ns steps."
-      integer :: i,n,m1,m2,i1,i2,jj
-      integer,dimension (nat) :: ndx_O
+      INTEGER :: i,n,m1,m2,i1,i2,jj
+      INTEGER,DIMENSION (nat) :: ndx_O
      
       !Initialization
       ndx_O=0;n=0
@@ -39,7 +39,7 @@
       !====================================================
       list=trim(filename)//'_O_in_interface_list.dat'
       ! DO NOT USE "status='NEW' ".
-      open(20,file=list, STATUS='REPLACE', ACTION='WRITE') ! Set the status to 'REPLACE', otherwise, the compiler can not find this file.
+      OPEN(20,file=list, STATUS='REPLACE', ACTION='WRITE') ! Set the status to 'REPLACE', otherwise, the compiler can not find this file.
       
       !DO-LOOP on each row of the indx array 'arr'
       ROW: DO jj=1,nmo,step  ! start, end [, step]

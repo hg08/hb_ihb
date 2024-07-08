@@ -1,7 +1,7 @@
   !REAL(KIND=8) FUNCTION distance2(r1,r2,boxsize)
   !    IMPLICIT NONE
   !    !NOTICE: This function is totally WRONG, I used this function before Mar. 24, 2021.!!
-  !    integer, parameter :: rk=8  
+  !    INTEGER, PARAMETER :: rk=8  
   !    real(kind=rk), DIMENSION(3), INTENT(IN) :: r1,r2
   !    real(kind=rk), DIMENSION(3), INTENT(IN) :: boxsize
   !    REAL(kind=rk) :: dx,dy,dz
@@ -83,7 +83,7 @@
   
   REAL(kind=8) FUNCTION pm_adh(r1,r2,r3,boxsize)
       IMPLICIT NONE
-      integer, parameter :: rk=8  
+      INTEGER, PARAMETER :: rk=8  
       real(kind=rk), DIMENSION(3), INTENT(IN) :: r1,r2,r3
       real(kind=rk), DIMENSION(3), INTENT(IN) :: boxsize 
       REAL(kind=rk) :: diff_axis
@@ -97,7 +97,7 @@
 
   REAL(kind=8) FUNCTION pm_ahd(r1,r2,r3,boxsize)
       IMPLICIT NONE
-      integer, parameter :: rk=8  
+      INTEGER, PARAMETER :: rk=8  
       REAL(kind=rk), DIMENSION(3), INTENT(IN) :: r1,r2,r3
       REAL(kind=rk), DIMENSION(3), INTENT(IN) :: boxsize 
       REAL(kind=rk) :: diff_axis
@@ -167,7 +167,7 @@
                        y(iatom,imovie),z(iatom,imovie)
               if (trim(atom_type(iatom)) .eq. 'O') then
                   i=i+1
-                  get_ndx_of_oxygen(i) = iatom ! ONCE, I write imovie here. This mistake leads to obvious errors in the results （失之毫厘谬以千里）
+                  get_ndx_of_oxygen(i) = iatom 
               endif
           enddo
       enddo
@@ -456,7 +456,7 @@
       allocate(ndx_H(i_H)) ! this should be put after i_H is defined
       !allocate(ndx_I(i_I)) ! this should be put after i_I is defined
       i=0; ii=0; jj=0
-      write(*,*) "pos_filenae:",pos_filename
+      !write(*,*) "pos_filenae:",pos_filename
       open(10,file=trim(pos_filename))
       REWIND(10)     
       read(10,*) !Neglect data of this line. Be careful, the two 'read' lines must be located before the 'do iatom=1,natoms' loop, otherwise, there will be an error.
@@ -467,11 +467,11 @@
           if (trim(atom_type(iatom)) .eq. 'O') then
                  ndx_O(i+1)=iatom
                  i=i+1      
-                 write(*,*) "iatom:(test O) ", iatom
+                 !write(*,*) "iatom:(test O) ", iatom
           elseif(trim(atom_type(iatom)) .eq. 'H') then
                  ndx_H(ii+1)=iatom
                  ii=ii+1
-                 write(*,*) "iatom:(test) ", iatom
+                 !write(*,*) "iatom:(test) ", iatom
           else
           endif
       enddo 
@@ -487,8 +487,8 @@
       do j =1, 1 ! Consider one step
           do ii=1,i_H 
               m3=ndx_H(ii)
-              write(*,*) "i_H: ", i_H
-              write(*,*) "m3: ", m3
+              !write(*,*) "i_H: ", i_H
+              !write(*,*) "m3: ", m3
               ! I use pbc to consider the distance r
               r_a= (/x(m2,j),y(m2,j),z(m2,j)/)  ! Coordinate of O2
               r_b = (/x(m3,j),y(m3,j),z(m3,j)/) ! Coordinate of H
@@ -622,7 +622,7 @@
 
   LOGICAL FUNCTION oh_in_surf1(surf1_mol1,z1,thickness)
       implicit none
-      integer, parameter :: rk=8
+      INTEGER, PARAMETER :: rk=8
       LOGICAL :: mol1_in_surf1
       REAL(kind=rk), INTENT(IN) :: surf1_mol1
       REAL(kind=rk), INTENT(IN) :: thickness
@@ -634,7 +634,7 @@
 
   LOGICAL FUNCTION oh_in_surf2(surf2_mol1,z1,thickness)
       implicit none
-      integer, parameter :: rk=8
+      INTEGER, PARAMETER :: rk=8
       LOGICAL :: mol1_in_surf2
       REAL(kind=rk), INTENT(IN) :: surf2_mol1
       REAL(kind=rk), INTENT(IN) :: thickness
@@ -646,7 +646,7 @@
 
   LOGICAL FUNCTION pair_in_surf1(surf1_mol1,z1,surf1_mol2,z2,thickness)
       implicit none
-      integer, parameter :: rk=8
+      INTEGER, PARAMETER :: rk=8
       LOGICAL :: mol1_in_surf1, mol2_in_surf1
       REAL(kind=rk), INTENT(IN) :: surf1_mol1,surf1_mol2
       REAL(kind=rk), INTENT(IN) :: thickness
@@ -660,7 +660,7 @@
 
   LOGICAL FUNCTION pair_in_surf2(surf2_mol1,z1,surf2_mol2,z2,thickness)
       implicit none
-      integer, parameter :: rk=8
+      INTEGER, PARAMETER :: rk=8
       LOGICAL :: mol1_in_surf2, mol2_in_surf2
       REAL(kind=rk), INTENT(IN) :: surf2_mol1,surf2_mol2
       REAL(kind=rk), INTENT(IN) :: thickness
@@ -675,7 +675,7 @@
   LOGICAL FUNCTION mol_in_surf1(surf1_mol,z1,thickness)
       !Check if a molecule is in the surf1 ( the lower layer)
       implicit none
-      integer, parameter :: rk=8
+      INTEGER, PARAMETER :: rk=8
       REAL(kind=rk), INTENT(IN) :: surf1_mol
       REAL(kind=rk), INTENT(IN) :: thickness
       REAL(kind=rk), INTENT(IN) :: z1
@@ -685,7 +685,7 @@
   LOGICAL FUNCTION mol_in_surf2(surf2_mol,z2,thickness)
       !Check if a molecule is in the surf2 ( the upper layer)
       implicit none
-      integer, parameter :: rk=8
+      INTEGER, PARAMETER :: rk=8
       REAL(kind=rk), INTENT(IN) :: surf2_mol
       REAL(kind=rk), INTENT(IN) :: thickness
       REAL(kind=rk), INTENT(IN) :: z2
@@ -727,7 +727,7 @@
       INTEGER, INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
       INTEGER, INTENT(IN) :: ns ! Get one sample from the trajectory every ns step.
 
-      write(*,*) 'In function sampling_number: nmo_end = ', nmo_end
+      !write(*,*) 'In function sampling_number: nmo_end = ', nmo_end
       ! no. of samples = INT({no. of moves}/ns)
       positive: IF (nmo_end <0 .OR. nmo_start < 0 .OR. ns <0) THEN
         write(*,*) 'Please enter non-negative values for the ns, starting step and ending step.'
@@ -746,7 +746,7 @@
       USE module_ihb, ONLY: atom
       IMPLICIT NONE
 
-      integer, parameter :: rk=8
+      INTEGER, PARAMETER :: rk=8
 
       CHARACTER(LEN=4) :: head_char
       INTEGER :: iatom, i_sample
@@ -762,7 +762,7 @@
       INTEGER :: y
       
       i_sample = 1
-      write(*,*) "In utilities.f95, read_traj(): New total time steps (n_samples):", n_samples
+      !write(*,*) "In utilities.f95, read_traj(): New total time steps (n_samples):", n_samples
       DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
           read(indx, '(1X,A4)') head_char  ! for some other format, one can use this format
           PRE_CHECK:IF (head_char=="i = ") THEN
@@ -809,7 +809,7 @@
       USE module_ihb, ONLY: sphere
       IMPLICIT NONE
 
-      integer, parameter :: rk=8
+      INTEGER, PARAMETER :: rk=8
 
       CHARACTER(LEN=4) :: head_char
       INTEGER :: iatom, i_sample
@@ -825,7 +825,7 @@
       INTEGER :: y
       
       i_sample = 1
-      write(*,*) "In utilities.f95, read_traj_sphere(): New total time steps (n_samples):", n_samples
+      !write(*,*) "In utilities.f95, read_traj_sphere(): New total time steps (n_samples):", n_samples
       DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
           read(indx, '(1X,A4)') head_char  ! for some other format, one can use this format
           PRE_CHECK:IF (head_char=="i = ") THEN
@@ -835,7 +835,7 @@
                   !-------------------------------------------------------------------------------------------------------
                   !We use y>nmo_start-1, because we want to consider the first step 'i=0'
                   !-------------------------------------------------------------------------------------------------------
-                  WRITE(*,*)"read_traj():", head_char, y
+                  !WRITE(*,*)"read_traj():", head_char, y
                   BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                   read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
                   130 FORMAT (1X,4X,I8,9X,F12.3,6X,F20.10)

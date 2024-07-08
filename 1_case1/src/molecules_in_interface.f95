@@ -36,7 +36,6 @@
         !==============
         !Initialization
         !==============
-        !index_mol=0
         condition1=.FALSE.
         condition2=.FALSE.
         
@@ -56,18 +55,14 @@
               ! Check if the molecue is located in one of the interfaces 
               index_mol = grid_index(atom_info(m,jj)%coord(1), &
                   atom_info(m,jj)%coord(2),divx,divy,nb_divx,nb_divy) 
-              WRITE(*,*) "[molecules_in_interface_v3()] index_mol = ",index_mol
+              !WRITE(*,*) "[molecules_in_interface_v3()] index_mol = ",index_mol
               !For surf 1
-              write(*,*)"test a :"
-              write(*,*) "thickness = ", thickness
-              write(*,*) "surf_info(1,index_mol,jj)",surf_info(1,index_mol,jj)
-              write(*,*)"test b :"
               condition1 = mol_in_surf1(surf_info(1,index_mol,jj),&
                   atom_info(m,jj)%coord(3), thickness ) 
               !For surf 2 
               condition2 = mol_in_surf2(surf_info(2,index_mol,jj),&
                   atom_info(m,jj)%coord(3), thickness ) 
-              WRITE(*,*) condition1, condition2 
+              !WRITE(*,*) condition1, condition2 
 
               !If the atom is in either surf1 or surf2
               IF (condition1 .OR. condition2) THEN
@@ -82,4 +77,4 @@
 
         ENDDO MOLECULE 
         
-      END SUBROUTINE 
+      END SUBROUTINE

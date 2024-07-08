@@ -17,14 +17,14 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
   INTEGER,INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
   REAL(kind=8),DIMENSION(2,n_grid,n_samples),INTENT(INOUT) :: surf_info
   CHARACTER(LEN=4) :: head_char
-  character(LEN=200) :: surf_filename
+  CHARACTER(LEN=200) :: surf_filename
   INTEGER :: y
   INTEGER, PARAMETER :: indx = 20
 
 
   open(indx,FILE=surf_filename,STATUS='OLD',ACTION='READ',IOSTAT=ierror)
       ! TESTING
-      write(*,*) "read_surf_traj(): New total time steps (n_samples):", n_samples
+      !write(*,*) "read_surf_traj(): New total time steps (n_samples):", n_samples
 
       i_sample = 1
       !DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
@@ -37,7 +37,7 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
               !WRITE(*, '(A14,A4,I5)') "head_char, y: ", head_char, y
               !WRITE(*,*) "Catched:(y-nmo_start)/ns ", head_char, FLOOR(FLOAT(y-nmo_start)/FLOAT(ns))
               CHECK_HEAD: IF (head_char=="i = " .AND. (y>nmo_start .and. y<nmo_end+1) .AND. MOD(y-nmo_start,ns)==0 ) THEN
-                  WRITE(*,*)"read_traj():", head_char, y
+                  !WRITE(*,*)"read_traj():", head_char, y
                   BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                   READ(indx,*) ! skip one line in the unit=indx
                   inner: do i_grid= 1, n_grid
