@@ -37,7 +37,7 @@ max_dist2_no = max_dist_no**2  #Maximal lengh of the O-N
 # Calculate the density associated with one O on a grid point (x,y,z) is atomic coordinate.
 # PBC are taken into account
 # If distance higher than 3xi we do not take it into account
-# Why we need range_x,...? Because we need consider the contribution of Atoms in radius of 3xi on density 
+# We need range_x,..., because we need consider the contribution of Atoms in radius of 3xi on density 
 # range_x,...: Nr. of periods of a,...
 def density(x,y,z,a,b,c,range_x,range_y,range_z): 
     """The O atom and its image's contribution on the density rho(x,y,z) at point (x,y,z). 
@@ -86,7 +86,6 @@ def grid(nb_divx,nb_divy,nb_divz):
 def rho_on_grid(rho_nd,vertice):
     #Sum over all the O, because every O atom contributes to the density at one grid (i,j,k).
     for at in range(nb_atoms):
-        #if lsymb[at].number == 8 or lsymb[at].number == 7: # Only the O and N are selected
         if lsymb[at].number > 1 : # Only large atoms are selected
             rho_nd[vertice[0],vertice[1],vertice[2]] += density(lx[at]-(vertice[0]+0.5)*divx, ly[at]-(vertice[1]+0.5)*divy, lz[at]-(vertice[2]+0.5)*divz, a, b, c, range_x, range_y, range_z)
     rho_nd[vertice[0], vertice[1], vertice[2]] *= norm
@@ -327,9 +326,9 @@ for s in range(0,nb_steps,ns):
                     file_o.write("\n")
 
         #print("rho from list:{}".format(rho)) 
-        print("The 1000-th element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10 -1]))
-        print("The 1001-st element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10]))
-        print("The 1002nd element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10 +1]))
+        #print("The 1000-th element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10 -1]))
+        #print("The 1001-st element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10]))
+        #print("The 1002nd element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10 +1]))
 
         #==============
         # parallel code
@@ -357,15 +356,15 @@ for s in range(0,nb_steps,ns):
         
             # Check the rho_nd
             #print(grid(nb_divx,nb_divy,nb_divz))
-            print("rho from parallel code :{}".format(rho_nd))
-            print("The first element of rho_nd:{}".format(rho_nd[10,10,10]))
+            #print("rho from parallel code :{}".format(rho_nd))
+            #print("The first element of rho_nd:{}".format(rho_nd[10,10,10]))
 
         #====================
         #Determine isosurface
         #====================
         if n_axis==0:
             surf1=[0]*nb_divy*nb_divz # Initialization of the list associated with the perpendicular plane; 
-                                      # Usually, we can express surf1 at a certain time as an array, but here Remi and Gang choose list to store surf1.
+                                      # Usually, we can express surf1 at a certain time as an array, but here we choose list to store surf1.
             surf2=[0]*nb_divy*nb_divz
             # For each point of this plane, the point where the reference density is reached is calculated (and stored inside surf1 surf2)
             for j in range(nb_divy):
@@ -377,7 +376,7 @@ for s in range(0,nb_steps,ns):
                     file_o2.write(" {0:5d} {1:5d}{2:12.6f} {3:12.6f}\n".format(j,k,surf1_nd[s,j,k], surf2_nd[s,j,k])) 
                     #print(start_inc, step_inc, end_inc)
                     #print(surf1[inc])
-        elif n_axis ==1:
+        elif n_axis==1:
             surf1=[0]*nb_divx*nb_divz
             surf2=[0]*nb_divx*nb_divz
             for i in range(nb_divx):

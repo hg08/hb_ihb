@@ -13,15 +13,14 @@ PROGRAM main_interface
 
   !==========
   !parameters
-  !==========
-  !integer, parameter :: rk=8              
+  !==========             
 
   ! The array atom_info can be shared by subroutines  
   TYPE(atom), ALLOCATABLE, DIMENSION(:,:) :: atom_info
   !To declear data for calculating the total time cosummed.
-  integer :: begin_time,end_time,rat
+  INTEGER :: begin_time,end_time,rat
   !To declare data to share between routines.
-  character(LEN=200) :: sampled_pos_filename
+  CHARACTER(LEN=200) :: sampled_pos_filename
   INTEGER, ALLOCATABLE, DIMENSION(:) :: sampled_movie
   REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time, sampled_energy
   ! For griding
@@ -34,15 +33,15 @@ PROGRAM main_interface
 
   CHARACTER(LEN=2) :: atom_type
   REAL(KIND=rk), dimension(3) :: boxsize
-  integer :: criterion
+  INTEGER :: criterion
   REAL(kind=rk) :: delta_t0 ! For reading data
-  character(LEN=200) :: filename
+  CHARACTER(LEN=200) :: filename
   CHARACTER(LEN=2) :: guest_atom
   CHARACTER(LEN=2) :: host_atom
   INTEGER :: i, iatom, imovie
   !To save the indices of the molecules for generating list file, we define an array for each time point (jj, in this code)
   INTEGER, ALLOCATABLE, DIMENSION(:,:) :: indx_array
-  character(LEN=200) :: list_oxygen_pairs
+  CHARACTER(LEN=200) :: list_oxygen_pairs
   INTEGER :: nat ! number of atoms
   INTEGER :: nmo_start ! starting step index
   INTEGER :: nmo_end ! end step index
@@ -51,8 +50,8 @@ PROGRAM main_interface
   INTEGER :: ns_2nd
   INTEGER :: n_samples ! n_samples = INT(nmo/ns)
   INTEGER :: nwat ! number of water molecules
-  character(LEN=200) :: surf_filename
-  character(LEN=200) :: pos_filename
+  CHARACTER(LEN=200) :: surf_filename
+  CHARACTER(LEN=200) :: pos_filename
   
   !==============
   !Initialization
@@ -71,7 +70,7 @@ PROGRAM main_interface
   thickness=1.d0
   ns_2nd = 1
 
-  call system_clock(begin_time,rat) !To get the starting time
+  CALL system_clock(begin_time,rat) !To get the starting time
   
   !============================================
   ! To read the required controlling parameters
@@ -81,10 +80,10 @@ PROGRAM main_interface
 
   ! Obatin n_samples
   n_samples = sampling_number(nmo_start, nmo_end,ns)
-  allocate(sampled_movie(n_samples))
-  allocate(sampled_time(n_samples))
-  allocate(sampled_energy(n_samples))
-  allocate(atom_info(nat,n_samples))
+  ALLOCATE(sampled_movie(n_samples))
+  ALLOCATE(sampled_time(n_samples))
+  ALLOCATE(sampled_energy(n_samples))
+  ALLOCATE(atom_info(nat,n_samples))
  
   !========================
   ! Sampling the trajectory
@@ -102,14 +101,14 @@ PROGRAM main_interface
   !====================
   !read surf trajectory
   !====================
-  allocate(surf_info(2,n_grid,n_samples))
+  ALLOCATE(surf_info(2,n_grid,n_samples))
   surf_info = 0
   !write(*,*) "SHAPE(surf_info)= ", SHAPE(surf_info)
   ns_2nd = 1 ! sample freq is 1, ie., all data are sampled
   CALL read_surf_traj(surf_filename,nmo_start,nmo_end,ns_2nd,n_grid,n_samples,surf_info)
   
   ! Use array instead of linked list, it may be faster. 
-  allocate(indx_array(n_samples,nat))
+  ALLOCATE(indx_array(n_samples,nat))
   indx_array = 0
 
   CALL molecules_in_interface(n_samples,nat,indx_array,atom_info,&
@@ -130,6 +129,6 @@ PROGRAM main_interface
                     nb_divz,thickness,surf_info)
 
   call system_clock(end_time,rat)
-  write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
+  WRITE(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
 
-END PROGRAM main_interface 
+END PROGRAM main_interface
