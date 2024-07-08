@@ -39,7 +39,7 @@
       !PARAMETERS
       !==========
       INTEGER,PARAMETER :: rk=8 ! local 
-
+      INTEGER,PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       CHARACTER(LEN=200),INTENT(INOUT) :: filename, pos_filename
       CHARACTER(LEN=200),INTENT(IN) :: list_filename
       INTEGER,INTENT(IN) :: criterion
@@ -66,10 +66,10 @@
       INTEGER,DIMENSION(4) :: ndx_3_list
       REAL(KIND=rk) :: scalar, sq, tmp 
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: hb_exist
-      INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we do not want to change too much
+      INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we DO not want to change too much
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i, j, k, jj 
-      CHARACTER(LEN=1) :: char_thickness ! for saving the thickness in the files' names
+      CHARACTER(LEN=d_len) :: char_thickness ! for saving the thickness in the files' names
       INTEGER :: index_mol1, index_mol2
       LOGICAL :: condition1, condition2
 
@@ -89,19 +89,19 @@
       condition2 = .FALSE.
       norm_rr = 0.0 ! a temporary variable
       tmp = 0.0 ! a temporay variable 
+      char_thickness = ''
 
       !To obtain the total number of water pairs
       nwat=get_nwat(list_filename)
-      WRITE(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
       allocate(ndx_1(nwat))          
       allocate(ndx_2(nwat))          
       !============================
       !read data from the list file
       !============================
-      open(10, file=list_filename)     
-      do k = 1, nwat
+      OPEN(10, file=list_filename)     
+      DO k = 1, nwat
           read(10,*)ndx_1(k), ndx_2(k)
-      enddo
+      ENDDO
       close(10)
       !============================
 
@@ -134,25 +134,21 @@
       !=============
       !The main loop
       !=============      
-      kLOOP: do k = 1, nwat
+      kLOOP: DO k = 1, nwat
         qj = 0
         nqj = 0 ! The number of bonded times for k-th form of quasi-HB 
         m1 = ndx_1(k)
         m2 = ndx_2(k)
-        !WRITE(*,*) "ghbacf_c: pos_filename: ", pos_filename
         ndx_3_list = h_ndx_list(ndx_1(k), ndx_2(k), pos_filename, nat, boxsize)
-        !WRITE(*,*) "The ",k,"-th pair: ndx_of H (1st,2nd,3rd,4th):", & 
-        !    ndx_3_list(1), ndx_3_list(2), ndx_3_list(3), ndx_3_list(4)
         ! Calculate h(j)
         ! A LOOP on ndx_3_list
-        TIME: do jj = 1, nmo
+        TIME: DO jj = 1, nmo
           h(jj) = 0.0
           hb_exist(jj) = .False.
 
           ! Check if the pairs are located in one of the interfaces 
           index_mol1 = grid_index(atom_info(m1,jj)%coord(1), &
               atom_info(m1,jj)%coord(2),divx,divy,nb_divx) 
-          !WRITE(*,*) "index_mol1 = ",index_mol1
           index_mol2 = grid_index(atom_info(m2,jj)%coord(1), &
               atom_info(m2,jj)%coord(2),divx,divy,nb_divx) 
 
@@ -167,7 +163,6 @@
               atom_info(m1,jj)%coord(3), &
               surf_info(index_mol2,jj)%coord(2), &
               atom_info(m2,jj)%coord(3),thickness ) 
-          !WRITE(*,*) condition1, condition2 
 
           !This condition is the additional condition for the establishment 
           ! of interface hydrogen bonds, which is the core of this method. 
@@ -177,14 +172,12 @@
                   m3 = ndx_3_list(j)
                   r1 = (/atom_info(m1,jj)%coord(1),atom_info(m1,jj)%coord(2),&
                          atom_info(m1,jj)%coord(3) /)
-                  !WRITE(*,*) "r1", r1
                   r2 = (/atom_info(m2,jj)%coord(1),atom_info(m2,jj)%coord(2),&
                          atom_info(m2,jj)%coord(3) /)
-                  !r2 = (/x(m2,jj),y(m2,jj),z(m2,jj)/)
                   r3 = (/atom_info(m3,jj)%coord(1),atom_info(m3,jj)%coord(2),&
                          atom_info(m3,jj)%coord(3) /)
                   r21 = dist2(r1, r2, boxsize) 
-                  if (criterion == 1) then
+                  if (criterion == 1) THEN
                       r23 = dist2(r3, r2, boxsize) 
                       r13 = dist2(r3, r1, boxsize) 
                       pm = pmADH(r1,r2,r3,boxsize)  ! if H is bound to O2
@@ -194,15 +187,14 @@
                       cosphi_= pm_/norm_rr
                       if ((r21 .lt. rooc).and. ( (cosphi .gt. cosPhiC123) .or. &
                           (cosphi_ .gt. cosPhiC123) )                      &
-                         ) then
-                          !WRITE(*,*) "# of HB along time: ", qj+1    
+                         ) THEN
                           h(jj) = 1.0 
                           hb_exist(jj) = .True.
                           qj = qj + h(jj) ! To calculate ave population of HB over all starting points for one pair of water                           
                           nqj = nqj + 1
-                          EXIT ! if we know that two pair of molecule is bonded at frame jj, then we go to check the next frame (jj+1)
-                      endif
-                  elseif (criterion == 2) then
+                          EXIT ! if we know that two pair of molecule is bonded at frame jj, THEN we go to check the next frame (jj+1)
+                      ENDIF
+                  elseif (criterion == 2) THEN
                       !Follow the second cirterion of HB.
                       r31 = dist2(r1,r3,boxsize) 
                       r32 = dist2(r2,r3, boxsize) 
@@ -211,17 +203,17 @@
 
                       !Follow the scond criterion of HB.
                       !-0.5 comes from cos(2pi/3)
-                      if (r21 .lt. rooc .and. cosphi .lt. cosPhiC132) then 
+                      if (r21 .lt. rooc .and. cosphi .lt. cosPhiC132) THEN 
                           h(jj) = 1.0 
                           hb_exist(jj) = .True.
                           qj = qj + h(jj) ! To calculate ave population of HB over all starting points for one pair of water                           
                           nqj = nqj + 1
-                          EXIT ! if we know that two pair of molecule is bonded at frame jj, then we go to check the next frame (jj+1)
-                      endif
-                   endif
+                          EXIT ! if we know that two pair of molecule is bonded at frame jj, THEN we go to check the next frame (jj+1)
+                      ENDIF
+                   ENDIF
                END DO HYDROGEN
            ENDIF
-        enddo TIME 
+        ENDDO TIME 
         hb(k) = qj 
         nhb_exist(k) = nqj
         tot_hb = tot_hb + qj
@@ -229,74 +221,59 @@
         !==========================================
         !Calcualte the correlation function C_HB(t)
         !==========================================
-        if (hb(k) > hb_min) then
-            do mt = 0, nmo-1 ! time interval
+        if (hb(k) > hb_min) THEN
+            DO mt = 0, nmo-1 ! time interval
                 scalar = 0.d0
                 sq = 0.d0 ! For calculate the square of correlation at each time, ie., mt.
-                !do j=1,nmo-mt-1
-                do j = 1, nmo-mt
+                !DO j=1,nmo-mt-1
+                DO j = 1, nmo-mt
                     tmp = h(j)*h(j+mt)
                     scalar = scalar + tmp 
                     sq = sq + tmp**2  
-                enddo
+                ENDDO
                 !scalar=scalar/(nmo-mt) ! You can not use this line, because we have to calculate the average later 
                 corr_h(mt+1) = corr_h(mt+1) + scalar !sum_C_k(t)
                 sq_corr_h(mt+1) = sq_corr_h(mt+1) + sq !sum_C^2_k(t)
-            enddo
-        endif
-      enddo kLOOP   
+            ENDDO
+        ENDIF
+      ENDDO kLOOP   
       deallocate(hb_exist,nhb_exist)
       hb_per_frame = tot_hb/REAL(nmo,rk)
-      WRITE(*,*) "Total H-bonds exists in history: ", tot_hb
       ave_h = hb_per_frame/REAL(nwat,rk) 
-      WRITE(*,*) "hb per frame:", hb_per_frame
-      WRITE(*,*) "<h> =", ave_h
       !=========================================
       !Calculate the number of ever bonded pairs
       !=========================================
       n_bonded_pairs = 0 
-      do k = 1, nwat
-          if (hb(k)>hb_min) then
+      DO k = 1, nwat
+          IF (hb(k)>hb_min) THEN
               n_bonded_pairs = n_bonded_pairs + 1      
-          endif
-      enddo
+          ENDIF
+      ENDDO
       !==============================
       !Normalization of C_HB(t) step1
       !==============================
-      do mt = 0, nmo-1 ! time interval
+      DO mt = 0, nmo-1 ! time interval
           corr_h(mt+1) = corr_h(mt+1) / ((nmo-mt)*nwat*ave_h)
           sq_corr_h(mt+1)=SQRT(sq_corr_h(mt+1) / ((ave_h**2)*(nmo-mt)*nwat) - corr_h(mt+1)**2) / SQRT(REAL((nmo-mt)*nwat,rk))
-      enddo
+      ENDDO
       deallocate(x, y, z, ndx_1, ndx_2)          
      !===================================
      !Write the correlation
      !C_HB(t) for the iterfacial HB (ihb)    
      !===================================
-      char_thickness = nth(str(nint(thickness)),1)
-      open(10,file=trim(filename)//'_wat_pair_hbacf_h_ihb_' &
+      char_thickness = nth(str(nint(thickness)),d_len)
+      OPEN(10,file=trim(filename)//'_wat_pair_hbacf_h_ihb_' &
         //char_thickness//'.dat')
-        do i =1, nmo
+        DO i =1, nmo
             WRITE(10,*) REAL(i-1, rk) * delta_t, corr_h(i), sq_corr_h(i)
-        enddo
+        ENDDO
         WRITE(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_h_ihb_'//char_thickness//'.dat'
-      close(10)
-     !=====================
-     !Write the correlation
-     !ln(C_HB(t))     
-     !=====================
-      open(10,file=trim(filename)//'_wat_pair_hbacf_log_h_ihb_'//&
-        char_thickness//'.dat')
-        do i=1,nmo
-            WRITE(10,*) REAL(i-1) * delta_t, log(corr_h(i))
-        enddo
-        WRITE(6,*)'written in '//trim(filename)//&
-                  '_wat_pair_hbacf_log_h_ihb_'//char_thickness//'.dat'
       close(10)
      !===========
      ! Print <h>      
      !===========      
-      open(10,file=trim(filename)//'_wat_pair_ave_h_ihb_'//&
+      OPEN(10,file=trim(filename)//'_wat_pair_ave_h_ihb_'//&
         char_thickness//'.dat')
         WRITE(10,*) 'Ave. No. bonds:', hb_per_frame
         WRITE(10,*) '<h>:', ave_h

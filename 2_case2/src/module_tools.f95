@@ -735,33 +735,33 @@
       
       character(len=20) function str(k)
           !  "Convert an integer to string."
-          integer, intent(in) :: k
+          INTEGER, INTENT(IN) :: k
           write (str, *) k
           str = adjustl(str)
       end function str
       
       FUNCTION nth(k, n )
-      !
-      ! Purpose:
-      !  To return a string containing the first N characters
-      !  of the alphabet.
-      !
-      !  Record of revisions:
-      !     Date        Programmer               Description of change
-      !     ====        ==========               =====================
-      !   2020-9-18     G. Huang                 Original code
-      !
-      IMPLICIT NONE
-      
-       ! Declaring calling parameters:
-       INTEGER, INTENT(IN) :: n            ! Length of string to return
-       CHARACTER(len=20), INTENT(IN) :: k  ! String which is adjustl-ed
+          !
+          ! Purpose:
+          !  To return a string containing the first N characters
+          !  of the alphabet.
+          !
+          !  Record of revisions:
+          !     Date        Programmer               Description of change
+          !     ====        ==========               =====================
+          !   2020-9-18     G. Huang                 Original code
+          !
+          IMPLICIT NONE
+          
+          ! Declaring calling parameters:
+          INTEGER, INTENT(IN) :: n            ! Length of string to return
+          CHARACTER(len=20), INTENT(IN) :: k  ! String which is adjustl-ed
 
-       CHARACTER(len=n) nth                ! Returned string
-       ! Declaring local variables:
-       
-       ! Get string to return
-       nth = k(1:n)
+          CHARACTER(len=n) nth                ! Returned string
+          ! Declaring local variables:
+          
+          ! Get string to return
+          nth = k(1:n)
       END FUNCTION nth
 
       END MODULE 
