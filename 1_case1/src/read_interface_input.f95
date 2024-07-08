@@ -43,9 +43,6 @@ SUBROUTINE read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start
   !WRITE(6,*)'What is the size of box (a,b,c):'
   READ(*,'(a)') line
   if (len_trim(line)==0) then
-      !boxsize(1) = 5.316
-      !boxsize(2) = 5.316
-      !boxsize(3) = 5.316
       boxsize(1) = 5.32d0
       boxsize(2) = 5.32d0
       boxsize(3) = 5.32d0
@@ -124,8 +121,8 @@ SUBROUTINE read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start
     criterion = 1
   ELSE
     READ(line, *, iostat = ierr) criterion
-    WRITE(*,*) "HB criterion: ", criterion
-    WRITE(*,*) "criterion 1 denote ADH and 2 denotes AHD definition. "
+    !WRITE(*,*) "HB criterion: ", criterion
+    !WRITE(*,*) "criterion 1 denote ADH and 2 denotes AHD definition. "
   ENDIF  
 
   !WRITE(6,*)'What is the name of the surface trajectory file:' 
@@ -134,7 +131,7 @@ SUBROUTINE read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start
     surf_filename = "surf_traj.dat"
   ELSE
     READ(line, *, iostat = ierr) surf_filename
-    WRITE(*,*) "surf traj. name: ", surf_filename
+    !WRITE(*,*) "surf traj. name: ", surf_filename
   ENDIF  
 
   !WRITE(6,*)'What is the thickness of the interface you want to define: (Angstrom)' 
@@ -143,8 +140,6 @@ SUBROUTINE read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start
     thickness = 3.d0
   ELSE
     READ(line, *, iostat = ierr) thickness
-    !WRITE(*,*) "READ thickness: ", thickness
-    !WRITE(*,*) "READ thickness: ", thickness
     !WRITE(*,*) "READ thickness: ", thickness
   ENDIF  
 

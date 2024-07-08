@@ -14,7 +14,7 @@
       ! huang gang
       !============
 
-      implicit none
+      IMPLICIT NONE
       !========================
       !Parameters and variables
       !========================
@@ -48,21 +48,21 @@
         !Calculate the number of O atoms in this time jj
         !===============================================
         n=0
-        do i=1,nat
-          if (ndx_O(i)>0) then
+        DO i=1,nat
+          IF (ndx_O(i)>0) THEN
              n=n+1
-          endif
-        enddo
+          ENDIF
+        ENDDO
 
-        do i1=1,n-1 ! No O atom can not be bonded to itself 
+        DO i1=1,n-1 ! No O atom can not be bonded to itself 
           m1=ndx_O(i1)
-          do i2=i1+1,n 
+          DO i2=i1+1,n 
             m2=ndx_O(i2)
-            write(20,*) m1,m2
-          enddo
-        enddo
+            WRITE(20,*) m1,m2
+          ENDDO
+        ENDDO
       ENDDO ROW
 
-      close(20)
+      CLOSE(20)
       !====================
       END SUBROUTINE ghbond_interface 

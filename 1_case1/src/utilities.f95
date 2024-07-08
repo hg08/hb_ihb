@@ -609,11 +609,11 @@
 
       grid_index = (ind(2)-1) * nb_divx + ind(1) 
       !grid_index = ind(1) * n_divy + ind(2)
-      WRITE (*,*) "NB_DIVX = ", nb_divx
+      !WRITE (*,*) "NB_DIVX = ", nb_divx
       !WRITE (*,*) "nb_divy = ", nb_divy
-      WRITE (*,*) "index(1) = ", ind(1)
-      WRITE (*,*) "index(2) = ", ind(2)
-      WRITE (*,*) "grid_index = ", grid_index
+      !WRITE (*,*) "index(1) = ", ind(1)
+      !WRITE (*,*) "index(2) = ", ind(2)
+      !WRITE (*,*) "grid_index = ", grid_index
   END FUNCTION grid_index
 
   !TODO: define get_number_of_oxygens_in_nitrate()
@@ -772,7 +772,7 @@
                   !-------------------------------------------------------------------------------------------------------
                   !We use y>nmo_start-1, because we want to consider the first step 'i=0'
                   !-------------------------------------------------------------------------------------------------------
-                  WRITE(*,*)"read_traj():", head_char, y
+                  !WRITE(*,*)"read_traj():", head_char, y
                   BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                   read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
                   130 FORMAT (1X,4X,I8,9X,F12.3,6X,F20.10)
@@ -793,9 +793,6 @@
                     elseif (atom_info(iatom, i_sample)%atom_name == "K") THEN
                         atom_info(iatom, i_sample)%mass = 39.10d0
                     endif
-                    !WRITE (*,131) & 
-                    !atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), &
-                    !atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
                   enddo inner
                   i_sample = i_sample + 1 !The position is important. It must be located before ENDIF 
               ENDIF CHECK_HEAD
@@ -835,7 +832,6 @@
                   !-------------------------------------------------------------------------------------------------------
                   !We use y>nmo_start-1, because we want to consider the first step 'i=0'
                   !-------------------------------------------------------------------------------------------------------
-                  !WRITE(*,*)"read_traj():", head_char, y
                   BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                   read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
                   130 FORMAT (1X,4X,I8,9X,F12.3,6X,F20.10)
@@ -866,9 +862,6 @@
                         sphere_info(iatom, i_sample)%mass = 126.9045d0
                         sphere_info(iatom, i_sample)%radius = 1.40d0
                     endif
-                    !WRITE (*,131) & 
-                    !sphere_info(iatom, i_sample)%atom_name, sphere_info(iatom,i_sample)%coord(1), &
-                    !sphere_info(iatom,i_sample)%coord(2), sphere_info(iatom,i_sample)%coord(3)
                   enddo inner
                   i_sample = i_sample + 1 !The position is important. It must be located before ENDIF 
               ENDIF CHECK_HEAD
@@ -976,8 +969,6 @@
       !Producing the H list      
       !====================
       m1=ndx_oxygen_1
-      WRITE(*,*) "m1=",m1
-      !m2=ndx_oxygen_2
       num = 0 ! For counting
       ! 
       do j =1, 1
@@ -1025,9 +1016,9 @@
            ) THEN 
            neighbors_number(i) = neighbors_number(i) + 1
            neighbors_indices(neighbors_number(i),i) = j
-           WRITE(*,*) "Atom Name:",sphere_info(i,start_step)%name
-           WRITE(*,*) "Atom id:",sphere_info(i,start_step)%id
-           WRITE(*,*) "distance:",SQRT(distance2(sphere_info(i,start_step)%coord, sphere_info(j,start_step)%coord, boxsize))
+           !WRITE(*,*) "Atom Name:",sphere_info(i,start_step)%name
+           !WRITE(*,*) "Atom id:",sphere_info(i,start_step)%id
+           !WRITE(*,*) "distance:",SQRT(distance2(sphere_info(i,start_step)%coord, sphere_info(j,start_step)%coord, boxsize))
         END IF
       END DO Inner
     END DO Outer
@@ -1051,7 +1042,7 @@
     INTEGER,PARAMETER :: start_step=1 
     INTEGER :: i, n_count
     
-    WRITE(*,*) "obtain_indices:  atom_name = ", atom_name
+    !WRITE(*,*) "obtain_indices:  atom_name = ", atom_name
     ! Initialize indices
     indices = 0
     ! Generate the array of index of Li,I.
@@ -1060,7 +1051,7 @@
       IF ( trim(sphere_info(i,start_step)%name) == trim(atom_name) ) THEN
         n_count = n_count + 1
         indices(n_count) = i
-        WRITE(*,*)"indices(n_count): ", indices(n_count)
+        !WRITE(*,*)"indices(n_count): ", indices(n_count)
       ENDIF
     END DO
   END SUBROUTINE obtain_indices
@@ -1132,14 +1123,14 @@
          !If the number of neighbors are too large, we neglect the extral neighbors (Here, they are water molecules.)
          IF (wat_neighbors_number(i) > num_coord_mol_max) EXIT
          wat_neighbors_indices(wat_neighbors_number(i),i) = j ! I have to separate the O, and H indies.
-         WRITE(*,*) "ATOM Name (k):", sphere_info(k,step_t)%name
-         WRITE(*,*) "ATOM Name (j):", sphere_info(j,step_t)%name
-         WRITE(*,*) "Atom id (j):", sphere_info(j,step_t)%id
-         WRITE(*,*) "distance (k,j):", SQRT(distance2(sphere_info(k,step_t)%coord, sphere_info(j,step_t)%coord, boxsize))
+         !WRITE(*,*) "ATOM Name (k):", sphere_info(k,step_t)%name
+         !WRITE(*,*) "ATOM Name (j):", sphere_info(j,step_t)%name
+         !WRITE(*,*) "Atom id (j):", sphere_info(j,step_t)%id
+         !WRITE(*,*) "distance (k,j):", SQRT(distance2(sphere_info(k,step_t)%coord, sphere_info(j,step_t)%coord, boxsize))
       END IF
       END DO Inner
-      WRITE(*,*) "wat_neighbors_number = ", wat_neighbors_number(i)
-      WRITE(*,*) "wat_neighbors_indices:", wat_neighbors_indices(:,i)
+      !WRITE(*,*) "wat_neighbors_number = ", wat_neighbors_number(i)
+      !WRITE(*,*) "wat_neighbors_indices:", wat_neighbors_indices(:,i)
     END DO Outer
   END SUBROUTINE make_wat_neighbors_for_X_shell
 

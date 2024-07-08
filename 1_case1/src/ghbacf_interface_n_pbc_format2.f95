@@ -95,7 +95,6 @@
 
       !To obtain the total number of water pairs
       nwat=get_total_number_of_lines(list_filename)
-      !WRITE(*,*) 'ghbacf_c: # of water pairs (nwat) =', nwat
       ALLOCATE(ndx_1(nwat))          
       ALLOCATE(ndx_2(nwat))          
       !============================
@@ -109,7 +108,6 @@
       !============================
 
       delta_t=REAL(ns,rk)*delta_t0  ! unit: ps
-      !WRITE(*,*) "New total steps (nmo):", nmo
       ALLOCATE(x(nat,nmo))
       ALLOCATE(y(nat,nmo))
       ALLOCATE(z(nat,nmo))
@@ -143,8 +141,6 @@
         m2=ndx_2(k)
         ndx_3_list= & 
             hydrogen_ndx_list(ndx_1(k),ndx_2(k),pos_filename,nat,boxsize)
-        !WRITE(*,*) "The ",k,"-th pair: ndx_of H (1st,2nd,3rd,4th):",& 
-        !    ndx_3_list(1), ndx_3_list(2), ndx_3_list(3), ndx_3_list(4)
         ! Calculate h_d(j)
         TIME: DO jj =1, nmo
           h(jj)=0.d0
@@ -153,7 +149,6 @@
           ! Check if the pairs are located in one of the interfaces 
           index_mol1 =grid_index(atom_info(m1,jj)%coord(1), &
               atom_info(m1,jj)%coord(2),divx,divy,nb_divx,nb_divy) 
-          !WRITE(*,*) "index_mol1 = ",index_mol1
           index_mol2 =grid_index(atom_info(m2,jj)%coord(1), &
               atom_info(m2,jj)%coord(2),divx,divy,nb_divx,nb_divy) 
 
@@ -168,7 +163,6 @@
               atom_info(m1,jj)%coord(3), &
               surf_info(2,index_mol2,jj), &
               atom_info(m2,jj)%coord(3),thickness ) 
-          !WRITE(*,*) condition1, condition2 
 
           !This condition is the additional condition for the establishment 
           ! of interface hydrogen bonds, which is the core of this method. 
@@ -250,10 +244,7 @@
       ENDDO  kLOOP   
       DEALLOCATE(hb_exist,nhb_exist,h_d)
       hb_per_frame = tot_hb/REAL(nmo,rk)
-      !WRITE(*,*) "Total H-bonds exists in history: ", tot_hb
       ave_h = hb_per_frame/REAL(nwat,rk) 
-      !WRITE(*,*) "hb per frame:", hb_per_frame
-      !WRITE(*,*) "<h> =", ave_h
       !=========================================
       !Calculate the number of ever bonded pairs
       !=========================================

@@ -45,13 +45,11 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   divy = boxsize(2)/REAL(nb_divy,rk)
   divz = boxsize(3)/REAL(nb_divz,rk)
   n_grid = nb_divx * nb_divy
-  !WRITE(*,*)"n_grid=", n_grid
   !=======================
   !read in trajectory file 
   !=======================
   OPEN(10,file=trim(pos_filename))
   ! Now starting read data
-  WRITE(*,*) "Total number of atoms: ", nat
   CALL read_traj(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,sampled_energy,atom_info) 
   CLOSE(10)
   WRITE(6,*) 'End of trajectory reading.'
@@ -68,7 +66,6 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
 
     WRITE(10,'(I8)') nat
     WRITE(10,100) ' i = ',i-1,', time = ',sampled_time(i),', E = ',sampled_energy(i)
-    !WRITE(*,100) ' i = ',i-1,', time = ',sampled_time(i),', E = ',sampled_energy(i)
     100 FORMAT (A5,I8,A9,F12.3,A6,F20.10)
     !130 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
   

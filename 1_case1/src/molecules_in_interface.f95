@@ -48,29 +48,24 @@
         !=============      
         MOLECULE: DO jj =1, n_samples
           n = 0
-          !WRITE(*,*) "NAT= ", nat, "(in molecules_in_interface_v3())"
           DO m=1,nat
             ! We use Oxygen atom to idenfy the water molecule
             IF (TRIM(atom_info(m,jj)%atom_name) == "O") THEN
               ! Check if the molecue is located in one of the interfaces 
               index_mol = grid_index(atom_info(m,jj)%coord(1), &
                   atom_info(m,jj)%coord(2),divx,divy,nb_divx,nb_divy) 
-              !WRITE(*,*) "[molecules_in_interface_v3()] index_mol = ",index_mol
               !For surf 1
               condition1 = mol_in_surf1(surf_info(1,index_mol,jj),&
                   atom_info(m,jj)%coord(3), thickness ) 
               !For surf 2 
               condition2 = mol_in_surf2(surf_info(2,index_mol,jj),&
                   atom_info(m,jj)%coord(3), thickness ) 
-              !WRITE(*,*) condition1, condition2 
 
               !If the atom is in either surf1 or surf2
               IF (condition1 .OR. condition2) THEN
                   n = n+1
                   !! Now write out the data into a 2-D array: arr.
                   arr(jj,n)=m
-                  !WRITE(*,*) "Index of atom:", m
-                  !WRITE(*,*) "Atom name:", atom_info(m,jj)%atom_name
               ENDIF
             ENDIF
           END DO
