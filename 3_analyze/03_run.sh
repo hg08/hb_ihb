@@ -1,3 +1,4 @@
+# Fit tau2
 mkdir -p output
 rm -f *png
 
