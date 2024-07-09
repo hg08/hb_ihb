@@ -239,8 +239,6 @@ do
 			rm -rf c_*.dat
 			# Format the output file
 			./formatting.py output/layers_c_at_ref_temp.dat  output/${subTraj}_${scenario}_layers_c_at_ref.dat
-			# Prepare for statistics (1)
-			files${scenario}+=("output/${subTraj}_${scenario}_layers_c_at_ref.dat")
 			rm output/layers_c_at_ref_temp.dat
 
                         
