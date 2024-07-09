@@ -194,8 +194,8 @@ do
 		rm ${subTraj}_*_list.dat
     done
     cd .. # ) 
-	# --- End 2_case2
-	
+       # --- End 2_case2
+       
 	# --- 3_analyze
 	cd 3_analyze # (
 	mkdir -p output
@@ -239,9 +239,11 @@ do
 			rm -rf c_*.dat
 			# Format the output file
 			./formatting.py output/layers_c_at_ref_temp.dat  output/${subTraj}_${scenario}_layers_c_at_ref.dat
+			# Prepare for statistics (1)
+			files${scenario}+=("output/${subTraj}_${scenario}_layers_c_at_ref.dat")
 			rm output/layers_c_at_ref_temp.dat
 
-
+                        
 			# Fit reactive flux constants for all layers
 			kkprime=output/${subTraj}_${scenario}_kkprime.dat
 			rm -rf $kkprime
@@ -307,7 +309,240 @@ do
 		awk '{print NR, $0}' $tau2 > tmp
 		mv tmp $tau2
 
+
     done
 	cd .. # )
 
+	# 3_statistics-c
+        mkdir -p 3_analyze/output
+        echo "Processing statistics..."
+        
+	# Statistics for 1_case1
+	files1=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_layers_c_at_ref.dat"
+	for start_frame in `seq 0 10000 50000`
+	do 
+	    subTraj=${system}_s${start_frame}
+            files1+=("3_analyze/output/${subTraj}_1_case1_layers_c_at_ref.dat")
+        done
+        mean_c_at_ref=3_analyze/output/1_case1_layers_c_at_ref.dat
+        rm -rf $mean_c_at_ref
+        awk '
+        # For each line in each file
+	{
+		if (FNR > maxFNR) {
+		    maxFNR = FNR;
+		}
+		ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
+        }
+
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+	    std_err = stddev/ sqrt(count[i])
+            printf ("%s %f %f\n", ndex[i], mean, std_err)
+        
+            }
+        } '  "${files1[@]}" > $mean_c_at_ref
+        
+        sed -i "s/0.000000/        /g" $mean_c_at_ref
+	# END--Statistics for 1_case1
+	# Statistics for 2_case2
+	files2=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_layers_c_at_ref.dat"
+	for start_frame in `seq 0 10000 50000`
+	do 
+	    subTraj=${system}_s${start_frame}
+            files2+=("3_analyze/output/${subTraj}_2_case2_layers_c_at_ref.dat")
+        done
+        mean_c_at_ref=3_analyze/output/2_case2_layers_c_at_ref.dat
+        rm -rf $mean_c_at_ref
+        awk '
+        # For each line in each file
+	{
+		if (FNR > maxFNR) {
+		    maxFNR = FNR;
+		}
+		ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
+        }
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+	    std_err = stddev/ sqrt(count[i])
+            printf ("%s %f %f\n", ndex[i], mean, std_err)
+        
+            }
+        } '  "${files2[@]}" > $mean_c_at_ref
+        
+        sed -i "s/0.000000/        /g" $mean_c_at_ref
+	# END--Statistics for 2_case2
+	# END---3_statistics-c
+
+	# 3_statistics-kkprime
+        mkdir -p 3_analyze/output
+        echo "Processing statistics kkprime"
+        
+	# Statistics for 1_case1 kkprime
+	files1=() # Initialize an empty array, for saving "output/${subTraj}_1_case1_kkprime.dat"
+	for start_frame in `seq 0 10000 50000`
+	do 
+	    subTraj=${system}_s${start_frame}
+            files1+=("3_analyze/output/${subTraj}_1_case1_kkprime.dat")
+        done
+        mean_kkprime=3_analyze/output/1_case1_kkprime.dat
+        rm -rf $mean_kkprime
+        awk '
+        # For each line in each file
+	{
+		if (FNR > maxFNR) {
+		    maxFNR = FNR;
+		}
+		ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
+                sum_prime[FNR] += $3
+                sumsq_prime[FNR] += ($3*$3)
+        }
+
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+	    std_err = stddev/ sqrt(count[i])
+            mean_prime = sum_prime[i] / count[i]
+            stddev_prime = sqrt(sumsq_prime[i]/count[i] - (mean_prime * mean_prime))
+	    std_err_prime = stddev_prime/ sqrt(count[i])
+            printf ("%s %f %f %f %f\n", ndex[i], mean, std_err, mean_prime, std_err_prime)
+        
+            }
+        } '  "${files1[@]}" > $mean_kkprime
+        
+	# END--Statistics for 1_case1 kkprime
+	# Statistics for 2_case2 kkprime
+	files2=() # Initialize an empty array, for saving "output/${subTraj}_2_case2_kkprime.dat"
+	for start_frame in `seq 0 10000 50000`
+	do 
+	    subTraj=${system}_s${start_frame}
+            files2+=("3_analyze/output/${subTraj}_2_case2_kkprime.dat")
+        done
+        mean_kkprime=3_analyze/output/2_case2_kkprime.dat
+        rm -rf $mean_kkprime
+        awk '
+        # For each line in each file
+	{
+		if (FNR > maxFNR) {
+		    maxFNR = FNR;
+		}
+		ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
+                sum_prime[FNR] += $3
+                sumsq_prime[FNR] += ($3*$3)
+        }
+
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+	    std_err = stddev/ sqrt(count[i])
+            mean_prime = sum_prime[i] / count[i]
+            stddev_prime = sqrt(sumsq_prime[i]/count[i] - (mean_prime * mean_prime))
+	    std_err_prime = stddev_prime/ sqrt(count[i])
+            printf ("%s %f %f %f %f\n", ndex[i], mean, std_err, mean_prime, std_err_prime)
+        
+            }
+        } '  "${files2[@]}" > $mean_kkprime
+	# END--Statistics for 2_case2 kkprime
+	# END---3_statistics-kkprime
+	# 3_statistics-c2
+        mkdir -p 3_analyze/output
+        echo "Processing statistics c2..."
+        
+	files=() # Initialize an empty array, for saving "output/*_layers_c2_at_ref.dat"
+	for start_frame in `seq 0 10000 50000`
+	do 
+	    subTraj=${system}_s${start_frame}
+            files+=("3_analyze/output/${subTraj}_layers_c2_at_ref.dat")
+        done
+        mean_c2=3_analyze/output/layers_c2_at_ref.dat
+        rm -rf $mean_c2
+        awk '
+        # For each line in each file
+	{
+		if (FNR > maxFNR) {
+		    maxFNR = FNR;
+		}
+		ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
+        }
+
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+	    std_err = stddev/ sqrt(count[i])
+            printf ("%s %f %f\n", ndex[i], mean, std_err)
+        
+            }
+        } '  "${files[@]}" > $mean_c2
+        sed -i "s/0.000000/        /g" $mean_c2
+   
+	# END--3_statistics-c2
+	# 3_statistics-tau2
+        echo "Processing statistics tau2..."
+	files=() # Initialize an empty array, for saving "output/${subTraj}_tau2.dat"
+	for start_frame in `seq 0 10000 50000`
+	do 
+	    subTraj=${system}_s${start_frame}
+            files+=("3_analyze/output/${subTraj}_tau2.dat")
+        done
+        mean_tau2=3_analyze/output/tau2.dat
+        rm -rf $mean_tau2
+        awk '
+        # For each line in each file
+	{
+		if (FNR > maxFNR) {
+		    maxFNR = FNR;
+		}
+		ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
+        }
+
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+	    std_err = stddev/ sqrt(count[i])
+            printf ("%s %f %f\n", ndex[i], mean, std_err)
+        
+            }
+        } '  "${files[@]}" > $mean_tau2
+	# END---3_statistics-tau2
+        
+
+	# 4_plot
+	cd 4_plot
+	    gnuplot ./plot_Fig3.gp
+	    gnuplot ./plot_Fig4.gp
+	    gnuplot ./plot_Fig5.gp
+	    gnuplot ./plot_Fig7.gp
+	cd ..
 done
