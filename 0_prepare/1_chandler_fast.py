@@ -15,6 +15,7 @@ import timeit
 #For parallel
 import multiprocessing
 from multiprocessing.dummy import Pool 
+import platform
 
 #=========
 #CONSTANTS
@@ -74,14 +75,9 @@ def pos_surf(start,end,step,rho,itoc):
     return z1,z2
 
 # Define a function to run the loops in parallel.
-def grid(nb_divx,nb_divy,nb_divz):
+def grid(nb_divx, nb_divy, nb_divz):
     """Purpose: Create vertices for a 3D Grid."""
-    vertices = []
-    for i in range(nb_divx):
-        for j in range(nb_divy):
-            for k in range(nb_divz):
-                vertices.append((i, j, k))
-    return vertices
+    return [(i, j, k) for i in range(nb_divx) for j in range(nb_divy) for k in range(nb_divz)]
 
 def rho_on_grid(rho_nd,vertice):
     #Sum over all the O, because every O atom contributes to the density at one grid (i,j,k).
@@ -144,6 +140,21 @@ def pos_surf_nd(x1,x2,rho_nd,itoc):
     
     return z1,z2
 
+def identify_os():
+    # Get the name of the operating system
+    os_name = platform.system()
+    if os_name == "Darwin":
+        # This block will execute for macOS
+        print("This is a macOS system.")
+        # Example: Set multiprocessing start method to 'fork'
+        import multiprocessing as mp
+        mp.set_start_method('fork', force=True)
+    elif os_name == "Linux":
+        # This block will execute for Linux
+        print("This is a Linux system.")
+        # Example: Continue using the default start method ('fork' on Linux)
+    else:
+        print("This is not a macOS or Linux system.")
 #=============================
 #Basic questions (6 Questions)
 #=============================
@@ -340,6 +351,9 @@ for s in range(0,nb_steps,ns):
         rho_nd = np.zeros((nb_divx,nb_divy,nb_divz))
         
         if __name__ == '__main__':
+            # Run the function to identify the OS
+            identify_os()
+
             p = multiprocessing.Pool(processes = multiprocessing.cpu_count()-1)
 
             start = time.time()
