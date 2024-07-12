@@ -1,0 +1,11 @@
+name: ihb
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy
+  - pandas
+  - pip
+  - python=3.11
+  - pip:
+      - periodictable
