@@ -1,0 +1,10 @@
+{
+    "name": "128w-pos-1.xyz",
+    "system": "128w-pos-1",
+    "dt": 0.5,
+    "sizeX": 15.6404,
+    "sizeY": 15.6404,
+    "sizeZ": 31.2808,
+    "numAtoms": 384,
+    "simTime": 40433.5
+}
