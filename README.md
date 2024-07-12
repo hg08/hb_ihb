@@ -24,3 +24,24 @@ Cite as:
       url={https://arxiv.org/abs/2204.13941}, 
 }
 ```
+
+## Installation
+The codes are tested on Ubuntu and macOS.
+Install the following prerequisites:
+```bash
+sudo apt install gfortran gnuplot jq
+```
+Here, `gfortran` is used to compile the Fortran code, `gnuplot` is used to plot the data, and `jq` is used to parse the JSON file.
+
+Clone this repository:
+```
+git clone git@github.com:hg08/hb_ihb.git
+cd hb_ihb
+```bash
+
+Create a conda environment:
+```bash
+conda evn create -f environment.yml
+conda activate hb_ihb
+```
+

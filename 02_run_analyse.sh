@@ -1,18 +1,31 @@
-# Systems
-systems=("128w-pos-1")
-sizeXs=("15.6404")
-sizeYs=("15.6404")
-sizeZs=("31.2808")
-numAtoms=("384")
+# Find the latest json file in m2_traj
+if [ $# -eq 0 ]; then
+    JSON_FILE=$(ls -t m2_traj/*.json | head -1)
+else
+    JSON_FILE=$1
+fi
 
-# Calculation Workflow 
-for i in "${!systems[@]}" 
-do
-    system=${systems[$i]}
-    sizeX=${sizeXs[$i]}
-    sizeY=${sizeYs[$i]}
-    sizeZ=${sizeZs[$i]}
-    numAtom=${numAtoms[$i]}
+system=$(jq -r '.system' $JSON_FILE)
+sizeX=$(jq -r '.sizeX' $JSON_FILE)
+sizeY=$(jq -r '.sizeY' $JSON_FILE)
+sizeZ=$(jq -r '.sizeZ' $JSON_FILE)
+numAtoms=$(jq -r '.numAtoms' $JSON_FILE)
+
+# # Systems
+# systems=("128w-pos-1")
+# sizeXs=("15.6404")
+# sizeYs=("15.6404")
+# sizeZs=("31.2808")
+# numAtoms=("384")
+# 
+# # Calculation Workflow 
+# for i in "${!systems[@]}" 
+# do
+#     system=${systems[$i]}
+#     sizeX=${sizeXs[$i]}
+#     sizeY=${sizeYs[$i]}
+#     sizeZ=${sizeZs[$i]}
+#     numAtom=${numAtoms[$i]}
 
     echo Processing system $system ...
     trajFile=$system.xyz 
@@ -131,4 +144,4 @@ do
 	done
     cd .. # )
 
-done
+#done
