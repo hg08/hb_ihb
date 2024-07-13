@@ -34,10 +34,10 @@ sudo apt install gfortran gnuplot jq
 Here, `gfortran` is used to compile the Fortran code, `gnuplot` is used to plot the data, and `jq` is used to parse the JSON file.
 
 Clone this repository:
-```
+```bash
 git clone git@github.com:hg08/hb_ihb.git
 cd hb_ihb
-```bash
+```
 
 Create a conda environment:
 ```bash
