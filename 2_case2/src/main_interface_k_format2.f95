@@ -70,8 +70,8 @@ PROGRAM main_interface_k
   !read surf trajectory
   !====================
   OPEN(20,file=trim(surf_filename))
-      !CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
-      CALL read_surf_traj(20,0,999,1,n_grid,1000)
+      CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
+      !CALL read_surf_traj(20,0,999,1,n_grid,1000)
   CLOSE(20)
 
   CALL ghbond(filename,pos_filename,list_oxygen_pairs,nat) ! O-O pairs

@@ -145,16 +145,18 @@ def identify_os():
     os_name = platform.system()
     if os_name == "Darwin":
         # This block will execute for macOS
-        print("This is a macOS system.")
+        # print("This is a macOS system.")
         # Example: Set multiprocessing start method to 'fork'
         import multiprocessing as mp
         mp.set_start_method('fork', force=True)
     elif os_name == "Linux":
         # This block will execute for Linux
-        print("This is a Linux system.")
+        # print("This is a Linux system.")
         # Example: Continue using the default start method ('fork' on Linux)
+        pass
     else:
         print("This is not a macOS or Linux system.")
+
 #=============================
 #Basic questions (6 Questions)
 #=============================
