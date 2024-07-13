@@ -26,8 +26,7 @@ Cite as:
 ```
 
 ## Installation
-The codes are tested on Ubuntu and macOS.
-Install the following prerequisites:
+The codes are tested on Ubuntu. Install the following prerequisites:
 ```bash
 sudo apt install gfortran gnuplot jq
 ```
