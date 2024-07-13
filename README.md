@@ -41,7 +41,7 @@ cd hb_ihb
 
 Create a conda environment:
 ```bash
-conda evn create -f environment.yml
-conda activate hb_ihb
+conda env create -f environment.yml
+conda activate ihb
 ```
 
