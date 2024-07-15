@@ -4,3 +4,5 @@ do
     ./clean.sh
     cd ..
 done
+
+rm -rf *.out *.err
