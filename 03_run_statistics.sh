@@ -9,7 +9,7 @@ system=$(jq -r '.system' $JSON_FILE)
 sizeX=$(jq -r '.sizeX' $JSON_FILE)
 sizeY=$(jq -r '.sizeY' $JSON_FILE)
 sizeZ=$(jq -r '.sizeZ' $JSON_FILE)
-numAtoms=$(jq -r '.numAtoms' $JSON_FILE)
+numAtom=$(jq -r '.numAtoms' $JSON_FILE)
 
 
 echo Processing system $system ...
