@@ -15,7 +15,8 @@ f2 = open(out_name, 'w')
 
 
 # Smaple every n frames
-ns = 80
+#ns = 80
+ns = 1 # For tesing 125 water 
 
 # Sub-trajectory length in ps
 sub_length_in_ps = 15.0 
@@ -56,15 +57,22 @@ def read_one_frame(f1, num_atom):
 for j in range(totalFrames):
     i, frame = read_one_frame(f1, num_atom)
     if i is not None and i >= start_frame and i < end_frame:
-        if i % ns == 0:
-            for k, line in enumerate(frame):
-                if k == 1:
-                    field1 = line.split(',')[0]
-                    line = ' i =         ' + line[len(field1):]
-                    new_i = str((i-start_frame) // ns)
-                    line = line[0:len(field1)-len(new_i)] + new_i + line[len(field1):]
-                f2.write(line)
+#         if i % ns == 0:
+#             for k, line in enumerate(frame):
+#                 if k == 1:
+#                     field1 = line.split(',')[0]
+#                     line = ' i =         ' + line[len(field1):]
+#                     new_i = str((i-start_frame) // ns)
+#                     line = line[0:len(field1)-len(new_i)] + new_i + line[len(field1):]
+#                 f2.write(line)
 
+             for k, line in enumerate(frame):
+                 if k == 1:
+                     field1 = line.split(',')[0]
+                     line = ' i =         ' + line[len(field1):]
+                     new_i = str((i-start_frame) // ns)
+                     line = line[0:len(field1)-len(new_i)] + new_i + line[len(field1):]
+                 f2.write(line)
 f1.close()
 f2.close()
 

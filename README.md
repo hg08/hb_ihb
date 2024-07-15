@@ -44,3 +44,5 @@ conda env create -f environment.yml
 conda activate ihb
 ```
 
+## Run the code
+Place the trajectory file and corresponding json files in `m2_traj` folder.

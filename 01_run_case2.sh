@@ -9,7 +9,7 @@ system=$(jq -r '.system' $JSON_FILE)
 sizeX=$(jq -r '.sizeX' $JSON_FILE)
 sizeY=$(jq -r '.sizeY' $JSON_FILE)
 sizeZ=$(jq -r '.sizeZ' $JSON_FILE)
-numAtoms=$(jq -r '.numAtoms' $JSON_FILE)
+numAtom=$(jq -r '.numAtoms' $JSON_FILE)
 
 
 echo Processing system $system ...
@@ -32,7 +32,7 @@ do
 	for d in {1..6}
 	do 
 		inputFile=input_${subTraj}_${d}
-			cp input_template $inputFile
+		cp input_template $inputFile
 		sed -i "s/SIZEX/${sizeX}/g" $inputFile
 		sed -i "s/SIZEY/${sizeY}/g" $inputFile
 		sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
@@ -49,7 +49,7 @@ do
 		inputFile=input_${subTraj}_${d}
 		./main_interface_c_format2 < $inputFile
 		./main_interface_k_format2 < $inputFile
-			./main_interface_n_format2 < $inputFile
+		./main_interface_n_format2 < $inputFile
 	done
 
 	# c. Clean up
