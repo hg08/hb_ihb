@@ -20,15 +20,30 @@
           REAL(KIND=rk) :: dx,dy,dz
           dx = r1(1) - r2(1)
           if (abs(dx) > boxsize(1)*0.5) then
-              dx = boxsize(1) - dx
+              !dx = boxsize(1) - dx
+              if (dx > 0) then
+                dx = dx - boxsize(1)
+              else
+                dx = dx + boxsize(1)
+              endif
           endif
           dy = r1(2) - r2(2)
           if (abs(dy) > boxsize(2)*0.5) then
-              dy = boxsize(2) - dy
+              !dy = boxsize(2) - dy
+              if (dy > 0) then
+                dy = dy - boxsize(2)
+              else
+                dy = dy + boxsize(2)
+              endif
           endif
           dz = r1(3) - r2(3)
           if (abs(dz) > boxsize(3)*0.5) then
-              dz = boxsize(3) - dz
+              !dz = boxsize(3) - dz
+              if (dz > 0) then
+                dz = dz - boxsize(3)
+              else
+                dz = dz + boxsize(3)
+              endif
           endif
           distance2 = dx**2 + dy**2 + dz**2
       END FUNCTION distance2
