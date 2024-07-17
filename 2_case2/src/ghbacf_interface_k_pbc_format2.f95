@@ -46,7 +46,7 @@
       !PARAMETERS
       !==========
       INTEGER,PARAMETER :: rk=8 ! local 
-      INTEGER, PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
+      INTEGER,PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       CHARACTER(LEN=200),INTENT(INOUT) :: filename, pos_filename
       CHARACTER(LEN=200),INTENT(IN) :: list_filename
       INTEGER,INTENT(IN) :: criterion
@@ -74,7 +74,7 @@
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: hb_exist
       INTEGER :: nmo 
       INTEGER :: nwat ! number of water molecules
-      INTEGER :: i,j,k,jj 
+      INTEGER :: i, j, k, jj 
       CHARACTER(LEN=d_len) :: char_thickness ! for saving the thickness in the files' names
       INTEGER :: index_mol1, index_mol2
       LOGICAL :: condition1, condition2
@@ -188,10 +188,10 @@
                   IF (criterion == 1) THEN
                       r23 = dist2(r3, r2, boxsize) 
                       r13 = dist2(r3, r1, boxsize) 
-                      pm = pmADH(r1,r2,r3,boxsize)  ! IF H is bound to O2
+                      pm = pmADH(r1,r2,r3,boxsize) ! IF H is bound to O2
                       pm_ = pmADH(r2,r1,r3,boxsize) ! IF H is bound to O1
-                      norm_rr=sqrt(r21*r23)
-                      cosphi= pm / norm_rr
+                      norm_rr = sqrt(r21*r23)
+                      cosphi = pm / norm_rr
                       cosphi_= pm_ / norm_rr
                       IF ((r21 .lt. rooc ).and. ( (cosphi .gt. cosPhiC123) .or. &
                           (cosphi_ .gt. cosPhiC123) )                      &
@@ -207,7 +207,7 @@
                       r31 = dist2(r1,r3,boxsize) 
                       r32 = dist2(r2,r3, boxsize) 
                       pm = pmAHD(r1,r2,r3,boxsize)
-                      cosphi= pm / (sqrt(r31*r32))
+                      cosphi = pm / (sqrt(r31*r32))
 
                       !Follow the scond criterion of HB.
                       !-0.5 comes from cos(2pi/3)
@@ -229,9 +229,9 @@
         !==========================================
         !Calcualte the correlation function C_HB(t)
         !==========================================
-        IF (hb(k)>hb_min) THEN
+        IF (hb(k) > hb_min) THEN
             DO mt = 0, nmo-1    ! time interval
-                scalar=0.d0
+                scalar = 0.d0
                 DO j = 1, nmo-mt
                     tmp = h(j)*h(j+mt)
                     scalar = scalar + tmp 
@@ -242,13 +242,13 @@
         ENDIF
       ENDDO kLOOP   
       DEALLOCATE(hb_exist,nhb_exist)
-      hb_per_frame = tot_hb/nmo
-      ave_h = hb_per_frame/nwat 
+      hb_per_frame = tot_hb / nmo
+      ave_h = hb_per_frame / nwat 
       !=========================================
       !Calculate the number of ever bonded pairs
       !=========================================
       n_bonded_pairs = 0 
-      DO k =1, nwat
+      DO k = 1, nwat
           IF (hb(k) > hb_min) THEN
               n_bonded_pairs = n_bonded_pairs + 1      
           ENDIF
@@ -287,7 +287,7 @@
      !Write the correlation
      !k_HB(t)     
      !======================
-      char_thickness = nth(str(nint(thickness)),d_len)
+      char_thickness = nth(str(nint(thickness)), d_len)
       OPEN(10, file=trim(filename)//'_wat_pair_hbacf_k_ihb_'//&
         char_thickness//'.dat')
         DO i = 1, nmo
@@ -299,7 +299,7 @@
      !===========
      ! Print <h>      
      !===========      
-      OPEN(10,file=trim(filename)//'_wat_pair_ave_h_from_rf_ihb_'//&
+      OPEN(10, file=trim(filename)//'_wat_pair_ave_h_from_rf_ihb_'//&
         char_thickness//'.dat')
         WRITE(10,*) 'Ave. No. bonds:', hb_per_frame
         WRITE(10,*) '<h>:',ave_h
