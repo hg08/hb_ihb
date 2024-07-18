@@ -29,7 +29,7 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
   131 FORMAT (11X,2F13.6)
   open(indx,FILE=surf_filename,STATUS='OLD',ACTION='READ',IOSTAT=ierror)
       ! TESTING
-      write(*,*) "read_surf_traj(): New total time steps (n_samples):", n_samples
+      !write(*,*) "read_surf_traj(): New total time steps (n_samples):", n_samples
       !1.Determine How many lines have to be skiped
       skip_num = FLOOR(nmo_start/FLOAT(ns))
       !WRITE(*,*) "skip_num =", skip_num
