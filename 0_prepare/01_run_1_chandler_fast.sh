@@ -1,10 +1,8 @@
-# Prepare position file
-rm -rf 128w-pos-1_sampled.xyz
-ln -s ../m1_resample/128w-pos-1_sampled.xyz 128w-pos-1_sampled.xyz
+rm -rf output--TEST
 
-# Run the program
-python3 1_chandler_fast.py < input_chandler_128w
+# Run the test program
+python3 1_chandler_fast.py <  input_128w-pos-1_s0
 
-# Move output files to output directory
-mkdir -p output
-mv *.cube output/
+# Move output files to output--TEST directory
+mkdir -p output--TEST
+mv *.cube output--TEST

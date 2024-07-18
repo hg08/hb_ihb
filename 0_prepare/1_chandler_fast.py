@@ -53,26 +53,26 @@ def density(x,y,z,a,b,c,range_x,range_y,range_z):
                     d += math.exp(-r2/xi2_2) #1 op
     return d 
 
-#This subroutine determines the position of rho_ref on the grid and returns it. 
-def pos_surf(start,end,step,rho,itoc):
-    #First grid point with rho>rho_ref
-    for i in range(start,end,step):
-        if rho[i] >= rho_ref:
-            break
-    #First grid point after the water slab with rho<rho_ref
-    for j in range(i+step,end,step):
-        if rho[j] <= rho_ref :
-            break
-
-    #Linear interpolation of the surface position 
-    #1)Interpolation between i and i-1
-    z1= (rho_ref-rho[i])/(rho[i]-rho[i-step])+i
-    z1= (z1-start)/step*itoc
-    #2)Interpolation between j-1 and j
-    z2= (rho_ref-rho[j])/(rho[j]-rho[j-step])+j
-    z2 =(z2-start)/step*itoc
-    
-    return z1,z2
+##This subroutine determines the position of rho_ref on the grid and returns it. 
+#def pos_surf(start,end,step,rho,itoc):
+#    #First grid point with rho>rho_ref
+#    for i in range(start,end,step):
+#        if rho[i] >= rho_ref:
+#            break
+#    #First grid point after the water slab with rho<rho_ref
+#    for j in range(i+step,end,step):
+#        if rho[j] <= rho_ref :
+#            break
+#
+#    #Linear interpolation of the surface position 
+#    #1)Interpolation between i and i-1
+#    z1= (rho_ref-rho[i])/(rho[i]-rho[i-step])+i
+#    z1= (z1-start)/step*itoc
+#    #2)Interpolation between j-1 and j
+#    z2= (rho_ref-rho[j])/(rho[j]-rho[j-step])+j
+#    z2 =(z2-start)/step*itoc
+#    
+#    return z1,z2
 
 # Define a function to run the loops in parallel.
 def grid(nb_divx, nb_divy, nb_divz):
@@ -335,11 +335,6 @@ for s in range(0,nb_steps,ns):
                         file_o.write("\n")
                 if k%6 != 5:
                     file_o.write("\n")
-
-        #print("rho from list:{}".format(rho)) 
-        #print("The 1000-th element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10 -1]))
-        #print("The 1001-st element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10]))
-        #print("The 1002nd element of rho:{}".format(rho[10*nb_divy*nb_divz+10*nb_divz + 10 +1]))
 
         #==============
         # parallel code
