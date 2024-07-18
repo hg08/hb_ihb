@@ -73,7 +73,7 @@ do
 	
 	# c. Clean up
 	mkdir -p output
-	mv ${system}_c2*dat output/
+	mv ${system}_s*.dat output/
 	rm gmon.out
 	rm recentered_traj_pos_sampled.xyz
 	rm ${system}_*_list.dat
