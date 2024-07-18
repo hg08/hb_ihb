@@ -5,25 +5,30 @@ else
     JSON_FILE=$1
 fi
 
+name=$(jq -r '.name' $JSON_FILE)
 system=$(jq -r '.system' $JSON_FILE)
+dt=$(jq -r '.dt' $JSON_FILE)
 sizeX=$(jq -r '.sizeX' $JSON_FILE)
 sizeY=$(jq -r '.sizeY' $JSON_FILE)
 sizeZ=$(jq -r '.sizeZ' $JSON_FILE)
 numAtom=$(jq -r '.numAtoms' $JSON_FILE)
+simTime=$(jq -r '.simTime' $JSON_FILE)
+numFrame=$(jq -r '.numFrames' $JSON_FILE)
 
 
 echo Processing system $system ...
 trajFile=$system.xyz 
 
        
-# --- 3_statistics-c
+# --- Fig. 2:  3_statistics-c
 echo "Processing statistics..."
    
 # Statistics for 1_case1
 files1=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_layers_c_at_ref.dat"
-for start_frame in `seq 0 10000 50000`
+numSubTraj=3
+for (( i=0; i<$numSubTraj; i++ ))
 do 
-	subTraj=${system}_s${start_frame}
+	subTraj=${system}_s${i}
 	files1+=("3_analyze/output/${subTraj}_1_case1_layers_c_at_ref.dat")
 done
 mean_c_at_ref=3_analyze/output/1_case1_layers_c_at_ref.dat
@@ -55,11 +60,8 @@ sed -i "s/0.000000/        /g" $mean_c_at_ref ## WARNING: 0.000000 is not genera
 
 # Statistics for 2_case2
 files2=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_layers_c_at_ref.dat"
-for start_frame in `seq 0 10000 50000`
-do 
-	subTraj=${system}_s${start_frame}
-	files2+=("3_analyze/output/${subTraj}_2_case2_layers_c_at_ref.dat")
-done
+subTraj=${system} # Only one 'subTraj' for 2_case2
+files2+=("3_analyze/output/${subTraj}_2_case2_layers_c_at_ref.dat")
 mean_c_at_ref=3_analyze/output/2_case2_layers_c_at_ref.dat
 rm -rf $mean_c_at_ref
 awk '
@@ -88,45 +90,78 @@ sed -i "s/0.000000/        /g" $mean_c_at_ref
 # END--Statistics for 2_case2
     
 
-# 3_statistics-C(t)
-for scenario in 1_case1 2_case2
+# --- Fig. 3. 3_statistics-C(t)
+scenario=1_case1
+for d in {1..6} 
 do 
-	for d in {1..6} 
-	do 
-		files=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_**_h_*.dat"
-		for start_frame in `seq 0 10000 50000` 
-            	do
-                	subTraj=${system}_s${start_frame}
-    	        	files+=(${scenario}/output/${subTraj}_wat_pair_hbacf_h_ihb_${d}.dat)
-                	# The symbol * is used to match 1.dat and 1.0.dat 
-            	done
-            	mean_c_t=3_analyze/output/${system}_${scenario}_c_t_${d}.dat
+	files=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_**_h_*.dat"
+	for (( i=0; i<numSubTraj; i++ ))
+    	do
+        	subTraj=${system}_s${i}
+        	files+=(${scenario}/output/${subTraj}_wat_pair_hbacf_h_ihb_${d}.dat)
+        	# The symbol * is used to match 1.dat and 1.0.dat 
+    	done
+    	mean_c_t=3_analyze/output/${system}_${scenario}_c_t_${d}.dat
 
-		rm -rf $mean_c_t
-     	    	awk '
-                # For each line in each file
-                {
-                        if (FNR > maxFNR) {
-                            maxFNR = FNR;
-                        }
-                        ndex[FNR] = $1;
-                        count[FNR]++
-                        sum[FNR] += $2
-                        sumsq[FNR] += ($2*$2)
+	rm -rf $mean_c_t
+    	awk '
+        # For each line in each file
+        {
+                if (FNR > maxFNR) {
+                    maxFNR = FNR;
                 }
+                ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
+        }
 
-                # After processing all files
-                END {
-                    for (i = 1; i <= FNR; i++){
-                    mean = sum[i] / count[i]
-                    stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
-                    std_err = stddev/ sqrt(count[i])
-                    printf ("%s %f %f\n", ndex[i], mean, std_err)
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+            std_err = stddev/ sqrt(count[i])
+            printf ("%s %f %f\n", ndex[i], mean, std_err)
 
-                    }
-            	} '  "${files[@]}" > $mean_c_t
+            }
+    	} '  "${files[@]}" > $mean_c_t
 
-	done
+done
+
+scenario=2_case2
+for d in {1..6} 
+do 
+	files=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_**_h_*.dat"
+       	subTraj=${system}
+       	files+=(${scenario}/output/${subTraj}_wat_pair_hbacf_h_ihb_${d}.dat)
+       	# The symbol * is used to match 1.dat and 1.0.dat 
+    	mean_c_t=3_analyze/output/${system}_${scenario}_c_t_${d}.dat
+
+	rm -rf $mean_c_t
+    	awk '
+        # For each line in each file
+        {
+                if (FNR > maxFNR) {
+                    maxFNR = FNR;
+                }
+                ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
+        }
+
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+            std_err = stddev/ sqrt(count[i])
+            printf ("%s %f %f\n", ndex[i], mean, std_err)
+
+            }
+    	} '  "${files[@]}" > $mean_c_t
+
 done
 # END--3_statistics-C(t)
 
@@ -137,9 +172,9 @@ echo "Processing statistics kkprime"
         
 # Statistics for 1_case1 kkprime
 files1=() # Initialize an empty array, for saving "output/${subTraj}_1_case1_kkprime.dat"
-for start_frame in `seq 0 10000 50000`
+for (( i=0; i<numSubTraj; i++ ))
 do 
-	subTraj=${system}_s${start_frame}
+	subTraj=${system}_s${i}
 	files1+=("3_analyze/output/${subTraj}_1_case1_kkprime.dat")
 done
 
@@ -176,11 +211,8 @@ awk '
 
 # Statistics for 2_case2 kkprime
 files2=() # Initialize an empty array, for saving "output/${subTraj}_2_case2_kkprime.dat"
-for start_frame in `seq 0 10000 50000`
-do 
-	subTraj=${system}_s${start_frame}
-	files2+=("3_analyze/output/${subTraj}_2_case2_kkprime.dat")
-done
+subTraj=${system} # Only one 'subTraj' for 2_case2
+files2+=("3_analyze/output/${subTraj}_2_case2_kkprime.dat")
 
 mean_kkprime=3_analyze/output/2_case2_kkprime.dat
 rm -rf $mean_kkprime
@@ -219,9 +251,9 @@ mkdir -p 3_analyze/output
 echo "Processing statistics c2..."
         
 files=() # Initialize an empty array, for saving "output/*_layers_c2_at_ref.dat"
-for start_frame in `seq 0 10000 50000`
+for (( i=0; i<numSubTraj; i++ ))
 do 
-	subTraj=${system}_s${start_frame}
+	subTraj=${system}_s${i}
 	files+=("3_analyze/output/${subTraj}_layers_c2_at_ref.dat")
 done
 
@@ -255,9 +287,9 @@ sed -i "s/0.000000/        /g" $mean_c2
 # 3_statistics-tau2
 echo "Processing statistics tau2..."
 files=() # Initialize an empty array, for saving "output/${subTraj}_tau2.dat"
-for start_frame in `seq 0 10000 50000`
+for (( i=0; i<numSubTraj; i++ ))
 do 
-	subTraj=${system}_s${start_frame}
+	subTraj=${system}_s${i}
 	files+=("3_analyze/output/${subTraj}_tau2.dat")
 done
 
@@ -286,12 +318,3 @@ awk '
             }
         } '  "${files[@]}" > $mean_tau2
 # END---3_statistics-tau2
-        
-
-# 4_plot
-cd 4_plot
-gnuplot ./plot_Fig2.gp
-gnuplot ./plot_Fig3.gp
-gnuplot ./plot_Fig4.gp
-gnuplot ./plot_Fig5.gp
-cd ..
