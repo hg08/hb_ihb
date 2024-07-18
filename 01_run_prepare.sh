@@ -43,6 +43,6 @@ python 1_chandler_fast.py < $inputFile
 # d. Clean up
 mkdir -p output
 mv *.cube output/
-mv surf_${subTraj}.dat output/  
+mv surf_${system}.dat output/  
 cd .. # )
 # --- End Step 0
