@@ -1,0 +1,12 @@
+{
+    "name": "128w-pos-dt40.xyz",
+    "system": "128w-pos-dt40",
+    "simType": "AIMD",
+    "dt": 40.000,
+    "sizeX": 15.6404,
+    "sizeY": 15.6404,
+    "sizeZ": 31.2808,
+    "numAtoms": 384,
+    "simTime": 40000,
+    "numFrames": 1001
+}
