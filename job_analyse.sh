@@ -8,6 +8,10 @@
 #SBATCH --ntasks=1                        # Number of tasks
 #SBATCH --cpus-per-task=1                 # Number of CPU cores per task
 
+# Automatically find the conda base path
+# Initialize conda in the shell
+CONDA_BASE=$(conda info --base)
+source "$CONDA_BASE/etc/profile.d/conda.sh"
 conda activate ihb
 
 echo "Running job with name ${SLURM_JOB_NAME} and ID ${SLURM_JOB_ID}"
