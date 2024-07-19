@@ -1,1 +1,1 @@
-rm -rf *.eps
+rm -rf *.eps*
