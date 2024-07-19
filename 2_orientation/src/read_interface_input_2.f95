@@ -58,7 +58,7 @@ SUBROUTINE read_interface_input_2(boxsize,delta_t0,filename,pos_filename,nmo_sta
     delta_t0 = 0.0005d0
   else
     read(line, *, iostat = ierr) delta_t0
-    write(*,*) delta_t0
+    !write(*,*) delta_t0
   endif
 
   write(6,*)'What is the name of the system:'
@@ -103,7 +103,7 @@ SUBROUTINE read_interface_input_2(boxsize,delta_t0,filename,pos_filename,nmo_sta
     nat = 18
   else
     read(line, *, iostat = ierr) nat
-    write(*,*) "nat:", nat
+    !write(*,*) "nat:", nat
   endif
 
   write(6,*)'What is the time step for calculating CORRELATION:' 
@@ -113,7 +113,7 @@ SUBROUTINE read_interface_input_2(boxsize,delta_t0,filename,pos_filename,nmo_sta
     ns = 40
   else
     read(line, *, iostat = ierr) ns
-    write(*,*) "ns: ", ns
+    !write(*,*) "ns: ", ns
   endif
 
   write(6,*)'What is the name of the surface trajectory file:' 
@@ -122,7 +122,7 @@ SUBROUTINE read_interface_input_2(boxsize,delta_t0,filename,pos_filename,nmo_sta
     surf_filename = "surf_traj.dat"
   else
     read(line, *, iostat = ierr) surf_filename
-    write(*,*) "surf traj. name: ", surf_filename
+    !write(*,*) "surf traj. name: ", surf_filename
   endif  
 
   write(6,*)'What is the thickness of the interface you want to define: (Angstrom)' 

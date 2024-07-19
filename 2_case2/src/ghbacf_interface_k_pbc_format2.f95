@@ -123,7 +123,7 @@
       !============================
       !read in surf trajectory file 
       !============================
-      OPEN(20, file='surf_traj.dat')
+      !OPEN(20, file='surf_traj.dat')
       !=======================
      !====================================
      ! Calculate <h(0)h(t)>/<h>  

@@ -456,7 +456,7 @@
       allocate(ndx_H(i_H)) ! this should be put after i_H is defined
       !allocate(ndx_I(i_I)) ! this should be put after i_I is defined
       i=0; ii=0; jj=0
-      write(*,*) "pos_filenae:",pos_filename
+      !write(*,*) "pos_filenae:",pos_filename
       open(10,file=trim(pos_filename))
       REWIND(10)     
       read(10,*) !Neglect data of this line. Be careful, the two 'read' lines must be located before the 'do iatom=1,natoms' loop, otherwise, there will be an error.

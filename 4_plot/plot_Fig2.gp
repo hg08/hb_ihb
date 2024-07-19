@@ -34,6 +34,7 @@ set label 3 at 2, graph 0.16 "increase d" center font "Arial,32" textcolor rgb "
 
 plot_interval = 3  # Change this value to adjust the plotting frequency
 
+
 #====
 #plot A
 # ADH scheme 1
@@ -46,17 +47,18 @@ set xlabel "t (ps)"
 set label 1 "(a)" right at graph 0.1, graph 0.95
 set label 2 "scenario 1 (LC)" left at graph 0.13, graph 0.95
 #set arrow 1 ls 4 from graph 0.4, graph 0.25 to graph 0.4, graph 0.75 
+# The variable system is passed from the command line
 plot [0.0:xmax] \
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_1.dat' every plot_interval::0 u 1:2 w l ls 10021 notitle "1 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_2.dat' every plot_interval::0 u 1:2 w l ls 10022 notitle "2 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_3.dat' every plot_interval::0 u 1:2 w l ls 10023 notitle "3 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_4.dat' every plot_interval::0 u 1:2 w l ls 10024 notitle "4 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_5.dat' every plot_interval::0 u 1:2 w l ls 10028 notitle "5 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_1.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10021 title "1 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_2.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10022 title "2 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_3.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10023 title "3 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_4.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10024 title "4 \305",\
-     '../3_analyze/output/128w-pos-1_1_case1_c_t_5.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10028 title "5 \305"
+     '../3_analyze/output/'.system.'_1_case1_c_t_1.dat' every plot_interval::0 u 1:2 w l ls 10021 notitle "1 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_2.dat' every plot_interval::0 u 1:2 w l ls 10022 notitle "2 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_3.dat' every plot_interval::0 u 1:2 w l ls 10023 notitle "3 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_4.dat' every plot_interval::0 u 1:2 w l ls 10024 notitle "4 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_5.dat' every plot_interval::0 u 1:2 w l ls 10028 notitle "5 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_1.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10021 title "1 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_2.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10022 title "2 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_3.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10023 title "3 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_4.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10024 title "4 \305",\
+     '../3_analyze/output/'.system.'_1_case1_c_t_5.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10028 title "5 \305"
 
 #====
 #plot B
@@ -70,16 +72,16 @@ set ylabel "c^{(s)}(t)"
 set label 1 "(b)" right at graph 0.1, graph 0.95
 set label 2 "scenario 2 (IHB)" left at graph 0.13, graph 0.95
 plot [0.0:xmax] \
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_1.dat' every plot_interval::0 u 1:2 w l ls 10021 notitle "1 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_2.dat' every plot_interval::0 u 1:2 w l ls 10022 notitle "2 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_3.dat' every plot_interval::0 u 1:2 w l ls 10023 notitle "3 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_4.dat' every plot_interval::0 u 1:2 w l ls 10024 notitle "4 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_5.dat' every plot_interval::0 u 1:2 w l ls 10028 notitle "5 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_1.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10021 title "1 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_2.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10022 title "2 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_3.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10023 title "3 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_4.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10024 title "4 \305",\
-     '../3_analyze/output/128w-pos-1_2_case2_c_t_5.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10028 title "5 \305"
+     '../3_analyze/output/'.system.'_2_case2_c_t_1.dat' every plot_interval::0 u 1:2 w l ls 10021 notitle "1 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_2.dat' every plot_interval::0 u 1:2 w l ls 10022 notitle "2 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_3.dat' every plot_interval::0 u 1:2 w l ls 10023 notitle "3 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_4.dat' every plot_interval::0 u 1:2 w l ls 10024 notitle "4 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_5.dat' every plot_interval::0 u 1:2 w l ls 10028 notitle "5 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_1.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10021 title "1 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_2.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10022 title "2 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_3.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10023 title "3 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_4.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10024 title "4 \305",\
+     '../3_analyze/output/'.system.'_2_case2_c_t_5.dat' every plot_interval::0 u 1:2:3 w errorbars ls 10028 title "5 \305"
 
 
 unset arrow 1
