@@ -59,7 +59,6 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
               inner2b: do i_grid = 1, n_grid
                   read (indx,131,IOSTAT=ierror) surf_info_fortran(1,i_sample,i_grid), & 
                       surf_info_fortran(2,i_sample,i_grid)
-                  !WRITE (*,131) surf_info_fortran(1,i_sample,i_grid),surf_info_fortran(2,i_sample,i_grid)
               enddo inner2b
           END DO outer2
       ENDIF

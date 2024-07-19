@@ -96,7 +96,6 @@
       end do
       !write(6,*)'number of movie steps:',nmovie
       !write(6,*)'number of atoms in molecule:',natoms
-      !write(6,*)
     close(10)
 
     ! read in TRAJECTORY/VELOCITY file in xyz format 
