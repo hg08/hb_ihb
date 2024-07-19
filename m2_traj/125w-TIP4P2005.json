@@ -1,0 +1,12 @@
+{
+    "name": "125w-TIP4P2005.xyz",
+    "system": "125w-TIP4P2005",
+    "simType": "MD",
+    "dt": 0.04,
+    "sizeX": "15.5214",
+    "sizeY": "15.5214",
+    "sizeZ": "77.6070",
+    "numAtoms": 375,
+    "simTime": "100.00",
+    "numFrames": 2501
+}

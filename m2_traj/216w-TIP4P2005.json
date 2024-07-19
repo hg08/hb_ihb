@@ -1,0 +1,12 @@
+{
+    "name": "216w-TIP4P2005.xyz",
+    "system": "216w-TIP4P2005",
+    "simType": "MD",
+    "dt": 0.04,
+    "sizeX": "19.7110",
+    "sizeY": "19.7110",
+    "sizeZ": "98.5548",
+    "numAtoms": 648,
+    "simTime": "100.00",
+    "numFrames": 2501
+}
