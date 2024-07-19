@@ -32,7 +32,7 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
       write(*,*) "read_surf_traj(): New total time steps (n_samples):", n_samples
       !1.Determine How many lines have to be skiped
       skip_num = FLOOR(nmo_start/FLOAT(ns))
-      WRITE(*,*) "skip_num =", skip_num
+      !WRITE(*,*) "skip_num =", skip_num
       IF (skip_num > 0) THEN
           !SKIP skip_num lines
           DO i_sample = 1, skip_num
@@ -44,22 +44,22 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
           !READ AFTER SKIPPING LINES
           outer: DO i_sample = 1, n_samples ! i_sample can take the value of n_samples; WE WILL NOT USE DO WHILE LOOP ANY MORE IN THE FUTURE. 
               read(indx, '(A4,I5)',IOSTAT=ierror) head_char, y
-              WRITE(*, '(A24,A4,I5)') "PRE_CHECK head_char, y: ", head_char, y
+              !WRITE(*, '(A24,A4,I5)') "PRE_CHECK head_char, y: ", head_char, y
               inner1: do i_grid = 1, n_grid
                   read (indx,131,IOSTAT=ierror) surf_info_fortran(1,i_sample,i_grid), & 
                       surf_info_fortran(2,i_sample,i_grid)
-                  WRITE (*,131) surf_info_fortran(1,i_sample,i_grid),surf_info_fortran(2,i_sample,i_grid)
+                  !WRITE (*,131) surf_info_fortran(1,i_sample,i_grid),surf_info_fortran(2,i_sample,i_grid)
               enddo inner1
           END DO outer
       ELSE
           !DIRECTLY READ
           outer2: DO i_sample = 1, n_samples ! i_sample can take the value of n_samples; WE WILL NOT USE DO WHILE LOOP ANY MORE IN THE FUTURE. 
               read(indx, '(A4,I5)',IOSTAT=ierror) head_char, y
-              WRITE(*, '(A29,A4,I5)') "PRE_CHEC_RIGHT head_char, y: ", head_char, y
+              !WRITE(*, '(A29,A4,I5)') "PRE_CHEC_RIGHT head_char, y: ", head_char, y
               inner2b: do i_grid = 1, n_grid
                   read (indx,131,IOSTAT=ierror) surf_info_fortran(1,i_sample,i_grid), & 
                       surf_info_fortran(2,i_sample,i_grid)
-                  WRITE (*,131) surf_info_fortran(1,i_sample,i_grid),surf_info_fortran(2,i_sample,i_grid)
+                  !WRITE (*,131) surf_info_fortran(1,i_sample,i_grid),surf_info_fortran(2,i_sample,i_grid)
               enddo inner2b
           END DO outer2
       ENDIF

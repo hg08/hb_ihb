@@ -60,7 +60,7 @@
             n=n+2
           endif
         enddo
-        write(*,*) "n = ", n
+        !write(*,*) "n = ", n
       ENDDO ROW
 
       close(20)
