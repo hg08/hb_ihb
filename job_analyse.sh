@@ -8,6 +8,8 @@
 #SBATCH --ntasks=1                        # Number of tasks
 #SBATCH --cpus-per-task=1                 # Number of CPU cores per task
 
+conda activate ihb
+
 echo "Running job with name ${SLURM_JOB_NAME} and ID ${SLURM_JOB_ID}"
 start_time=$(date +%s)
 echo "Job started at $(date)"
