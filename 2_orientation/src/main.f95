@@ -96,7 +96,7 @@ PROGRAM main_interface_relax
   CALL sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize,&
        sampled_pos_filename,sampled_movie,sampled_time,sampled_energy, &
        nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
-  WRITE(*,*)"MAIN nb_divx =", nb_divx
+  !WRITE(*,*)"MAIN nb_divx =", nb_divx
   ! After running the sample() or sample_format2() subroutine, therefore we have a new sampled trajectory file (stored in atom_info), 
   ! which is generally shorter than the original one.
   
@@ -105,7 +105,7 @@ PROGRAM main_interface_relax
   !====================
   allocate(surf_info_fortran(2,n_samples,n_grid))
   surf_info_fortran = 0
-  write(*,*) "SHAPE(surf_info_fortran)= ", SHAPE(surf_info_fortran)
+  !write(*,*) "SHAPE(surf_info_fortran)= ", SHAPE(surf_info_fortran)
   ns_2nd = 1 ! sample freq is 1, ie., all data are sampled
   CALL read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,surf_info_fortran)
   
@@ -115,7 +115,7 @@ PROGRAM main_interface_relax
 
   CALL molecules_in_interface(n_samples,nat,indx_array,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info_fortran)
-  WRITE(*,*)"MAIN4 nb_divx =", nb_divx
+  !WRITE(*,*)"MAIN4 nb_divx =", nb_divx
   !To determine the indices of Oxygens' pairs that located in one of the interface.
   !CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array)
   !Similarly, we generate a list for O atoms at one of the interface.

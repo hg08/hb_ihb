@@ -65,12 +65,12 @@
     nbonds=0
 
     !Write delta_t
-    write(*,*) "RELAX delta_t = ", delta_t , "(ps)" 
+    !write(*,*) "RELAX delta_t = ", delta_t , "(ps)" 
     ! I want to calculate 'nbonds' from the list_filename! Then I need to create an explicit interface, therefore, I defined a function calc_num_of_lines_of_file and put it in a module.
     ! Get the total number of OH bond pairs, i.e., the total number of lines in the list file
     list_filename_temp = list_filename
     !CALL calc_num_of_lines_of_file(list_filename_temp,nbonds)
-    write(*,*) 'RELAX # of OH bonds (nbonds) =', nbonds
+    !write(*,*) 'RELAX # of OH bonds (nbonds) =', nbonds
     !Or use
     nbonds=get_total_number_of_lines(list_filename_temp)
 
@@ -94,9 +94,9 @@
       do i=1,nbonds
         read(10,*)idx_bonds(1,i),idx_bonds(2,i)
       end do
-      write(6,*)'number of movie steps:',nmovie
-      write(6,*)'number of atoms in molecule:',natoms
-      write(6,*)
+      !write(6,*)'number of movie steps:',nmovie
+      !write(6,*)'number of atoms in molecule:',natoms
+      !write(6,*)
     close(10)
 
     ! read in TRAJECTORY/VELOCITY file in xyz format 
@@ -141,8 +141,8 @@
        END DO timeloop
     enddo
     !! TEST: both the following lines should print 1.0
-    write(*,*) rx(1,1)**2 + ry(1,1)**2 + rz(1,1)**2
-    write(*,*) rx(2,2)**2 + ry(2,2)**2 + rz(2,2)**2
+    !write(*,*) rx(1,1)**2 + ry(1,1)**2 + rz(1,1)**2
+    !write(*,*) rx(2,2)**2 + ry(2,2)**2 + rz(2,2)**2
     
     do mt=0, nmovie-1 ! Loop of Dt (=t-t0)
        do nts = 1,nmovie-mt ! Loop of t0
