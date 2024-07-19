@@ -76,7 +76,6 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
 
     write (10,'(I8)') nat
     WRITE(10,100) ' i = ',i-1,', time = ',sampled_time(i),', E = ',sampled_energy(i)
-    !WRITE(*,100) ' i = ',i-1,', time = ',sampled_time(i),', E = ',sampled_energy(i)
     100 FORMAT (A5,I8,A9,F12.3,A6,F20.10)
     !130 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
   
