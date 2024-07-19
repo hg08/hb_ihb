@@ -24,7 +24,7 @@ rm -f iad_sulpizi
 mkdir -p obj
 make
 rm -rf obj
-rm module_ihb.mod
+rm -rf module_ihb.mod
 
 # prepare input position and surface trajectories 
 trajFile=$system.xyz 
@@ -74,8 +74,8 @@ do
 	# c. Clean up
 	mkdir -p output
 	mv ${system}_s*.dat output/
-	rm gmon.out
-	rm recentered_traj_pos_sampled.xyz
-	rm ${system}_*_list.dat
+	rm -rf gmon.out
+	rm -rf recentered_traj_pos_sampled.xyz
+	rm -rf ${system}_*_list.dat
 done
 cd .. # ) End step 2_orientation 
