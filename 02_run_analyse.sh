@@ -28,7 +28,7 @@ rm -f *.png
 
 # Case 1
 scenario=1_case1
-numSubTraj=3
+numSubTraj=6
 subTrajTime=20 # in ps
 if [ $subTrajTime -gt $simTime ]; then
 	echo "Error: subTrajTime is larger than simTime"

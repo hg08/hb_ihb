@@ -25,7 +25,7 @@ echo "Processing statistics..."
    
 # Statistics for 1_case1
 files1=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_layers_c_at_ref.dat"
-numSubTraj=3
+numSubTraj=6
 for (( i=0; i<$numSubTraj; i++ ))
 do 
 	subTraj=${system}_s${i}
