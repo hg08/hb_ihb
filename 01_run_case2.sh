@@ -12,9 +12,8 @@ sizeX=$(jq -r '.sizeX' $JSON_FILE)
 sizeY=$(jq -r '.sizeY' $JSON_FILE)
 sizeZ=$(jq -r '.sizeZ' $JSON_FILE)
 numAtom=$(jq -r '.numAtoms' $JSON_FILE)
+simTime=$(jq -r '.simTime' $JSON_FILE)
 numFrame=$(jq -r '.numFrames' $JSON_FILE)
-frameStart=0
-frameEnd=$(($numFrame-1))
 
 # --- Step 2_case2
 echo Processing system $system ...
@@ -27,34 +26,51 @@ surfTrajFile=surf_${system}.dat
 rm -rf $trajFile $surfTrajFile 
 ln -s ../m2_traj/$trajFile .
 ln -s ../0_prepare/output/$surfTrajFile .
-for d in {1..6}
-do 
-	inputFile=input_${system}_${d}
-	cp input_template $inputFile
-	sed -i "s/SIZEX/${sizeX}/g" $inputFile
-	sed -i "s/SIZEY/${sizeY}/g" $inputFile
-	sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
-	sed -i "s/DTINPS/${dt}/g" $inputFile
-	sed -i "s/SYSTEM/${system}/g" $inputFile
-	sed -i "s/FRAMESTART/${frameStart}/g" $inputFile
-	sed -i "s/FRAMEEND/${frameEnd}/g" $inputFile
-	sed -i "s/NUMATOM/${numAtom}/g" $inputFile
-	sed -i "s/SURFTRAJFILE/${surfTrajFile}/g" $inputFile
-	sed -i "s/THICKNESS/${d}/g" $inputFile
-done
 
-# b. Run ihb 
-for d in {1..6}
-do 
-	inputFile=input_${system}_${d}
-	./main_interface_c_format2 < $inputFile
-	./main_interface_k_format2 < $inputFile
-	./main_interface_n_format2 < $inputFile
-done
+numSubTraj=6
+subTrajTime=35 # in ps
+if [ $subTrajTime -gt $simTime ]; then
+        echo "Error: subTrajTime is larger than simTime"
+        exit 1
+fi
+offSetInPs=$(echo "($simTime - $subTrajTime) / ($numSubTraj - 1)" | bc -l)
+offSet=$(echo "scale=0; $offSetInPs / $dt" | bc -l)
+for (( i=0; i<numSubTraj; i++ ))
+do # Loop over sub-trajectories
+        start_frame=$(echo "$offSet * $i" | bc -l)
+        echo "Sub-trajectory $i start frame: $start_frame"
+        end_frame=$(echo "scale=0; 1 + $start_frame + $subTrajTime / $dt" | bc -l)
+        echo "Sub-trajectory $i end frame: $end_frame"
+	for d in {1..6}
+	do 
+		inputFile=input_${system}_s${i}_${d}
+		cp input_template $inputFile
+		sed -i "s/SIZEX/${sizeX}/g" $inputFile
+		sed -i "s/SIZEY/${sizeY}/g" $inputFile
+		sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
+		sed -i "s/DTINPS/${dt}/g" $inputFile
+		sed -i "s/SYSTEM/${system}_s${i}/g" $inputFile
+		sed -i "s/WHOLETRAJ/${system}/g" $inputFile
+		sed -i "s/FRAMESTART/${start_frame}/g" $inputFile
+		sed -i "s/FRAMEEND/${end_frame}/g" $inputFile
+		sed -i "s/NUMATOM/${numAtom}/g" $inputFile
+		sed -i "s/SURFTRAJFILE/${surfTrajFile}/g" $inputFile
+		sed -i "s/THICKNESS/${d}/g" $inputFile
+	done
+	
+	# b. Run ihb 
+	for d in {1..6}
+	do 
+		inputFile=input_${system}_s${i}_${d}
+		./main_interface_c_format2 < $inputFile
+		./main_interface_k_format2 < $inputFile
+		./main_interface_n_format2 < $inputFile
+	done
 
-# c. Clean up
-mkdir -p output
-mv ${system}_* output/
+	# c. Clean up
+	mkdir -p output
+	mv ${system}_* output/
 
+done # End loop over sub-trajectories
 cd .. # ) 
 # --- End step 2_case2
