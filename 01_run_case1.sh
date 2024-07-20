@@ -37,7 +37,7 @@ ln -s ../0_prepare/output/$surfTrajFile .
 # 'divide' the whole trajectory into several sub-trajectories
 
 numSubTraj=6
-subTrajTime=20 # in ps
+subTrajTime=35 # in ps
 if [ $subTrajTime -gt $simTime ]; then
 	echo "Error: subTrajTime is larger than simTime"
 	exit 1
