@@ -736,7 +736,7 @@
       ELSE IF (ns == 0) THEN
         sampling_number = nmo_end-(nmo_start-1)
       ELSE 
-        sampling_number = FLOOR(FLOAT(nmo_end-(nmo_start))/FLOAT(ns))
+        sampling_number = FLOOR(FLOAT(nmo_end-(nmo_start-1))/FLOAT(ns))
       END IF positive
   END FUNCTION sampling_number
 

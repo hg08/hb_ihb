@@ -12,19 +12,24 @@ CONTAINS
     INTEGER,INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
     INTEGER,INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
 
-    write(*,*) 'In function sampling_number: nmo_end = ', nmo_end
+    !write(*,*) 'In function sampling_number: nmo_end = ', nmo_end
     ! no. of samples = INT({no. of moves}/ns)
     positive: IF (nmo_end <0 .OR. nmo_start < 0 .OR. ns <0) THEN
       write(*,*) 'Please enter non-negative values for the ns, starting step and ending step.'
     ELSE IF (nmo_end < nmo_start) THEN
       write(*,*) 'Please note that starting step shoud not larger than  ending step.'
-    ELSE IF (ns ==0) THEN
-      sampling_number = nmo_end-(nmo_start-1)
-    ELSE IF (nmo_end-(nmo_start-1) <= ns) THEN
-      sampling_number = INT((nmo_end-(nmo_start-1))/ns + 1)
-    ELSE IF (nmo_end-(nmo_start-1) > ns) THEN
-      sampling_number = INT((nmo_end-(nmo_start-1))/ns)
-    END IF positive
+      ELSE IF (ns == 0) THEN
+        sampling_number = nmo_end-(nmo_start-1)
+      ELSE
+        sampling_number = FLOOR(FLOAT(nmo_end-(nmo_start-1))/FLOAT(ns))
+      END IF positive
+!    ELSE IF (ns ==0) THEN
+!      sampling_number = nmo_end-(nmo_start-1)
+!    ELSE IF (nmo_end-(nmo_start-1) <= ns) THEN
+!      sampling_number = INT((nmo_end-(nmo_start-1))/ns + 1)
+!    ELSE IF (nmo_end-(nmo_start-1) > ns) THEN
+!      sampling_number = INT((nmo_end-(nmo_start-1))/ns)
+!    END IF positive
   END FUNCTION sampling_number
 
   SUBROUTINE read_traj_v1(indx,nmo_start,nmo_end,ns,nat,n_samples)
