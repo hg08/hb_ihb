@@ -14,6 +14,12 @@ sizeZ=$(jq -r '.sizeZ' $JSON_FILE)
 numAtom=$(jq -r '.numAtoms' $JSON_FILE)
 simTime=$(jq -r '.simTime' $JSON_FILE)
 numFrame=$(jq -r '.numFrames' $JSON_FILE)
+numSubTrajCase1=$(jq -r '.numSubTrajCase1' $JSON_FILE)
+subTrajTimeCase1=$(jq -r '.subTrajTimeCase1' $JSON_FILE)
+numSubTrajCase2=$(jq -r '.numSubTrajCase2' $JSON_FILE)
+subTrajTimeCase2=$(jq -r '.subTrajTimeCase2' $JSON_FILE)
+numSubTrajOri=$(jq -r '.numSubTrajOri' $JSON_FILE)
+subTrajTimeOri=$(jq -r '.subTrajTimeOri' $JSON_FILE)
 
 # --- Step 2_case2
 echo Processing system $system ...
@@ -27,13 +33,19 @@ rm -rf $trajFile $surfTrajFile
 ln -s ../m2_traj/$trajFile .
 ln -s ../0_prepare/output/$surfTrajFile .
 
-numSubTraj=6
-subTrajTime=35 # in ps
+numSubTraj=$numSubTrajCase2
+subTrajTime=$subTrajTimeCase2 # in ps
 if [ $subTrajTime -gt $simTime ]; then
         echo "Error: subTrajTime is larger than simTime"
         exit 1
 fi
-offSetInPs=$(echo "($simTime - $subTrajTime) / ($numSubTraj - 1)" | bc -l)
+
+if [ $numSubTraj -eq 1 ]; then
+	offSetInPs=0
+else
+	offSetInPs=$(echo "($simTime - $subTrajTime) / ($numSubTraj - 1)" | bc -l)
+fi
+
 offSet=$(echo "scale=0; $offSetInPs / $dt" | bc -l)
 for (( i=0; i<numSubTraj; i++ ))
 do # Loop over sub-trajectories

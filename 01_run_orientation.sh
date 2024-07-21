@@ -14,6 +14,12 @@ sizeZ=$(jq -r '.sizeZ' $JSON_FILE)
 numAtom=$(jq -r '.numAtoms' $JSON_FILE)
 simTime=$(jq -r '.simTime' $JSON_FILE)
 numFrame=$(jq -r '.numFrames' $JSON_FILE)
+numSubTrajCase1=$(jq -r '.numSubTrajCase1' $JSON_FILE)
+subTrajTimeCase1=$(jq -r '.subTrajTimeCase1' $JSON_FILE)
+numSubTrajCase2=$(jq -r '.numSubTrajCase2' $JSON_FILE)
+subTrajTimeCase2=$(jq -r '.subTrajTimeCase2' $JSON_FILE)
+numSubTrajOri=$(jq -r '.numSubTrajOri' $JSON_FILE)
+subTrajTimeOri=$(jq -r '.subTrajTimeOri' $JSON_FILE)
 
 # --- Step 2_orientation
 echo Processing system $system ...
@@ -33,8 +39,8 @@ rm -rf $trajFile $surfTrajFile
 ln -s ../m2_traj/$trajFile .
 ln -s ../0_prepare/output/$surfTrajFile .
 
-numSubTraj=6
-subTrajTime=35 # in ps
+numSubTraj=$numSubTrajOri
+subTrajTime=$subTrajTimeOri # in ps
 if [ $subTrajTime -gt $simTime ]; then
 	echo "Error: subTrajTime is larger than simTime"
 	exit 1
