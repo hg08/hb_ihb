@@ -14,6 +14,12 @@ sizeZ=$(jq -r '.sizeZ' $JSON_FILE)
 numAtom=$(jq -r '.numAtoms' $JSON_FILE)
 simTime=$(jq -r '.simTime' $JSON_FILE)
 numFrame=$(jq -r '.numFrames' $JSON_FILE)
+numSubTrajCase1=$(jq -r '.numSubTrajCase1' $JSON_FILE)
+subTrajTimeCase1=$(jq -r '.subTrajTimeCase1' $JSON_FILE)
+numSubTrajCase2=$(jq -r '.numSubTrajCase2' $JSON_FILE)
+subTrajTimeCase2=$(jq -r '.subTrajTimeCase2' $JSON_FILE)
+numSubTrajOri=$(jq -r '.numSubTrajOri' $JSON_FILE)
+subTrajTimeOri=$(jq -r '.subTrajTimeOri' $JSON_FILE)
 
 # --- Step 1_case1 
 echo Processing system $system ...
@@ -36,13 +42,20 @@ ln -s ../0_prepare/output/$surfTrajFile .
 # the time length of each sub-trajectory, we can 
 # 'divide' the whole trajectory into several sub-trajectories
 
-numSubTraj=3
-subTrajTime=20 # in ps
+numSubTraj=$numSubTrajCase1
+subTrajTime=$subTrajTimeCase1 # in ps
 if [ $subTrajTime -gt $simTime ]; then
 	echo "Error: subTrajTime is larger than simTime"
 	exit 1
 fi
-offSetInPs=$(echo "($simTime - $subTrajTime) / ($numSubTraj - 1)" | bc -l)
+
+# If numSubTraj is 1, set offSetInPs to 0, else calculate offSetInPs
+if [ $numSubTraj -eq 1 ]; then
+	offSetInPs=0
+else
+	offSetInPs=$(echo "($simTime - $subTrajTime) / ($numSubTraj - 1)" | bc -l)
+fi
+
 offSet=$(echo "scale=0; $offSetInPs / $dt" | bc -l)
 for (( i=0; i<numSubTraj; i++ ))
 do # Loop over sub-trajectories
@@ -50,7 +63,8 @@ do # Loop over sub-trajectories
 	# We just need to set the start and end frame for each sub-trajectory
 	start_frame=$(echo "$offSet * $i" | bc -l)
 	echo "Sub-trajectory $i start frame: $start_frame"
-	end_frame=$(echo "scale=0; 1 + $start_frame + $subTrajTime / $dt" | bc -l)
+	#end_frame=$(echo "scale=0; 1 + $start_frame + $subTrajTime / $dt" | bc -l)
+	end_frame=$(echo "scale=0; $start_frame + $subTrajTime / $dt" | bc -l)
 	echo "Sub-trajectory $i end frame: $end_frame"
 
 	# a. Prepare parameter file

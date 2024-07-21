@@ -12,19 +12,24 @@ CONTAINS
     INTEGER,INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
     INTEGER,INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
 
-    write(*,*) 'In function sampling_number: nmo_end = ', nmo_end
+    !write(*,*) 'In function sampling_number: nmo_end = ', nmo_end
     ! no. of samples = INT({no. of moves}/ns)
     positive: IF (nmo_end <0 .OR. nmo_start < 0 .OR. ns <0) THEN
       write(*,*) 'Please enter non-negative values for the ns, starting step and ending step.'
     ELSE IF (nmo_end < nmo_start) THEN
       write(*,*) 'Please note that starting step shoud not larger than  ending step.'
-    ELSE IF (ns ==0) THEN
-      sampling_number = nmo_end-(nmo_start-1)
-    ELSE IF (nmo_end-(nmo_start-1) <= ns) THEN
-      sampling_number = INT((nmo_end-(nmo_start-1))/ns + 1)
-    ELSE IF (nmo_end-(nmo_start-1) > ns) THEN
-      sampling_number = INT((nmo_end-(nmo_start-1))/ns)
-    END IF positive
+      ELSE IF (ns == 0) THEN
+        sampling_number = nmo_end-(nmo_start-1)
+      ELSE
+        sampling_number = FLOOR(FLOAT(nmo_end-(nmo_start-1))/FLOAT(ns))
+      END IF positive
+!    ELSE IF (ns ==0) THEN
+!      sampling_number = nmo_end-(nmo_start-1)
+!    ELSE IF (nmo_end-(nmo_start-1) <= ns) THEN
+!      sampling_number = INT((nmo_end-(nmo_start-1))/ns + 1)
+!    ELSE IF (nmo_end-(nmo_start-1) > ns) THEN
+!      sampling_number = INT((nmo_end-(nmo_start-1))/ns)
+!    END IF positive
   END FUNCTION sampling_number
 
   SUBROUTINE read_traj_v1(indx,nmo_start,nmo_end,ns,nat,n_samples)
@@ -104,11 +109,11 @@ CONTAINS
             BACKSPACE(UNIT=indx) ! Because I am not able to read other lines with the format '(A4,I8)', and have not find any good way, so I try to read it in '(A4)' first 
             !read(indx, '(A4,I8)') head_char, y
             read(indx, '(1X,A4,I8)') head_char, y
-            !CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
+            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-nmo_start,ns) == 0) THEN
             !Jie: For special case of ns=1, MOD(y-(nmo_start-1),ns) is always 0. Hence, it needs to be checked separately. 
             !Use ‘&’ to continue the line to avoid Fortran maximum line length of 132 characters. (Stupid Fortran!)
-            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. &
-                            (ns == 1 .or. MOD(y-(nmo_start-1),ns) == 1))  THEN 
+            !CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. &
+            !                (ns == 1 .or. MOD(y-(nmo_start-1),ns) == 1))  THEN 
                 !-------------------------------------------------------------------------------------------------------
                 !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
                 !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
