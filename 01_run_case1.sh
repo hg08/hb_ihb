@@ -57,7 +57,6 @@ else
 fi
 
 offSet=$(echo "scale=0; $offSetInPs / $dt" | bc -l)
-echo "Debug offSet: $offSet"
 for (( i=0; i<numSubTraj; i++ ))
 do # Loop over sub-trajectories
 	# We don't need to really split the trajectory file
