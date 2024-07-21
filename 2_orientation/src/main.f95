@@ -8,7 +8,7 @@ PROGRAM main_interface_relax
   !============
   ! Declaration
   !============
-  USE module_ihb
+  USE module
   IMPLICIT NONE
 
   !==========
