@@ -39,7 +39,8 @@ for (( i=0; i<numSubTraj; i++ ))
 do # Loop over sub-trajectories
         start_frame=$(echo "$offSet * $i" | bc -l)
         echo "Sub-trajectory $i start frame: $start_frame"
-        end_frame=$(echo "scale=0; 1 + $start_frame + $subTrajTime / $dt" | bc -l)
+        #end_frame=$(echo "scale=0; 1 + $start_frame + $subTrajTime / $dt" | bc -l)
+        end_frame=$(echo "scale=0;  $start_frame + $subTrajTime / $dt" | bc -l)
         echo "Sub-trajectory $i end frame: $end_frame"
 	for d in {1..6}
 	do 

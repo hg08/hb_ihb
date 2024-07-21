@@ -104,11 +104,11 @@ CONTAINS
             BACKSPACE(UNIT=indx) ! Because I am not able to read other lines with the format '(A4,I8)', and have not find any good way, so I try to read it in '(A4)' first 
             !read(indx, '(A4,I8)') head_char, y
             read(indx, '(1X,A4,I8)') head_char, y
-            !CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
+            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-nmo_start,ns) == 0) THEN
             !Jie: For special case of ns=1, MOD(y-(nmo_start-1),ns) is always 0. Hence, it needs to be checked separately. 
             !Use ‘&’ to continue the line to avoid Fortran maximum line length of 132 characters. (Stupid Fortran!)
-            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. &
-                            (ns == 1 .or. MOD(y-(nmo_start-1),ns) == 1))  THEN 
+            !CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. &
+            !                (ns == 1 .or. MOD(y-(nmo_start-1),ns) == 1))  THEN 
                 !-------------------------------------------------------------------------------------------------------
                 !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
                 !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
