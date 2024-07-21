@@ -4,6 +4,7 @@
 #    This relation is transformed to a linear fit: lnc2 = -1/b
 
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 import pandas as pd
 import numpy as np
 import sys, datetime
@@ -15,6 +16,11 @@ if len(sys.argv) != 2:
 
 c2_file = sys.argv[1]
 
+
+def exp_decay(t,tau):
+    return np.exp(-t / tau)
+
+
 #For times [0: end] 
 #IF STUDY THE DECAY OF C2.
 end = 150 
@@ -24,28 +30,26 @@ data_c2 = np.loadtxt(c2_file)
 
 simTime = data_c2[:,0] 
 timeMask = (simTime < end*dt)
-simTime = simTime[timeMask]
-c2 = data_c2[timeMask,1]
-lnc2 = np.log(c2)
+t_data = simTime[timeMask]
+y_data = data_c2[timeMask,1]
 
-# We write $lnc2(t)$, $t$  as vectors, and denote 
-# them as lnc2 and t. The slope = -1/tau2 
-# can be determined from the matrix A = (t), 
-# which is of multiple rows and 1 columns. 
-# We can obtain the slope =-1/tau2 by
-# slope = (A^T A)^{-1} A^T lnc2.
-A = simTime 
-A_trans = A.T
-# B is a scalar
-B = np.matmul(A_trans, A)
-B_inv = 1.0/B
-b1 = np.matmul(A_trans, lnc2)
-# x is a scalar
-x = B_inv * b1
-tau2 = -1.0/x
-plt.plot(simTime, x*simTime, '--')
-plt.plot(simTime, lnc2, 'r-')
+
+# Use curve_fit to fit the data
+initial_guess = [1]
+params, covariance = curve_fit(exp_decay, t_data, y_data, p0=initial_guess)
+
+# Extract fitted parameter and plot the fit
+tau_fitted = params[0]
+fitted_y_data = exp_decay(t_data, tau_fitted)
+
+plt.scatter(t_data, y_data, label='Data')
+plt.plot(t_data, fitted_y_data, label=f'Fitted function(tau ={tau_fitted:.2f})', color='red')
+plt.legend()
+plt.xlabel('t')
+plt.xlabel('c2')
+plt.title('Exponential Decay Fit')
+
 # 
 #plt.savefig('c2_decay_rate_fit_' + datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f") + '.png')
 
-print("{}".format(tau2))
+print("{}".format(tau_fitted))
