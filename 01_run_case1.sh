@@ -36,8 +36,8 @@ ln -s ../0_prepare/output/$surfTrajFile .
 # the time length of each sub-trajectory, we can 
 # 'divide' the whole trajectory into several sub-trajectories
 
-numSubTraj=6
-subTrajTime=35 # in ps
+numSubTraj=3
+subTrajTime=32 # in ps
 if [ $subTrajTime -gt $simTime ]; then
 	echo "Error: subTrajTime is larger than simTime"
 	exit 1
@@ -51,7 +51,7 @@ do # Loop over sub-trajectories
 	start_frame=$(echo "$offSet * $i" | bc -l)
 	echo "Sub-trajectory $i start frame: $start_frame"
 	#end_frame=$(echo "scale=0; 1 + $start_frame + $subTrajTime / $dt" | bc -l)
-	end_frame=$(echo "scale=0; 1 + $start_frame + $subTrajTime / $dt" | bc -l)
+	end_frame=$(echo "scale=0; $start_frame + $subTrajTime / $dt" | bc -l)
 	echo "Sub-trajectory $i end frame: $end_frame"
 
 	# a. Prepare parameter file
