@@ -7,3 +7,9 @@ gfortran -o density density.f95
 
 # Run
 ./density < input_density_OH 
+
+mkdir -p output
+mv density_*.dat output
+
+
+

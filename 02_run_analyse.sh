@@ -210,6 +210,8 @@ do
 done
 cd .. # )
 
+
+# START density
 # Calculate the density of water interface
 
 cd 2_density
@@ -222,17 +224,17 @@ rm density
 gfortran -o density density.f95
 
 
-# Run
-
+# Run and obtain density
 ./density < input_density_OH 
-
 mkdir -p output
-out_density=density_OH.dat
-outfile=sorted_density_OH.dat
-awk -f process_and_sort.awk $out_density > $outfile
-
-mv $outfile output
+out_density=density_OH.dat # This out_density is defined in the "input_density_OH"
 mv $out_density output
+
+# Recenter (Only for the 128w AIDM simulation )
+outfile=sorted_density_OH.dat
+awk -f process_and_sort.awk output/$out_density > $outfile
+mv $outfile output
 
 #Go back the main direcotry
 cd .. 
+# END density
