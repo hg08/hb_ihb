@@ -3,10 +3,10 @@
     "system": "1000w-TIP4P2005",
     "simType": "MD",
     "dt": 0.04,
-    "sizeX": "31.2892",
-    "sizeY": "31.2892",
-    "sizeZ": "156.4460",
+    "sizeX": 31.2892,
+    "sizeY": 31.2892,
+    "sizeZ": 156.4460,
     "numAtoms": 3000,
-    "simTime": "100.00",
+    "simTime": 100.00,
     "numFrames": 2501
 }

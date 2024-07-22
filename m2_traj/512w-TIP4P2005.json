@@ -3,10 +3,10 @@
     "system": "512w-TIP4P2005",
     "simType": "MD",
     "dt": 0.04,
-    "sizeX": "24.6387",
-    "sizeY": "24.6387",
-    "sizeZ": "123.1935",
+    "sizeX": 24.6387,
+    "sizeY": 24.6387,
+    "sizeZ": 123.1935,
     "numAtoms": 1536,
-    "simTime": "100.00",
+    "simTime": 100.00,
     "numFrames": 2501
 }
