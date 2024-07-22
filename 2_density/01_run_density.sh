@@ -1,4 +1,4 @@
-rm 128w-pos-1.xyz density
+rm -rf 128w-pos-1.xyz density
 ln -s ../m2_traj/128w-pos-1.xyz .
 
 #Compile
