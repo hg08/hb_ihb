@@ -9,4 +9,3 @@ gnuplot plot_Fig3.gp
 gnuplot plot_Fig4.gp
 gnuplot plot_Fig5.gp
 
-gnuplot plot_FigS2.gp
