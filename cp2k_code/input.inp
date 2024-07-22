@@ -106,16 +106,16 @@
        MD 1
      &END EACH
    &END TRAJECTORY
-   &VELOCITIES ON
-     &EACH
-       MD 1
-     &END EACH
-   &END VELOCITIES
-   &FORCES ON
-     &EACH
-       MD 1
-     &END EACH
-   &END FORCES
+#   &VELOCITIES ON
+#     &EACH
+#       MD 1
+#     &END EACH
+#   &END VELOCITIES
+#   &FORCES ON
+#     &EACH
+#       MD 1
+#     &END EACH
+#   &END FORCES
 
    &RESTART_HISTORY
      &EACH
