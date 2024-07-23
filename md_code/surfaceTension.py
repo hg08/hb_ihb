@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,8 +8,12 @@ import numpy as np
 # Read the uploaded file
 file_path = sys.argv[1] if len(sys.argv) == 2 else 'log.lammps'
 
-time_step = 0.1 # fs
-dump_every = 5  # dump every 5 steps
+# Create a output folder
+if not os.path.exists('output'):
+    os.makedirs('output')
+
+time_step = 0.5 # fs
+dump_every = 1  # dump every 5 steps
 
 # Check the content of the file
 with open(file_path, 'r') as file:
@@ -27,6 +32,11 @@ for idx, line in enumerate(lines):
     if "atoms in group O" in line:
         O_num = line.split(' ')[0]
         print('H2O number: {}'.format(O_num))
+    if "reading angles ..." in line:
+        angle_num = lines[idx+1].split(' ')[-2]
+        O_num = int(angle_num) # Update the O_num
+        print('H2O number: {}'.format(O_num))
+
 # Ensure L_z was found
 if L_z is None:
     raise ValueError("The z-axis length could not be found in the log file.")
@@ -34,10 +44,10 @@ if L_z is None:
 # Function to clean and validate data properly
 def clean_and_validate(line):
     parts = line.split()
-    if len(parts) >= 11:
+    if len(parts) >= 16:
         try:
             # Convert parts to float to ensure they are all numeric
-            parts = [float(part) for part in parts[:11]]
+            parts = [float(part) for part in parts[:16]]
             return parts
         except ValueError:
             return None
@@ -47,7 +57,7 @@ def clean_and_validate(line):
 cleaned_data_rows = [clean_and_validate(line) for line in lines[data_start + 1:] if clean_and_validate(line) is not None]
 
 # Create the DataFrame with correct columns
-column_names = ['Step', 'Temp', 'PotEng', 'TotEng', 'Pxx', 'Pxy', 'Pxz', 'Pyy', 'Pyz', 'Pzz', 'Volume']
+column_names = ['Step', 'Time',  'Temp', 'TotEng', 'KinEng', 'PotEng', 'Enthalpy', 'Density', 'Lx', 'Ly', 'Lz', 'Volume', 'Pxx', 'Pyy', 'Pzz', 'Press'] # For MB-pol log file
 data_df = pd.DataFrame(cleaned_data_rows, columns=column_names)
 
 # Plot Temp vs Step
@@ -58,8 +68,8 @@ plt.ylabel('Temperature (K)')
 plt.title('Temperature vs Step (H2O number: {})'.format(O_num))
 plt.legend()
 plt.grid(True)
-plt.savefig('Temp.vs.step.{}_H2O.pdf'.format(O_num))
-plt.savefig('Temp.vs.step.{}_H2O.png'.format(O_num))
+plt.savefig('output/Temp.vs.step.{}_H2O_mbpol.pdf'.format(O_num))
+plt.savefig('output/Temp.vs.step.{}_H2O_mbpol.png'.format(O_num))
 plt.show()
 
 # Plot PotEng vs Step
@@ -70,12 +80,12 @@ plt.ylabel('Potential Energy (kcal/mol)')
 plt.title('Potential Energy vs Time (H2O number: {})'.format(O_num))
 plt.legend()
 plt.grid(True)
-plt.savefig('PotEng.vs.step.{}_H2O.pdf'.format(O_num))
-plt.savefig('PotEng.vs.step.{}_H2O.png'.format(O_num))
+plt.savefig('output/PotEng.vs.step.{}_H2O_mbpol.pdf'.format(O_num))
+plt.savefig('output/PotEng.vs.step.{}_H2O_mbpol.png'.format(O_num))
 plt.show()
 
 # Get rid of unstable values
-data_df = data_df[data_df['Step'] > 5000]
+data_df = data_df[data_df['Time'] > 10000]
 
 def calculate_surface_tension(data_slice):
     '''
@@ -125,8 +135,8 @@ plt.ylabel('Surface Tension (mN/m)')
 plt.title('Surface Tension vs Time (H2O number: {}, Sliding Window Size {} ps)'.format(O_num, window_time))
 plt.legend()
 plt.grid(True)
-plt.savefig('ST_Sliding_{}.pdf'.format(O_num))
-plt.savefig('ST_Sliding_{}.png'.format(O_num))
+plt.savefig('output/ST_Sliding_{}_mbpol.pdf'.format(O_num))
+plt.savefig('output/ST_Sliding_{}_mbpol.png'.format(O_num))
 plt.show()
 
 # Calculate the mean value changes with time
@@ -145,8 +155,8 @@ plt.ylabel('Surface Tension (mN/m)')
 plt.title(' Mean Surface Tension vs Time (H2O number: {})'.format(O_num))
 plt.legend()
 plt.grid(True)
-plt.savefig('Mean_ST_Sliding_{}.pdf'.format(O_num))
-plt.savefig('Mean_ST_Sliding_{}.png'.format(O_num))
+plt.savefig('output/Mean_ST_Sliding_{}_mbpol.pdf'.format(O_num))
+plt.savefig('output/Mean_ST_Sliding_{}_mbpol.png'.format(O_num))
 plt.show()
 
 # Print the value
@@ -154,7 +164,7 @@ result = 'Surface tension calculated from simulation: {:.2f} mN/m (Exp. ref. 300
 print(result)
 
 # Open a file in write mode
-with open("SurfaceTension.txt", "w") as file:
+with open("output/SurfaceTension_{}_mbpol.txt".format(O_num), "w") as file:
     # Write the string to the file
     file.write(result)
 
