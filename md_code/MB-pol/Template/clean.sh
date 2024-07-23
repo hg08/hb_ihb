@@ -1,1 +1,1 @@
-rm -rf thermo.out dump.lammpstrj log.lammps restart.* *.err *.out
+rm -rf thermo.out dump.lammpstrj log.lammps restart.* *.err *.out dump.xyz
