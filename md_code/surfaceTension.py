@@ -62,7 +62,7 @@ data_df = pd.DataFrame(cleaned_data_rows, columns=column_names)
 
 # Plot Temp vs Step
 plt.figure(figsize=(14, 8))
-plt.plot(data_df['Step']*time_step/1000, data_df['Temp'], label='Temperature')
+plt.plot(data_df['Time']/1000, data_df['Temp'], label='Temperature')
 plt.xlabel('Time (ps)')
 plt.ylabel('Temperature (K)')
 plt.title('Temperature vs Step (H2O number: {})'.format(O_num))
@@ -74,7 +74,7 @@ plt.show()
 
 # Plot PotEng vs Step
 plt.figure(figsize=(14, 8))
-plt.plot(data_df['Step']*time_step/1000, data_df['PotEng'], label='Potential Energy')
+plt.plot(data_df['Time']/1000, data_df['PotEng'], label='Potential Energy')
 plt.xlabel('Time (ps)')
 plt.ylabel('Potential Energy (kcal/mol)')
 plt.title('Potential Energy vs Time (H2O number: {})'.format(O_num))
@@ -84,8 +84,8 @@ plt.savefig('output/PotEng.vs.step.{}_H2O_mbpol.pdf'.format(O_num))
 plt.savefig('output/PotEng.vs.step.{}_H2O_mbpol.png'.format(O_num))
 plt.show()
 
-# Get rid of unstable values
-data_df = data_df[data_df['Time'] > 10000]
+# Get rid of the unstable values at the beginning
+data_df = data_df[data_df['Time'] > 20000]
 
 def calculate_surface_tension(data_slice):
     '''
@@ -115,7 +115,7 @@ def calculate_surface_tension(data_slice):
 
 # Apply sliding window calculation
 window_time = 10 # ps
-window_size = int(window_time * 1000 / dump_every) 
+window_size = int(window_time * 1000 / (time_step * dump_every))  
 surface_tension_values = []
 steps = []
 jump = 20
