@@ -45,8 +45,9 @@ def extractInfo(logPath):
 if __name__ == '__main__':
     if len(sys.argv) == 3: 
         xyzfile = sys.argv[1]
-        # Log file log.lammps is in the same directory as the dump.xyz file
-        logPath = xyzfile.replace('dump.xyz', 'log.lammps')
+        # Get the path of xyzfile by '/', if there is no '/' it '.' 
+        logPath = xyzfile.split('dump')[-2] + 'log.lammps'
+        #logPath = xyzfile.replace('dump.xyz', 'log.lammps')
         system = sys.argv[2].replace('.xyz', '')
         name = sys.argv[2]
         simType = 'MB-pol'
