@@ -115,7 +115,7 @@ if __name__ == '__main__':
     f = open(sys.argv[2], 'w')
     for i in tqdm(range(0, lastNumFrames, ns)):
         positions = traj[i].get_positions()
-        t = i * dt * dump_every
+        t = i * time_step * dump_every
         writeOneFrameTo(f, numAtoms, int((i+1)/ns), t, elements, positions)
     f.close()
     print('File {} has been written'.format(sys.argv[2]))

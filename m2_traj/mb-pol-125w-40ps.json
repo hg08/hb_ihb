@@ -1,0 +1,12 @@
+{
+    "name": "mb-pol-125w-40ps.xyz",
+    "system": "mb-pol-125w-40ps",
+    "simType": "MB-pol",
+    "dt": 0.04,
+    "sizeX": 15.521408,
+    "sizeY": 15.521408,
+    "sizeZ": 77.607041,
+    "numAtoms": 375,
+    "simTime": 40.0,
+    "numFrames": 1001
+}
