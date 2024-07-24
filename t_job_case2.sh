@@ -5,7 +5,7 @@
 #SBATCH --error=%x_id_%j.err                 # Error file based on job name and job ID
 #SBATCH --time=05-00:00:00                   # Time limit
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=12             # Number of tasks per node
+#SBATCH --ntasks-per-node=1             # Number of tasks per node
 #SBATCH --mem=20G                          # Memory per CPU core
 
 # Automatically find the conda base path
