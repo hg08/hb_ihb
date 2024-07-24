@@ -22,8 +22,8 @@ if __name__ == '__main__':
         print('Usage: {} <input.xyz> <output.xyz>'.format(sys.argv[0]))
         exit()
     
-    dt = 0.1 # fs
-    dump_freq = 5 # dump every dump_freq steps
+    dt = 0.5 # fs
+    dump_freq = 1 # dump every dump_freq steps
     ns = 80 # sampling every ns steps
     #oriSimTime = 120 # ps 
     #oriNumFrames = int(oriSimTime * 1000 / dt / dump_freq) # 24,0000
