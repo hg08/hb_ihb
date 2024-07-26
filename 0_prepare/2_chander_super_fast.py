@@ -189,8 +189,7 @@ def calRhoAt(position, rho0, divx, divy, divz):
     origin = np.array([0,0,0])
     offset = position - origin
     shift = np.round(offset/np.array([divx, divy, divz])).astype(int) 
-    # Print the error bring by rounding
-    print('The error bring by rounding is:', offset/np.array([divx, divy, divz]) - shift)
+    #print('The error bring by rounding is:', offset/np.array([divx, divy, divz]) - shift)
     #print('The shift is:', shift)
 
     # Relocate rho0 to the position
