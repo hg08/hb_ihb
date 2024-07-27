@@ -38,7 +38,8 @@ sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
 sed -i "s/NUMFRAME/${numFrame}/g" $inputFile
 
 # c. Run Chandler
-python 1_chandler_fast.py < $inputFile  
+#python 1_chandler_fast.py < $inputFile  
+python 2_chandler_super_fast.py < $inputFile  
 
 # d. Clean up
 mkdir -p output
