@@ -2,11 +2,12 @@
 #SBATCH --job-name=prepare                  # Job name
 #SBATCH --output=%x_id_%j.out                # Output file based on job name and job ID
 #SBATCH --error=%x_id_%j.err                 # Error file based on job name and job ID
-#SBATCH --time=INFINITE                   # Time limit
+#SBATCH --time=48:00:00                   # Time limit
 #SBATCH --partition=debug                 # Partition name
-#SBATCH --ntasks=1                        # Number of tasks
-#SBATCH --cpus-per-task=1                 # Number of CPU cores per task
-#SBATCH --mem=1G                          # Memory per CPU core
+#SBATCH --nodes=1                         # Number of nodes
+#SBATCH --ntasks=1                       # Number of tasks
+#SBATCH --cpus-per-task=4                 # Number of CPU cores per task
+#SBATCH --mem=4G                          # Memory per CPU core
 
 # Automatically find the conda base path
 # Initialize conda in the shell
