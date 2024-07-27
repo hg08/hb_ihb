@@ -387,29 +387,36 @@ if __name__ == '__main__':
     for idx, total_rho, surf1, surf2 in results:
         writeSurfaceToFile(idx, surf1, surf2, filename=surfacesFile)
 
-#    for idx, atoms in enumerate(tqdm(traj)):
-        ##view(atoms)
-        #atoms.set_cell(box)
-        #atoms.set_pbc([True,True,True])
-        #atoms = recenterAndWrap(atoms, basedOn='O', n_axis=n_axis)
+    # ------------------------------------------------------
+    # If you want to run the code without multiprocessing,
+    # you can use the following codes, which tells the main
+    # idea of the code.
+    # ------------------------------------------------------
+    '''
+    for idx, atoms in enumerate(tqdm(traj)):
+       #view(atoms)
+       atoms.set_cell(box)
+       atoms.set_pbc([True,True,True])
+       atoms = recenterAndWrap(atoms, basedOn='O', n_axis=n_axis)
 
-        ## a) Calculate density
-        #O_atoms = atoms[atoms.numbers == atomic_numbers['O']]
-        ##view(O_atoms)
-        #total_rho = np.zeros_like(rho0)
-        #for o_pos in O_atoms.positions:
-            #rho = calRhoAt(o_pos, rho0, divx, divy, divz)
-            #total_rho = total_rho + rho
-        ##visulizeRhoAlongZ(total_rho, nb_divz, divz)
+       # a) Calculate density
+       O_atoms = atoms[atoms.numbers == atomic_numbers['O']]
+       #view(O_atoms)
+       total_rho = np.zeros_like(rho0)
+       for o_pos in O_atoms.positions:
+          rho = calRhoAt(o_pos, rho0, divx, divy, divz)
+          total_rho = total_rho + rho
+       #visulizeRhoAlongZ(total_rho, nb_divz, divz)
 
-        #if idx % 10 == 0:
-            #cubeFile = '{}_{}.cube'.format(name.split('.')[0], idx)
-            #writeCubeFile(atoms, total_rho, filename=cubeFile)
+       if idx % 10 == 0:
+          cubeFile = '{}_{}.cube'.format(name.split('.')[0], idx)
+          writeCubeFile(atoms, total_rho, filename=cubeFile)
 
-        ## b) Calculate the surfaces
-        #surf1, surf2 = obtainSurfaces(total_rho, nb_divx, nb_divy, nb_divz, divz)
-        ##print('The shape of surf1 is:', surf1.shape)
-        ##print('The shape of surf2 is:', surf2.shape)
-        ##visualize_surfaces(surf1, surf2, divx, divy)
+       # b) Calculate the surfaces
+       surf1, surf2 = obtainSurfaces(total_rho, nb_divx, nb_divy, nb_divz, divz)
+       #print('The shape of surf1 is:', surf1.shape)
+       #print('The shape of surf2 is:', surf2.shape)
+       #visualize_surfaces(surf1, surf2, divx, divy)
 
-        #writeSurfaceToFile(idx, surf1, surf2, filename=surfacesFile)
+       writeSurfaceToFile(idx, surf1, surf2, filename=surfacesFile)
+       '''
