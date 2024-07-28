@@ -147,7 +147,7 @@ def rhoOAtOrigin(nb_divx, nb_divy, nb_divz, xi=2.4):
 
     # Get all the positions of grid points
     #grids_idx = np.array([[k, j, i] for k in range(nb_divz) for j in range(nb_divy) for i in range(nb_divx)])
-    grids_pos = np.array([[i*divx,j*divy,k*divz] for k in range(nb_divz) for j in range(nb_divy) for i in range(nb_divx)])
+    grids_pos = np.array([[i*divx + divx/2, j*divy + divy/2, k*divz + divz/2] for k in range(nb_divz) for j in range(nb_divy) for i in range(nb_divx)])
     #print('The shape of grid_idx is:', grids_idx.shape)
     #print('The shape of grid_points is:', grids_pos.shape)
 
