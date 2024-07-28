@@ -1,0 +1,23 @@
+# @potential_species H_O ### species in potentia
+# J. L. F. Abascal and C. Vega, The Journal of Chemical Physics 123, 23 (2005); https://doi.org/10.1063/1.212168
+
+ 
+ 
+# create groups ##
+group O type 1
+group H type 2
+ 
+## set charges - beside manually ##
+set group O charge -1.1128
+set group H charge 0.5564
+ 
+### TIP4P Potential Parameters ##
+pair_style lj/cut/tip4p/long 1 2 1 1 0.1546 13.0
+pair_coeff * * 0.0 0.0
+pair_coeff 1 1 0.1852 3.1589
+bond_style harmonic
+bond_coeff 1 0 0.9572
+angle_style harmonic
+angle_coeff 1 0 104.52
+kspace_style pppm/tip4p 1.0e-4
+ 
