@@ -299,16 +299,13 @@ for s in range(0,nb_steps,ns):
         #2)Recenter (along the normal axis only) the atoms according to the mass center
         if n_axis==0:
             for i in range(nb_atoms):
-                #lx[i]=lx[i]-center_pos + a/2
-                lx[i]=lx[i]-center_pos + (a/2)/2
+                lx[i]=lx[i]-center_pos + a/2
         elif n_axis ==1:
             for i in range(nb_atoms):
-                #ly[i]=ly[i]-center_pos + b/2
-                ly[i]=ly[i]-center_pos + (b/2)/2
+                ly[i]=ly[i]-center_pos + b/2
         else:
             for i in range(nb_atoms):
-                #lz[i]=lz[i]-center_pos + (c/2) 
-                lz[i]=lz[i]-center_pos + (c/2)/2 
+                lz[i]=lz[i]-center_pos + c/2 
 
         #3)Recenter all the atoms inside the cell (along all the directions)
         #and write the data into the cube file
