@@ -305,6 +305,7 @@ for s in range(0,nb_steps,ns):
                 ly[i]=ly[i]-center_pos + b/2
         else:
             for i in range(nb_atoms):
+                # lz_new - lz_old = New_z_center_of_mass - z_center_of_mass (New_z_center_of_mass is selected as c/2, the center of the cell along z-axis)
                 lz[i]=lz[i]-center_pos + c/2 
 
         #3)Recenter all the atoms inside the cell (along all the directions)
