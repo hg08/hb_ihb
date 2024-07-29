@@ -133,6 +133,11 @@
   &END PRINT
 &END MOTION
 
+######################################
+# Uncomment these following lines to 
+# Continue the previous calculation.
+######################################
+
 #&EXT_RESTART
 #  RESTART_FILE_NAME ./128w-1.restart
 #  RESTART_COUNTERS T
