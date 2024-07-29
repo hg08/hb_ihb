@@ -224,7 +224,7 @@ file_i.readline()
 
 #1)Read all the atomic positions (and symbol)
 #and calculate the position of the mass center
-lsymb = [None]*nb_atoms # use a list of length 733 to store symb of atoms
+lsymb = [None]*nb_atoms # use a list of length nb_atoms to store symb of atoms
 lx = [None]*nb_atoms
 ly = [None]*nb_atoms
 lz = [None]*nb_atoms
@@ -325,7 +325,7 @@ for s in range(0,nb_steps,ns):
                 for k in range(nb_divz):
                     #Sum over all the O, because every O atom contributes to the density at each grid (i,j,k).
                     for at in range(nb_atoms):
-                        if lsymb[at].number == 8 or lsymb[at].number == 7: # Only the O and N are selected
+                        if lsymb[at].number == 8: # Only the O are selected
                             rho[inc]+=density(lx[at]-(i+0.5)*divx, ly[at]-(j+0.5)*divy, lz[at]-(k+0.5)*divz, a, b, c, range_x, range_y, range_z)
                     rho[inc] *= norm
                     file_o.write(" {0:12.6f}".format(rho[inc]))

@@ -41,7 +41,7 @@ ln -s ../0_prepare/output/$surfTrajFile .
 
 numSubTraj=$numSubTrajOri
 subTrajTime=$subTrajTimeOri # in ps
-if [ $subTrajTime -gt $simTime ]; then
+if (( $(echo "$subTrajTime > $simTime" | bc -l) )); then
 	echo "Error: subTrajTime is larger than simTime"
 	exit 1
 fi

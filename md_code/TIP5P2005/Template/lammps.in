@@ -1,0 +1,44 @@
+variable 	T   	equal  	300
+variable 	dt 	equal 	0.5
+variable 	nsteps  equal 	600000
+variable 	thermo_freq	equal 1 
+variable 	dump_freq 	equal 1 
+
+units		real
+dimension 	3
+atom_style 	full
+boundary 	p p p
+
+read_data 	initial.data
+#read_data 	restart.old
+
+include 	potential.inp
+
+timestep	${dt}
+
+fix 	ensemble all nvt temp ${T} ${T} $(1000.0*dt)
+fix 	2 all shake 0.0001 20 0 b 1 a 1
+
+velocity        all create ${T} 428459 rot yes dist gaussian
+velocity        all zero linear
+velocity        all zero angular
+
+thermo_style    custom step time temp etotal ke pe enthalpy density lx ly lz vol pxx pyy pzz press
+thermo 		${thermo_freq}
+thermo_modify	flush yes 
+
+fix             thermo_print all print ${thermo_freq} "$(step) $(0.001*time) $(temp) $(etotal) $(ke) $(pe) $(enthalpy) $(density) $(lx) $(ly) $(lz) $(vol) $(pxx) $(pyy) $(pzz) $(press)" file thermo.out screen no title "# step time temp etotal ke pe enthalpy density lx ly lz vol pxx pyy pzz press"
+
+#dump            1 all custom ${dump_freq} dump.lammpstrj id mol type q x y z
+#dump_modify     1 append no sort id format line "%d %d %d %8.4f %15.8f %15.8f %15.8f"
+
+dump 		2 all xyz ${dump_freq} dump.xyz
+dump_modify 	2 element O H
+
+restart         10 restart.1 restart.2
+
+run ${nsteps} upto 
+
+write_data final.data nocoeff
+write_restart restart.new
+
