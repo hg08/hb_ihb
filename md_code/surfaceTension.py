@@ -21,6 +21,7 @@ with open(file_path, 'r') as file:
 
 # Extract relevant data section from the log file
 data_start = None
+simulationType = ''
 for idx, line in enumerate(lines):
     if "Step" in line:
         data_start = idx
@@ -36,6 +37,12 @@ for idx, line in enumerate(lines):
         angle_num = lines[idx+1].split(' ')[-2]
         O_num = int(angle_num) # Update the O_num
         print('H2O number: {}'.format(O_num))
+    if "### TIP4P Potential Parameters ##" in line:
+        simulationType = 'TIP4P2005'
+        print('Simulation Type: {}'.format(simulationType))
+    if "MBX: A many-body" in line:
+        simulationType = 'MB-pol'
+        print('Simulation Type: {}'.format(simulationType))
 
 # Ensure L_z was found
 if L_z is None:
@@ -80,8 +87,8 @@ plt.ylabel('Potential Energy (kcal/mol)')
 plt.title('Potential Energy vs Time (H2O number: {})'.format(O_num))
 plt.legend()
 plt.grid(True)
-plt.savefig('output/PotEng.vs.step.{}_H2O_mbpol.pdf'.format(O_num))
-plt.savefig('output/PotEng.vs.step.{}_H2O_mbpol.png'.format(O_num))
+plt.savefig('output/PotEng.vs.step.{}_H2O_{}.pdf'.format(O_num, simulationType))
+plt.savefig('output/PotEng.vs.step.{}_H2O_{}.png'.format(O_num, simulationType))
 plt.show()
 
 # Get rid of the unstable values at the beginning
@@ -135,8 +142,8 @@ plt.ylabel('Surface Tension (mN/m)')
 plt.title('Surface Tension vs Time (H2O number: {}, Sliding Window Size {} ps)'.format(O_num, window_time))
 plt.legend()
 plt.grid(True)
-plt.savefig('output/ST_Sliding_{}_mbpol.pdf'.format(O_num))
-plt.savefig('output/ST_Sliding_{}_mbpol.png'.format(O_num))
+plt.savefig('output/ST_Sliding_{}_{}.pdf'.format(O_num, simulationType))
+plt.savefig('output/ST_Sliding_{}_{}.png'.format(O_num, simulationType))
 plt.show()
 
 # Calculate the mean value changes with time
@@ -155,8 +162,8 @@ plt.ylabel('Surface Tension (mN/m)')
 plt.title(' Mean Surface Tension vs Time (H2O number: {})'.format(O_num))
 plt.legend()
 plt.grid(True)
-plt.savefig('output/Mean_ST_Sliding_{}_mbpol.pdf'.format(O_num))
-plt.savefig('output/Mean_ST_Sliding_{}_mbpol.png'.format(O_num))
+plt.savefig('output/Mean_ST_Sliding_{}_{}.pdf'.format(O_num, simulationType))
+plt.savefig('output/Mean_ST_Sliding_{}_{}.png'.format(O_num, simulationType))
 plt.show()
 
 # Print the value
@@ -164,7 +171,7 @@ result = 'Surface tension calculated from simulation: {:.2f} mN/m (Exp. ref. 300
 print(result)
 
 # Open a file in write mode
-with open("output/SurfaceTension_{}_mbpol.txt".format(O_num), "w") as file:
+with open("output/SurfaceTension_{}_{}.txt".format(O_num, simulationType), "w") as file:
     # Write the string to the file
     file.write(result)
 
