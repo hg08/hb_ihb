@@ -14,6 +14,7 @@ PROGRAM main_interface
   !==========
   !parameters
   !==========             
+  INTEGER, PARAMETER :: nmo_sampling_start= 100 ! Starting step index for starting choosing O-O pairs (This parameter is ONLY needed for case 1.)
 
   ! The array atom_info can be shared by subroutines  
   TYPE(atom), ALLOCATABLE, DIMENSION(:,:) :: atom_info
@@ -127,7 +128,7 @@ PROGRAM main_interface
 
   write(*,*) "Debug after molecules"
   !To determine the indices of Oxygens' pairs that located in one of the interfaces.
-  CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array1,indx_array2)
+  CALL ghbond_interface(filename,list_oxygen_pairs,nmo_sampling_start,n_samples,nat,indx_array1,indx_array2)
 
   write(*,*) "Debug after ghbond_interface"
   !Calculate n_HB(t),k(t),etc for pure water system. If the format of data is different, one may use another funtion, eg ghbacf_n_pbc_format2().
