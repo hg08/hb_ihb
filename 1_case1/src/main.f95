@@ -117,26 +117,11 @@ PROGRAM main_interface
   surf_info = 0
   ns_2nd = 1 ! sample freq is 1, ie., all data are sampled
   CALL read_surf_traj(surf_filename,nmo_start,nmo_end,ns_2nd,n_grid,n_samples,surf_info)
-
-  !i_sample = 1
-  !do i_grid = 1, n_grid
-  !write (*,*) "i_grid", i_grid
-  !WRITE (*,*) surf_info(1,i_sample,i_grid),surf_info(2,i_sample,i_grid)
-  !enddo 
-  
-  write(*,*) "Debug after read_surf_traj"
   ! Use array instead of linked list, it may be faster. 
   ALLOCATE(indx_array1(n_samples,nat))
   ALLOCATE(indx_array2(n_samples,nat))
   indx_array1 = 0
   indx_array2 = 0
-  !write(*,*) "whish_size= ", whish_size
-  !write(*,*) "n_samples= ", n_samples
-  !write(*,*) "nat= ", nat
-  !write(*,*) "n_grid= ", n_grid
-  !write(*,*) "divx= ", divx
-  !write(*,*) "divy= ", divy
-  !write(*,*) "divz= ", divz
   CALL molecules_in_interface(n_samples,nat,indx_array1,indx_array2,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info)
 

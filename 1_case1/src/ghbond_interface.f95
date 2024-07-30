@@ -54,7 +54,6 @@
                n=n+1
             ENDIF
           ENDDO
-          write(*,*) "At step", jj, "In surf1, n=",n
           DO i1=1,n-1 ! No O atom can not be bonded to itself 
             m1=ndx_O(i1)
             DO i2=i1+1,n 
@@ -76,7 +75,6 @@
                n=n+1
             ENDIF
           ENDDO
-          write(*,*) "At step", jj, "In surf2, n=",n
 
           DO i1=1,n-1 
             m1=ndx_O(i1)

@@ -549,7 +549,7 @@ INTERFACE
       ! Sulpizi's method, we need this function 
       ! 'molecules_in_interface()', in which surf_info is an 
       ! array.
-      ! Output: An 2D array 'indx_array': 
+      ! Output: Two 2D array 'indx_array1', 'indx_array2': 
       !         the first axis: time labels (jj)
       !         the 2nd axis: atom's labels (m) 
       !=========================================================
@@ -566,7 +566,7 @@ INTERFACE
       !Local variables
       LOGICAL :: condition1,condition2  
       INTEGER :: index_mol
-      INTEGER :: jj,m,n 
+      INTEGER :: jj,m,n1,n2 
       !To save the indices of the molecules for generating list file, we define a array for each time point (jj, in this code)
       INTEGER,DIMENSION(n_samples,nat),INTENT(INOUT) :: arr1, arr2
       TYPE(atom),DIMENSION(nat,n_samples),INTENT(IN) :: atom_info
