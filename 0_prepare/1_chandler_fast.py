@@ -242,7 +242,8 @@ file_i.seek(0)
 
 # n_temp is the accelerate rate, with help of n_temp, when we calculated a surface pairs, then we can skip n_temp steps. 
 # ns is the same parameter as ns used in the code 'ihb_sulpizi'
-n_temp = 10 * ns  
+#n_temp = 10 * ns  
+n_temp = 1 * ns  
 
 # Calculate the surfaces every n_temp time steps
 for s in range(0,nb_steps,ns):
@@ -297,20 +298,19 @@ for s in range(0,nb_steps,ns):
         center_pos/=sum_mass
 
         #2)Recenter (along the normal axis only) the atoms according to the mass center
-        if n_axis==0:
-            for i in range(nb_atoms):
-                lx[i]=lx[i]-center_pos + a/2
-        elif n_axis ==1:
-            for i in range(nb_atoms):
-                ly[i]=ly[i]-center_pos + b/2
-        else:
-            for i in range(nb_atoms):
-                lz[i]=lz[i]-center_pos + c/2 
+        #if n_axis==0:
+        #    for i in range(nb_atoms):
+        #        lx[i]=lx[i]-center_pos + a/2
+        #elif n_axis ==1:
+        #    for i in range(nb_atoms):
+        #        ly[i]=ly[i]-center_pos + b/2
+        #else:
+        #    for i in range(nb_atoms):
+        #        # lz_new - lz_old = New_z_center_of_mass - z_center_of_mass (New_z_center_of_mass is selected as c/2, the center of the cell along z-axis)
+        #        lz[i]=lz[i]-center_pos + c/2 
 
-        #3)Recenter all the atoms inside the cell (along all the directions)
-        #and write the data into the cube file
+        #3)Write the data into the cube file
         for i in range(nb_atoms):
-            lx[i]=lx[i]%a; ly[i]=ly[i]%b; lz[i]=lz[i]%c
             file_o.write(" {0:5d} {1:12.6f} {2:12.6f} {3:12.6f} {4:12.6f}\n".format(lsymb[i].number,0,lx[i]*atob,ly[i]*atob,lz[i]*atob))
 
         #===============
