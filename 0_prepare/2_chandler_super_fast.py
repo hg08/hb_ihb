@@ -338,14 +338,20 @@ def writeSurfaceToFile(idx, surf1, surf2, filename='surf.dat'):
     nb_divy, nb_divx = surf1.shape
     with open(filename, 'a') as file:
         file.write('i = {}\n'.format(idx))
+        '''
         for iy in range(nb_divy):
             for ix in range(nb_divx):
                 file.write(" {0:5d} {1:5d}{2:12.6f} {3:12.6f}\n".format(iy, ix, surf1[iy, ix], surf2[iy, ix]))
+        '''
+        for ix in range(nb_divx):
+            for iy in range(nb_divy):
+                file.write(" {0:5d} {1:5d}{2:12.6f} {3:12.6f}\n".format(ix, iy, surf1[iy, ix], surf2[iy, ix]))
 
 def process_frame(idx, atoms, box, n_axis, rho0, divx, divy, divz, density_threshold):
     atoms.set_cell(box)
     atoms.set_pbc([True, True, True])
-    atoms = recenterAndWrap(atoms, basedOn='O', n_axis=n_axis)
+    # Not need to recenter and wrap the atoms
+    #atoms = recenterAndWrap(atoms, basedOn='O', n_axis=n_axis)
 
     O_atoms = atoms[atoms.numbers == atomic_numbers['O']]
     total_rho = np.zeros_like(rho0)
@@ -378,7 +384,7 @@ if __name__ == '__main__':
         for future in tqdm(as_completed(futures), total=len(futures)):
             idx, total_rho, surf1, surf2 = future.result()
             results.append((idx, total_rho, surf1, surf2))
-            if idx % 10 == 0:
+            if idx % 500 == 0:
                 cubeFile = 'output/{}_{}.cube'.format(name.split('.')[0], idx)
                 writeCubeFile(traj[idx], total_rho, filename=cubeFile)
 
