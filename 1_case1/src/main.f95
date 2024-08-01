@@ -14,13 +14,14 @@ PROGRAM main_interface
   !==========
   !parameters
   !==========             
+  INTEGER, PARAMETER :: nmo_sampling_start= 100 ! Starting step index for starting choosing O-O pairs (This parameter is ONLY needed for case 1.)
 
   ! The array atom_info can be shared by subroutines  
   TYPE(atom), ALLOCATABLE, DIMENSION(:,:) :: atom_info
   !To declear data for calculating the total time cosummed.
   INTEGER :: begin_time,end_time,rat
   !To declare data to share between routines.
-  CHARACTER(LEN=200) :: sampled_pos_filename
+  CHARACTER(LEN=200) :: sampled_pos_filename ! Jie: not used
   INTEGER, ALLOCATABLE, DIMENSION(:) :: sampled_movie
   REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time
   ! For griding
@@ -47,7 +48,7 @@ PROGRAM main_interface
   INTEGER :: nmo_end ! end step index
   INTEGER :: ns ! Get one sample from the trajectory every ns step. 
   !(NOTE: The ns should be the same as the ns in theZZ 1_chandler_fast.py)
-  INTEGER :: ns_2nd
+  INTEGER :: ns_2nd ! Jie: 1
   INTEGER :: n_samples ! n_samples = INT(nmo/ns)
   INTEGER :: nwat ! number of water molecules
   CHARACTER(LEN=200) :: surf_filename
@@ -117,47 +118,26 @@ PROGRAM main_interface
   surf_info = 0
   ns_2nd = 1 ! sample freq is 1, ie., all data are sampled
   CALL read_surf_traj(surf_filename,nmo_start,nmo_end,ns_2nd,n_grid,n_samples,surf_info)
-
-  !i_sample = 1
-  !do i_grid = 1, n_grid
-  !write (*,*) "i_grid", i_grid
-  !WRITE (*,*) surf_info(1,i_sample,i_grid),surf_info(2,i_sample,i_grid)
-  !enddo 
-  
-  write(*,*) "Debug after read_surf_traj"
   ! Use array instead of linked list, it may be faster. 
   ALLOCATE(indx_array1(n_samples,nat))
   ALLOCATE(indx_array2(n_samples,nat))
   indx_array1 = 0
   indx_array2 = 0
-  !write(*,*) "whish_size= ", whish_size
-  !write(*,*) "n_samples= ", n_samples
-  !write(*,*) "nat= ", nat
-  !write(*,*) "n_grid= ", n_grid
-  !write(*,*) "divx= ", divx
-  !write(*,*) "divy= ", divy
-  !write(*,*) "divz= ", divz
   CALL molecules_in_interface(n_samples,nat,indx_array1,indx_array2,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info)
 
-  write(*,*) "Debug after molecules"
   !To determine the indices of Oxygens' pairs that located in one of the interfaces.
   CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array1,indx_array2)
-
-  write(*,*) "Debug after ghbond_interface"
   !Calculate n_HB(t),k(t),etc for pure water system. If the format of data is different, one may use another funtion, eg ghbacf_n_pbc_format2().
   CALL ghbacf_interface_c_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
-  write(*,*) "Debug after ghbacf_interface_c_pbc_format2"
   CALL ghbacf_interface_n_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
-  write(*,*) "Debug after ghbacf_interface_n_pbc_format2"
   CALL ghbacf_interface_k_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
-  write(*,*) "Debug after ghbacf_interface_k_pbc_format2"
   call system_clock(end_time,rat)
   WRITE(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
 

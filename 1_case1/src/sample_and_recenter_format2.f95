@@ -33,8 +33,8 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   ! Local varables
   INTEGER :: iatom,imovie,i
   INTEGER, PARAMETER :: n_axis = 2  ! n_axis=2 means z-axis is the normal axis.
-  REAL(KIND=rk) :: sum_mass
-  REAL(KIND=rk) :: center_pos 
+  !REAL(KIND=rk) :: sum_mass
+  !REAL(KIND=rk) :: center_pos 
   
   ! Initialization
   iatom = 0; imovie = 0; i = 0
@@ -57,40 +57,40 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   !=============
   !write in file
   !=============
-  sampled_pos_filename = 'recentered_traj_pos_sampled.xyz'
+  sampled_pos_filename = 'recentered_traj_pos_sampled.xyz' ! Jie: No need anymore
   OPEN(10,file=sampled_pos_filename)
 
   step: DO i=1,n_samples
-    sum_mass = 0.d0
-    center_pos = 0.d0
+    !sum_mass = 0.d0
+    !center_pos = 0.d0
 
     WRITE(10,'(I8)') nat
     WRITE(10,100) ' i = ',i-1,', time = ',sampled_time(i)
     100 FORMAT (A5,I8,A9,F12.3)
     !130 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
   
-    DO iatom=1,nat
-        if (n_axis==0) THEN
-            center_pos=center_pos+atom_info(iatom,i)%coord(1)*atom_info(iatom,i)%mass
-        elseif (n_axis==1) THEN 
-            center_pos=center_pos+atom_info(iatom,i)%coord(2)*atom_info(iatom,i)%mass
-        else
-            center_pos=center_pos+atom_info(iatom,i)%coord(3)*atom_info(iatom,i)%mass
-        endif
-        sum_mass=sum_mass+atom_info(iatom,i)%mass
-    ENDDO
-    center_pos=center_pos/sum_mass
+    !DO iatom=1,nat
+    !    if (n_axis==0) THEN
+    !        center_pos=center_pos+atom_info(iatom,i)%coord(1)*atom_info(iatom,i)%mass
+    !    elseif (n_axis==1) THEN 
+    !        center_pos=center_pos+atom_info(iatom,i)%coord(2)*atom_info(iatom,i)%mass
+    !    else
+    !        center_pos=center_pos+atom_info(iatom,i)%coord(3)*atom_info(iatom,i)%mass
+    !    endif
+    !    sum_mass=sum_mass+atom_info(iatom,i)%mass
+    !ENDDO
+    !center_pos=center_pos/sum_mass
     
     ! Recenter (along the normal axis only) the atoms according to the mass center
-    DO iatom=1,nat
-        IF (n_axis == 0) THEN
-            atom_info(iatom,i)%coord(1) = atom_info(iatom,i)%coord(1) - center_pos + boxsize(1)/2
-        ELSEIF (n_axis == 1) THEN
-            atom_info(iatom,i)%coord(2) = atom_info(iatom,i)%coord(2) - center_pos + boxsize(2)/2
-        ELSE 
-            atom_info(iatom,i)%coord(3) = atom_info(iatom,i)%coord(3) - center_pos + boxsize(3)/2
-        ENDIF
-    ENDDO     
+    !DO iatom=1,nat
+    !    IF (n_axis == 0) THEN
+    !        atom_info(iatom,i)%coord(1) = atom_info(iatom,i)%coord(1) - center_pos + boxsize(1)/2
+    !    ELSEIF (n_axis == 1) THEN
+    !        atom_info(iatom,i)%coord(2) = atom_info(iatom,i)%coord(2) - center_pos + boxsize(2)/2
+    !    ELSE 
+    !        atom_info(iatom,i)%coord(3) = atom_info(iatom,i)%coord(3) - center_pos + boxsize(3)/2
+    !    ENDIF
+    !ENDDO     
 
     ! Format for writing in recentered 
     !200 FORMAT (1X,A3,3F20.10)
@@ -98,18 +98,18 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
      
     DO iatom = 1, nat
 
-        atom_info(iatom,i)%coord(1)=mod(atom_info(iatom,i)%coord(1),boxsize(1))
-        if (atom_info(iatom,i)%coord(1) < 0) THEN
-           atom_info(iatom,i)%coord(1) = atom_info(iatom,i)%coord(1) + boxsize(1) 
-        endif
-        atom_info(iatom,i)%coord(2)=mod(atom_info(iatom,i)%coord(2),boxsize(2))
-        IF (atom_info(iatom,i)%coord(2) < 0) THEN
-           atom_info(iatom,i)%coord(2) = atom_info(iatom,i)%coord(2) + boxsize(2) 
-        ENDIF
-        atom_info(iatom,i)%coord(3)=mod(atom_info(iatom,i)%coord(3),boxsize(3))
-        IF (atom_info(iatom,i)%coord(3) < 0) THEN
-           atom_info(iatom,i)%coord(3) = atom_info(iatom,i)%coord(3) + boxsize(3) 
-        ENDIF
+        !atom_info(iatom,i)%coord(1)=mod(atom_info(iatom,i)%coord(1),boxsize(1))
+        !if (atom_info(iatom,i)%coord(1) < 0) THEN
+        !   atom_info(iatom,i)%coord(1) = atom_info(iatom,i)%coord(1) + boxsize(1) 
+        !endif
+        !atom_info(iatom,i)%coord(2)=mod(atom_info(iatom,i)%coord(2),boxsize(2))
+        !IF (atom_info(iatom,i)%coord(2) < 0) THEN
+        !   atom_info(iatom,i)%coord(2) = atom_info(iatom,i)%coord(2) + boxsize(2) 
+        !ENDIF
+        !atom_info(iatom,i)%coord(3)=mod(atom_info(iatom,i)%coord(3),boxsize(3))
+        !IF (atom_info(iatom,i)%coord(3) < 0) THEN
+        !   atom_info(iatom,i)%coord(3) = atom_info(iatom,i)%coord(3) + boxsize(3) 
+        !ENDIF
 
         WRITE(10,131) TRIM(atom_info(iatom, i)%atom_name), &
         atom_info(iatom,i)%coord(1), &

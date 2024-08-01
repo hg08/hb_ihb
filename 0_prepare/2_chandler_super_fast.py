@@ -341,11 +341,11 @@ def writeSurfaceToFile(idx, surf1, surf2, filename='surf.dat'):
         '''
         for iy in range(nb_divy):
             for ix in range(nb_divx):
-                file.write(" {0:5d} {1:5d}{2:12.6f} {3:12.6f}\n".format(iy, ix, surf1[iy, ix], surf2[iy, ix]))
+                file.write(" {0:5d} {1:5d} {2:12.6f} {3:12.6f}\n".format(iy, ix, surf1[iy, ix], surf2[iy, ix]))
         '''
         for ix in range(nb_divx):
             for iy in range(nb_divy):
-                file.write(" {0:5d} {1:5d}{2:12.6f} {3:12.6f}\n".format(ix, iy, surf1[iy, ix], surf2[iy, ix]))
+                file.write(" {0:5d} {1:5d} {2:12.6f} {3:12.6f}\n".format(ix, iy, surf1[iy, ix], surf2[iy, ix]))
 
 def process_frame(idx, atoms, box, n_axis, rho0, divx, divy, divz, density_threshold):
     atoms.set_cell(box)

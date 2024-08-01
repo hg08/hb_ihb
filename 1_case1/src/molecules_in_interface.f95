@@ -81,7 +81,6 @@
               ENDIF
             ENDIF
           END DO
-          write(*,*) 'Debug: n1 n2', n1, n2
 
         ENDDO MOLECULE 
         

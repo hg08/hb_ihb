@@ -42,7 +42,7 @@ SUBROUTINE read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start
   !==================
   !WRITE(6,*)'What is the size of box (a,b,c):'
   READ(*,'(a)') line
-  if (len_trim(line)==0) then
+  if (len_trim(line)==0) then ! Jie: Need to be modified
       boxsize(1) = 5.32d0
       boxsize(2) = 5.32d0
       boxsize(3) = 5.32d0
@@ -54,7 +54,7 @@ SUBROUTINE read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start
   !WRITE(6,*)'What is the time step in the traj. file (ps): (Default: 0.d0005)'
   READ(*,'(a)') line
   IF (len_trim(line)==0) THEN
-    delta_t0 = 0.0005d0
+    delta_t0 = 0.0005d0 ! Jie: Need to be modified
   ELSE
     READ(line, *, iostat = ierr) delta_t0
     WRITE(*,*) delta_t0

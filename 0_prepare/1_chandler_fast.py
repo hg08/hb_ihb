@@ -381,7 +381,7 @@ for s in range(0,nb_steps,ns):
                     step_inc = nb_divz*nb_divy  
                     end_inc  = start_inc+step_inc*nb_divx
                     surf1_nd[s,j,k], surf2_nd[s,j,k] = pos_surf_nd(j, k, rho_nd, divx) #This function calculates the position of the reference density
-                    file_o2.write(" {0:5d} {1:5d}{2:12.6f} {3:12.6f}\n".format(j,k,surf1_nd[s,j,k], surf2_nd[s,j,k])) 
+                    file_o2.write(" {0:5d} {1:5d} {2:12.6f} {3:12.6f}\n".format(j,k,surf1_nd[s,j,k], surf2_nd[s,j,k])) 
                     #print(start_inc, step_inc, end_inc)
                     #print(surf1[inc])
         elif n_axis==1:
