@@ -62,7 +62,6 @@
       REAL(KIND=rk), DIMENSION(3) :: r1, r2, r3 ! pbc 
       INTEGER :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs,ns
       REAL(KIND=rk), allocatable,DIMENSION (:) :: h,hb,corr_h
-      REAL(KIND=rk), allocatable,DIMENSION (:) :: sq_corr_h ! sq_corr_h[i] = corr_h[i]**2
       REAL(KIND=rk), allocatable,DIMENSION (:,:) :: x,y,z
       INTEGER, allocatable,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
       INTEGER, DIMENSION(4)   :: ndx_3_list
@@ -119,11 +118,9 @@
      ! with h(i)=1.
      !====================================      
       ALLOCATE(corr_h(nmo))
-      ALLOCATE(sq_corr_h(nmo))
       ALLOCATE(hb_exist(nmo))
       ! loop
       corr_h(:)=0.d0      
-      sq_corr_h=0.d0      
       tot_hb=0.d0
       tot_nhb=0
       
@@ -230,7 +227,6 @@
                 ENDDO 
                 !scalar=scalar/(nmo-mt) ! You can not use this line, because we have to calculate the average later 
                 corr_h(mt+1)=corr_h(mt+1)+scalar !sum_C_k(t)
-                sq_corr_h(mt+1)=sq_corr_h(mt+1)+sq !sum_C^2_k(t)
             ENDDO 
         endif
       ENDDO  kLOOP   
@@ -251,7 +247,6 @@
       !==============================
       DO mt=0,nmo-1! time interval
           corr_h(mt+1)=corr_h(mt+1)/(REAL((nmo-mt)*nwat,rk)*ave_h)
-          sq_corr_h(mt+1)=SQRT(sq_corr_h(mt+1)/((ave_h**2)*REAL((nmo-mt)*nwat)) - corr_h(mt+1)**2)/SQRT(REAL((nmo-mt)*nwat,rk))
       ENDDO 
       DEALLOCATE(x,y,z,ndx_1,ndx_2)          
      !===================================
@@ -262,7 +257,7 @@
       OPEN(10,file=trim(filename)//'_wat_pair_hbacf_h_ihb_' &
         //char_thickness//'.dat')
         DO i=1,nmo
-            WRITE(10,*)REAL(i-1,rk)*delta_t, corr_h(i), sq_corr_h(i)
+            WRITE(10,*)REAL(i-1,rk)*delta_t, corr_h(i)
         ENDDO 
         WRITE(6,*)'written in '//trim(filename)//&
                   '_wat_pair_hbacf_h_ihb_'//char_thickness//'.dat'
@@ -277,5 +272,5 @@
         WRITE(6,*)'written in '//trim(filename)//&
                   '_wat_pair_ave_h_ihb_'//char_thickness//'.dat'
       CLOSE(10)
-      DEALLOCATE (h,corr_h, sq_corr_h, hb)
+      DEALLOCATE (h,corr_h, hb)
       END SUBROUTINE 

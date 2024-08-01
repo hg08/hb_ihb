@@ -60,7 +60,7 @@
           IF (TRIM(atom_info(m,jj)%atom_name) == "O") THEN
             ! Check if the molecue is located in one of the interfaces 
             index_mol = grid_index(atom_info(m,jj)%coord(1), &
-                atom_info(m,jj)%coord(2),divx,divy,nb_divx) 
+                atom_info(m,jj)%coord(2),divx,divy,nb_divy) 
             !WRITE(*,*) "index_mol = ",index_mol
 
             !For surf 1

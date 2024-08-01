@@ -1,4 +1,4 @@
-      SUBROUTINE ghbond_interface(filename,list,nmo,nat,arr)
+      SUBROUTINE ghbond_interface(filename,list,n_samples,nat,arr1,arr2)
       !
       !Purpose: To generate the index list of all Oxygen-Oxygen pairs (quasi-bonds) which are once located in
       !         the neat water interface. There's an inportant idea in this code: We assume that ergodity is not satisfied,
@@ -18,12 +18,13 @@
       !========================
       !Parameters and variables
       !========================
-      CHARACTER(LEN=200),INTENT(IN) :: filename            ! specific filename to analyz data
+      CHARACTER(LEN=200),INTENT(IN) :: filename ! specific filename to analyz data
       CHARACTER(LEN=200),INTENT(INOUT) :: list
-      INTEGER,INTENT(IN) :: nmo ! steps of trajectory
+      INTEGER,INTENT(IN) :: n_samples ! number of samples
+      !INTEGER,INTENT(IN) :: nmo ! steps of trajectory
       INTEGER,INTENT(IN) :: nat ! number of atoms
       !To save the indices of the molecules for generating list file, we define an array for each time point (jj, in this code)
-      INTEGER,DIMENSION(nmo,nat),INTENT(INOUT) :: arr
+      INTEGER,DIMENSION(n_samples,nat),INTENT(INOUT) :: arr1, arr2 ! Jie: updated to array 1 and 2.
 
       ! Local variables
       INTEGER,PARAMETER :: step=100 ! The parameter 'step' should not be too small, otherwise, you will waste your time on many repeated calculation. 
@@ -32,7 +33,7 @@
       INTEGER,DIMENSION (nat) :: ndx_O
      
       !Initialization
-      ndx_O=0;n=0
+      ndx_O=0; n=0
 
       !====================================================
       !Producing the O-O list for O atom pairs in interface     
@@ -40,28 +41,51 @@
       list=trim(filename)//'_O_in_interface_list.dat'
       ! DO NOT USE "status='NEW' ".
       OPEN(20,file=list, STATUS='REPLACE', ACTION='WRITE') ! Set the status to 'REPLACE', otherwise, the compiler can not find this file.
-      
-      !DO-LOOP on each row of the indx array 'arr'
-      ROW: DO jj=1,nmo,step  ! start, end [, step]
-        ndx_O(:)=arr(jj,:) 
-        !===============================================
-        !Calculate the number of O atoms in this time jj
-        !===============================================
-        n=0
-        DO i=1,nat
-          IF (ndx_O(i)>0) THEN
-             n=n+1
-          ENDIF
-        ENDDO
-
-        DO i1=1,n-1 ! No O atom can not be bonded to itself 
-          m1=ndx_O(i1)
-          DO i2=i1+1,n 
-            m2=ndx_O(i2)
-            WRITE(20,*) m1,m2
+        write(*,*) 'Debug: open list file'
+        !DO-LOOP on each row of the indx array 'arr1'
+        ROW: DO jj=1,n_samples,step  ! start, end [, step]
+          ndx_O(:)=arr1(jj,:) 
+          !===============================================
+          !Calculate the number of O atoms in this time jj
+          !===============================================
+          n=0
+          DO i=1,nat
+            IF (ndx_O(i)>0) THEN
+               n=n+1
+            ENDIF
           ENDDO
-        ENDDO
-      ENDDO ROW
+          write(*,*) "At step", jj, "In surf1, n=",n
+          DO i1=1,n-1 ! No O atom can not be bonded to itself 
+            m1=ndx_O(i1)
+            DO i2=i1+1,n 
+              m2=ndx_O(i2)
+              WRITE(20,*) m1,m2
+            ENDDO
+          ENDDO
+        ENDDO ROW
+        
+        !DO-LOOP on each row of the indx array 'arr2'
+        ROW2: DO jj=1,n_samples,step  ! start, end [, step]
+          ndx_O(:)=arr2(jj,:) 
+          !===============================================
+          !Calculate the number of O atoms in this time jj
+          !===============================================
+          n=0
+          DO i=1,nat
+            IF (ndx_O(i)>0) THEN
+               n=n+1
+            ENDIF
+          ENDDO
+          write(*,*) "At step", jj, "In surf2, n=",n
+
+          DO i1=1,n-1 
+            m1=ndx_O(i1)
+            DO i2=i1+1,n 
+              m2=ndx_O(i2)
+              WRITE(20,*) m1,m2
+            ENDDO
+          ENDDO
+        ENDDO ROW2
 
       CLOSE(20)
       !====================

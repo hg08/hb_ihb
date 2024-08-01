@@ -1,5 +1,5 @@
 SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize, &
-           sampled_pos_filename,sampled_movie,sampled_time,sampled_energy, &
+           sampled_pos_filename,sampled_movie,sampled_time, &
            nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
   !2018/12/27
   ! 0) Purpose:     
@@ -26,7 +26,7 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   REAL(KIND=rk), INTENT(IN) :: whish_size ! Angstrom
   CHARACTER(LEN=*), INTENT(INOUT):: sampled_pos_filename
   INTEGER, DIMENSION(n_samples),INTENT(INOUT) :: sampled_movie
-  REAL(KIND=rk), DIMENSION(n_samples), INTENT(INOUT) :: sampled_time, sampled_energy
+  REAL(KIND=rk), DIMENSION(n_samples), INTENT(INOUT) :: sampled_time
   INTEGER, INTENT(INOUT) :: nb_divx, nb_divy, nb_divz, n_grid 
   REAL(KIND=rk), INTENT(INOUT) :: divx, divy, divz
   TYPE(atom), DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
@@ -50,7 +50,7 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   !=======================
   OPEN(10,file=trim(pos_filename))
   ! Now starting read data
-  CALL read_traj(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,sampled_energy,atom_info) 
+  CALL read_traj(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,atom_info) 
   CLOSE(10)
   WRITE(6,*) 'End of trajectory reading.'
 
@@ -65,8 +65,8 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
     center_pos = 0.d0
 
     WRITE(10,'(I8)') nat
-    WRITE(10,100) ' i = ',i-1,', time = ',sampled_time(i),', E = ',sampled_energy(i)
-    100 FORMAT (A5,I8,A9,F12.3,A6,F20.10)
+    WRITE(10,100) ' i = ',i-1,', time = ',sampled_time(i)
+    100 FORMAT (A5,I8,A9,F12.3)
     !130 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
   
     DO iatom=1,nat

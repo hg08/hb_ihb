@@ -22,10 +22,10 @@ PROGRAM main_interface
   !To declare data to share between routines.
   CHARACTER(LEN=200) :: sampled_pos_filename
   INTEGER, ALLOCATABLE, DIMENSION(:) :: sampled_movie
-  REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time, sampled_energy
+  REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time
   ! For griding
   !REAL(KIND=rk), PARAMETER :: whish_size=0.5d0! Angstrom
-  INTEGER :: nb_divx, nb_divy, nb_divz, n_grid 
+  INTEGER :: nb_divx, nb_divy, nb_divz, n_grid, i_grid
   REAL(KIND=rk) :: divx, divy, divz
 
   REAL(KIND=rk) :: thickness ! the thickness of the instantaneous interfaces
@@ -38,9 +38,9 @@ PROGRAM main_interface
   CHARACTER(LEN=200) :: filename
   CHARACTER(LEN=2) :: guest_atom
   CHARACTER(LEN=2) :: host_atom
-  INTEGER :: i, iatom, imovie
+  INTEGER :: i, iatom, imovie, i_sample
   !To save the indices of the molecules for generating list file, we define an array for each time point (jj, in this code)
-  INTEGER, ALLOCATABLE, DIMENSION(:,:) :: indx_array
+  INTEGER, ALLOCATABLE, DIMENSION(:,:) :: indx_array1, indx_array2
   CHARACTER(LEN=200) :: list_oxygen_pairs
   INTEGER :: nat ! number of atoms
   INTEGER :: nmo_start ! starting step index
@@ -72,62 +72,92 @@ PROGRAM main_interface
 
   CALL system_clock(begin_time,rat) !To get the starting time
   
+
+
   !============================================
   ! To read the required controlling parameters
   !============================================
   CALL read_interface_input(boxsize,delta_t0,filename,pos_filename,nmo_start,nmo_end,nat,ns,&
           criterion,surf_filename,thickness) 
 
-  ! Obatin n_samples
+  write(*,*) "boxsize= ", boxsize(1), boxsize(2), boxsize(3)
+  nb_divx = nint(boxsize(1)/whish_size) ! round the argument to the nearest integer.
+  nb_divy = nint(boxsize(2)/whish_size) ! round the argument to the nearest integer.
+  nb_divz = nint(boxsize(3)/whish_size) ! round the argument to the nearest integer.
+  divx = boxsize(1)/REAL(nb_divx,rk)
+  divy = boxsize(2)/REAL(nb_divy,rk)
+  divz = boxsize(3)/REAL(nb_divz,rk)
+  n_grid = nb_divx * nb_divy
+
+  write(*,*) "filename= ", filename
   n_samples = sampling_number(nmo_start, nmo_end,ns)
   ALLOCATE(sampled_movie(n_samples))
   ALLOCATE(sampled_time(n_samples))
-  ALLOCATE(sampled_energy(n_samples))
   ALLOCATE(atom_info(nat,n_samples))
- 
-  !========================
-  ! Sampling the trajectory
-  !========================
-  !CASE1: If one does not need to recenter, one can just call sample_format2()
-  !CALL sample_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples)
-  !CASE2: If one have to recenter, one call sample_and_recenter_format2() instead.
-  CALL sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize,&
-       sampled_pos_filename,sampled_movie,sampled_time,sampled_energy, &
-       nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
 
-  ! After running the sample() or sample_format2() subroutine, therefore we have a new sampled trajectory file (stored in atom_info), 
-  ! which is generally shorter than the original one.
-  
+
+  !=======================
+  !read in trajectory file
+  !=======================
+  OPEN(10,file=trim(pos_filename))
+  CALL read_traj(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,atom_info)
+  CLOSE(10)
+  WRITE(6,*) 'End of trajectory reading.'
+
+  !i_sample = n_samples
+  !do iatom= 1,nat
+  !write (*,*) atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), &
+  !  atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
+  !enddo
+
   !====================
   !read surf trajectory
   !====================
   ALLOCATE(surf_info(2,n_grid,n_samples))
   surf_info = 0
-  !write(*,*) "SHAPE(surf_info)= ", SHAPE(surf_info)
   ns_2nd = 1 ! sample freq is 1, ie., all data are sampled
   CALL read_surf_traj(surf_filename,nmo_start,nmo_end,ns_2nd,n_grid,n_samples,surf_info)
-  
-  ! Use array instead of linked list, it may be faster. 
-  ALLOCATE(indx_array(n_samples,nat))
-  indx_array = 0
 
-  CALL molecules_in_interface(n_samples,nat,indx_array,atom_info,&
+  !i_sample = 1
+  !do i_grid = 1, n_grid
+  !write (*,*) "i_grid", i_grid
+  !WRITE (*,*) surf_info(1,i_sample,i_grid),surf_info(2,i_sample,i_grid)
+  !enddo 
+  
+  write(*,*) "Debug after read_surf_traj"
+  ! Use array instead of linked list, it may be faster. 
+  ALLOCATE(indx_array1(n_samples,nat))
+  ALLOCATE(indx_array2(n_samples,nat))
+  indx_array1 = 0
+  indx_array2 = 0
+  !write(*,*) "whish_size= ", whish_size
+  !write(*,*) "n_samples= ", n_samples
+  !write(*,*) "nat= ", nat
+  !write(*,*) "n_grid= ", n_grid
+  !write(*,*) "divx= ", divx
+  !write(*,*) "divy= ", divy
+  !write(*,*) "divz= ", divz
+  CALL molecules_in_interface(n_samples,nat,indx_array1,indx_array2,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info)
 
+  write(*,*) "Debug after molecules"
   !To determine the indices of Oxygens' pairs that located in one of the interfaces.
-  CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array)
+  CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array1,indx_array2)
 
+  write(*,*) "Debug after ghbond_interface"
   !Calculate n_HB(t),k(t),etc for pure water system. If the format of data is different, one may use another funtion, eg ghbacf_n_pbc_format2().
   CALL ghbacf_interface_c_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
+  write(*,*) "Debug after ghbacf_interface_c_pbc_format2"
   CALL ghbacf_interface_n_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
+  write(*,*) "Debug after ghbacf_interface_n_pbc_format2"
   CALL ghbacf_interface_k_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
-
+  write(*,*) "Debug after ghbacf_interface_k_pbc_format2"
   call system_clock(end_time,rat)
   WRITE(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
 

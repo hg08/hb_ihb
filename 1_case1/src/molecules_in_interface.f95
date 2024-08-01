@@ -1,4 +1,4 @@
-      SUBROUTINE molecules_in_interface(n_samples,nat,arr,atom_info,&
+      SUBROUTINE molecules_in_interface(n_samples,nat,arr1,arr2,atom_info,&
          n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,&
          surf_info)
         !=========================================================
@@ -26,9 +26,9 @@
         !Local variables
         LOGICAL :: condition1,condition2  
         INTEGER :: index_mol
-        INTEGER :: jj,m,n 
+        INTEGER :: jj,m,n1,n2 
         !To save the indices of the molecules for generating list file, we define a array for each time point (jj, in this code)
-        INTEGER, DIMENSION(n_samples,nat), INTENT(INOUT) :: arr
+        INTEGER, DIMENSION(n_samples,nat), INTENT(INOUT) :: arr1, arr2
         TYPE(atom), DIMENSION(nat,n_samples), INTENT(IN) :: atom_info
         REAL(kind=8), DIMENSION(2,n_grid,n_samples), INTENT(IN) :: &
             surf_info
@@ -39,21 +39,29 @@
         condition1=.FALSE.
         condition2=.FALSE.
         
-        ! Use array instead of linked list, it may be faster. 
-        !initialize the array
-        arr = 0
+        !initialize the arrays
+        arr1 = 0
+        arr2 = 0
        
         !=============
         !The main loop
         !=============      
         MOLECULE: DO jj =1, n_samples
-          n = 0
+          n1 = 0
+          n2 = 0
           DO m=1,nat
             ! We use Oxygen atom to idenfy the water molecule
             IF (TRIM(atom_info(m,jj)%atom_name) == "O") THEN
               ! Check if the molecue is located in one of the interfaces 
+              !write(*,*) "m", m
+              !write(*,*) "jj", jj
+              !write(*,*) "atom_info(m,jj)%coord(1)", atom_info(m,jj)%coord(1)
+              !write(*,*) "atom_info(m,jj)%coord(2)", atom_info(m,jj)%coord(2)
+              !write(*,*) "divx", divx
+              !write(*,*) "divy", divy
               index_mol = grid_index(atom_info(m,jj)%coord(1), &
                   atom_info(m,jj)%coord(2),divx,divy,nb_divx,nb_divy) 
+              !write(*,*) "index_mol", index_mol
               !For surf 1
               condition1 = mol_in_surf1(surf_info(1,index_mol,jj),&
                   atom_info(m,jj)%coord(3), thickness ) 
@@ -62,13 +70,18 @@
                   atom_info(m,jj)%coord(3), thickness ) 
 
               !If the atom is in either surf1 or surf2
-              IF (condition1 .OR. condition2) THEN
-                  n = n+1
-                  !! Now write out the data into a 2-D array: arr.
-                  arr(jj,n)=m
+              IF (condition1) THEN
+                  n1 = n1+1
+                  !! Now write out the data into a 2-D array: arr1.
+                  arr1(jj,n1)=m ! Jie: There should be two arrays, one for surf1, the other for surf2
+              ELSE IF (condition2) THEN
+                  n2 = n2+1
+                  !! Now write out the data into a 2-D array: arr2.
+                  arr2(jj,n2)=m 
               ENDIF
             ENDIF
           END DO
+          write(*,*) 'Debug: n1 n2', n1, n2
 
         ENDDO MOLECULE 
         

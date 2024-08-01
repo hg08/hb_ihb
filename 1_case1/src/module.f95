@@ -281,7 +281,7 @@ INTERFACE
       CHARACTER(LEN=3),ALLOCATABLE,DIMENSION(:) :: atom_type
   END FUNCTION get_number_of_iodine
 
-  SUBROUTINE ghbond_interface(filename,list,nmo,nat,arr)
+  SUBROUTINE ghbond_interface(filename,list,n_samples,nat,arr1, arr2)
       !Purpose: To generate the index list of all Oxygen-Oxygen pairs (quasi-bonds) which are once located in
       !         the interface of neat water. There's an inportant idea in this code: We assume that ergodity is not satisfied,
       !         therefore, for a given layer thickness, we list all O-O pairs' indices in one list file, 
@@ -294,10 +294,10 @@ INTERFACE
       IMPLICIT NONE
       CHARACTER(LEN=200),INTENT(IN) :: filename            ! specific filename to analyz data
       CHARACTER(LEN=200),INTENT(INOUT) :: list
-      INTEGER,INTENT(IN) :: nmo ! steps of trajectory
+      INTEGER,INTENT(IN) :: n_samples ! steps of trajectory
       INTEGER,INTENT(IN) :: nat ! number of atoms
       !To save the indices of the molecules for generating list file, we define an array for each time point (jj, in this code)
-      INTEGER,DIMENSION(nmo,nat),INTENT(INOUT) :: arr
+      INTEGER,DIMENSION(n_samples,nat),INTENT(INOUT) :: arr1, arr2
       ! Local variables
       INTEGER,PARAMETER :: step=100 ! The parameter 'step' should not be too small, otherwise, you will waste your time on many repeated calculation. 
                                     ! Here, 100 means every 100* ns steps, we select the molecules in interface.
@@ -439,7 +439,7 @@ INTERFACE
       INTEGER,INTENT(IN) :: nmo_start, nmo_end ! To get the total number of moves
   END FUNCTION sampling_number
 
-  SUBROUTINE read_traj(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,sampled_energy,atom_info)
+  SUBROUTINE read_traj(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,atom_info)
       ! To read info from the trajectory file (format: ***.xyz)
       ! to READ data starting from a pattern-matched line.
       IMPORT :: atom
@@ -455,7 +455,7 @@ INTERFACE
 
       TYPE(atom),DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
       INTEGER,DIMENSION(n_samples) :: sampled_movie
-      REAL(KIND=rk),DIMENSION(n_samples) :: sampled_time, sampled_energy
+      REAL(KIND=rk),DIMENSION(n_samples) :: sampled_time
       INTEGER :: y
   END SUBROUTINE read_traj
 
@@ -540,7 +540,7 @@ INTERFACE
       REAL(KIND=rk) :: sum_mass
   END SUBROUTINE sample_and_recenter_format2 
 
-  SUBROUTINE molecules_in_interface(n_samples,nat,arr,atom_info, &
+  SUBROUTINE molecules_in_interface(n_samples,nat,arr1,arr2,atom_info, &
          n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,&
          surf_info)
       !=========================================================
@@ -568,7 +568,7 @@ INTERFACE
       INTEGER :: index_mol
       INTEGER :: jj,m,n 
       !To save the indices of the molecules for generating list file, we define a array for each time point (jj, in this code)
-      INTEGER,DIMENSION(n_samples,nat),INTENT(INOUT) :: arr
+      INTEGER,DIMENSION(n_samples,nat),INTENT(INOUT) :: arr1, arr2
       TYPE(atom),DIMENSION(nat,n_samples),INTENT(IN) :: atom_info
       REAL(KIND=rk), DIMENSION(2,n_grid,n_samples), INTENT(IN) :: surf_info
   END SUBROUTINE molecules_in_interface 

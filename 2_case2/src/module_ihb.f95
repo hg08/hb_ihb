@@ -785,11 +785,11 @@ END MODULE surf_traj
       !=============================
       END FUNCTION get_number_of_iodine
 
-      INTEGER FUNCTION grid_index(x,y,divx,divy,n_divx)
+      INTEGER FUNCTION grid_index(x,y,divx,divy,n_divy)
           ! transfer the coordinates (x,y) to grid_index, which is an integer
           REAL, INTENT(IN) :: x,y
           REAL, INTENT(IN) :: divx, divy
-          INTEGER, INTENT(IN) :: n_divx
+          INTEGER, INTENT(IN) :: n_divy
           INTEGER, DIMENSION(2) :: ind
           
           !Initialization
@@ -798,7 +798,7 @@ END MODULE surf_traj
           ind(1) = FLOOR(x/divx) 
           ind(2) = FLOOR(y/divy)
           
-          grid_index = ind(2) * n_divx + ind(1)+1
+          grid_index = ind(1) * n_divy + ind(2)+1
     
       END FUNCTION grid_index
 
