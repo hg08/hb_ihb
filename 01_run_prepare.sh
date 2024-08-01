@@ -41,9 +41,5 @@ sed -i "s/NUMFRAME/${numFrame}/g" $inputFile
 #python 1_chandler_fast.py < $inputFile  
 python 2_chandler_super_fast.py < $inputFile  
 
-# d. Clean up
-mkdir -p output
-mv *.cube output/
-mv surf_${system}.dat output/  
 cd .. # )
 # --- End Step 0
