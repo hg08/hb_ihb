@@ -41,7 +41,6 @@
       list=trim(filename)//'_O_in_interface_list.dat'
       ! DO NOT USE "status='NEW' ".
       OPEN(20,file=list, STATUS='REPLACE', ACTION='WRITE') ! Set the status to 'REPLACE', otherwise, the compiler can not find this file.
-        write(*,*) 'Debug: open list file'
         !DO-LOOP on each row of the indx array 'arr1'
         ROW: DO jj=1,n_samples,step  ! start, end [, step]
           ndx_O(:)=arr1(jj,:) 
@@ -54,6 +53,8 @@
                n=n+1
             ENDIF
           ENDDO
+          write(*,*) "At step", jj, "In surf1, n=",n
+
           DO i1=1,n-1 ! No O atom can not be bonded to itself 
             m1=ndx_O(i1)
             DO i2=i1+1,n 
