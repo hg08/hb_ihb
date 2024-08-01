@@ -216,14 +216,14 @@
         !==========================================
         !Calcualte the correlation function C_HB(t)
         !==========================================
-        IF (hb(k)>hb_min) THEN
-            DO mt=0,nmo-1    ! time interval
+        IF (hb(k)>hb_min) THEN 
+            DO mt=0,nmo-1    ! time interval, Jie: t in Fig. 2
                 scalar=0.d0
                 sq=0.d0 ! For calculate the square of correlation at each time, ie., mt.
                 !DO j=1,nmo-mt-1
                 DO j=1,nmo-mt
                     scalar=scalar+h(j)*h(j+mt)  
-                    sq=sq+(h(j)*h(j+mt))**2  
+                    sq=sq+(h(j)*h(j+mt))**2  ! Jie: should be delete
                 ENDDO 
                 !scalar=scalar/(nmo-mt) ! You can not use this line, because we have to calculate the average later 
                 corr_h(mt+1)=corr_h(mt+1)+scalar !sum_C_k(t)

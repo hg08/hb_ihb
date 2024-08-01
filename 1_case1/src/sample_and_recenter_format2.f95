@@ -57,7 +57,7 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   !=============
   !write in file
   !=============
-  sampled_pos_filename = 'recentered_traj_pos_sampled.xyz'
+  sampled_pos_filename = 'recentered_traj_pos_sampled.xyz' ! Jie: No need anymore
   OPEN(10,file=sampled_pos_filename)
 
   step: DO i=1,n_samples
