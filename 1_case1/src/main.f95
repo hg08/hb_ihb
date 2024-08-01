@@ -126,24 +126,18 @@ PROGRAM main_interface
   CALL molecules_in_interface(n_samples,nat,indx_array1,indx_array2,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info)
 
-  write(*,*) "Debug after molecules"
   !To determine the indices of Oxygens' pairs that located in one of the interfaces.
-  CALL ghbond_interface(filename,list_oxygen_pairs,nmo_sampling_start,n_samples,nat,indx_array1,indx_array2)
-
-  write(*,*) "Debug after ghbond_interface"
+  CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array1,indx_array2)
   !Calculate n_HB(t),k(t),etc for pure water system. If the format of data is different, one may use another funtion, eg ghbacf_n_pbc_format2().
   CALL ghbacf_interface_c_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
-  write(*,*) "Debug after ghbacf_interface_c_pbc_format2"
   CALL ghbacf_interface_n_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
-  write(*,*) "Debug after ghbacf_interface_n_pbc_format2"
   CALL ghbacf_interface_k_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info)
-  write(*,*) "Debug after ghbacf_interface_k_pbc_format2"
   call system_clock(end_time,rat)
   WRITE(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
 
