@@ -20,7 +20,7 @@ PROGRAM main_interface
   !To declear data for calculating the total time cosummed.
   INTEGER :: begin_time,end_time,rat
   !To declare data to share between routines.
-  CHARACTER(LEN=200) :: sampled_pos_filename
+  CHARACTER(LEN=200) :: sampled_pos_filename ! Jie: not used
   INTEGER, ALLOCATABLE, DIMENSION(:) :: sampled_movie
   REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time
   ! For griding
@@ -47,7 +47,7 @@ PROGRAM main_interface
   INTEGER :: nmo_end ! end step index
   INTEGER :: ns ! Get one sample from the trajectory every ns step. 
   !(NOTE: The ns should be the same as the ns in theZZ 1_chandler_fast.py)
-  INTEGER :: ns_2nd
+  INTEGER :: ns_2nd ! Jie: 1
   INTEGER :: n_samples ! n_samples = INT(nmo/ns)
   INTEGER :: nwat ! number of water molecules
   CHARACTER(LEN=200) :: surf_filename
