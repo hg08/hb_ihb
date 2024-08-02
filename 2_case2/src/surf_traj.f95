@@ -18,11 +18,11 @@ CONTAINS
     ! To read info from the isosurface trajectory file (format: surf_traj_*.xyz)
     USE surf_module, ONLY: surf_info
     INTEGER :: ierror, i_sample, i_grid, ix, iy
-    INTEGER, INTENT(IN) :: n_grid  ! KEEP
-    INTEGER, INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns) KEEP
+    INTEGER, INTENT(IN) :: n_grid 
+    INTEGER, INTENT(IN) :: n_samples
     INTEGER, INTENT(IN) :: indx
-    INTEGER, INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
-    INTEGER, INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
+    INTEGER, INTENT(IN) :: ns ! Get one sample from the trajectory every ns step.
+    INTEGER, INTENT(IN) :: nmo_start, nmo_end ! To get the total number of moves
     CHARACTER(LEN=4) :: head_char,e
     INTEGER :: y
 
@@ -38,11 +38,8 @@ CONTAINS
     ENDIF
     DO i_sample = 0, n_samples - 1
           read(indx, *) head_char, e, y 
-          !write(*,*), head_char, e, y
           do i_grid = 1, n_grid
-              !read(indx, *, IOSTAT=ierror) ix, iy, surf_info(1,i_grid,i_sample+1), surf_info(2,i_grid,i_sample+1)
-              read (indx,*) ix, iy, surf_info(i_grid,i_sample)%coord(1), surf_info(i_grid,i_sample)%coord(2)
-              write (*,*) surf_info(i_grid,i_sample)%coord(1), surf_info(i_grid,i_sample)%coord(2)
+              read (indx,*) ix, iy, surf_info(i_grid,i_sample+1)%coord(1), surf_info(i_grid,i_sample+1)%coord(2)
           enddo 
     END DO 
     close(indx)

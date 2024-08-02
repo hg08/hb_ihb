@@ -16,4 +16,7 @@ REAL(KIND=8) :: divx, divy, divz
 ! paramters of the interface
 REAL(KIND=8) :: thickness ! the thickness of the instantaneous interfaces
 
+
+! indices of O and H in water molecules
+integer,allocatable,dimension(:,:) :: ndx_O, ndx_H
 END MODULE parameter_shared
