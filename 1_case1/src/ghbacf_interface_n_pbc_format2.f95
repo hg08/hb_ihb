@@ -60,6 +60,7 @@
       REAL(KIND=rk),parameter :: cosPhiC123=0.866d0           ! 1.732/2; phiC=pi/6.
       REAL(KIND=rk),parameter :: cosPhiC132=-0.5d0            ! -1./2; phiC132=2pi/3.
       !REAL(KIND=rk), parameter :: h_min=0.d5  ! condition for the existence of a h-bond for a step
+      REAL(KIND=rk),PARAMETER :: max_time_for_corr = 10.0 ! Unit: ps.
       REAL(KIND=rk),parameter :: hb_min=0.5d0 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_
       REAL(KIND=rk) :: r21, r31, r32, r23 ! For the second criterion of HB
@@ -73,6 +74,7 @@
       REAL(KIND=rk)  :: scalar 
       LOGICAL,ALLOCATABLE,DIMENSION (:)  :: hb_exist
       INTEGER  :: nmo  ! nmo is not necessary, we set nmo = n_samples, because we do not want to change too much
+      INTEGER :: nmo_effective, start_step, num_start_points
       INTEGER :: nwat ! number of water molecules
       INTEGER :: i,j,k,jj 
       CHARACTER(len=d_len) :: char_thickness ! for saving the thickness in the files' names
@@ -92,6 +94,8 @@
       index_mol1=0; index_mol2=0
       condition1=.FALSE.
       condition2=.FALSE.
+      nmo_effective = 0
+      start_step = 1
 
       !To obtain the total number of water pairs
       nwat=get_total_number_of_lines(list_filename)
@@ -108,6 +112,9 @@
       !============================
 
       delta_t=REAL(ns,rk)*delta_t0  ! unit: ps
+      nmo_effective = nint(max_time_for_corr/delta_t) + 1
+      start_step = nint((nmo_effective-1)/5.0) ! Start step of sliding window. Over-using rate is 1 - 1/5 = 4/5
+      num_start_points = (nmo-nmo_effective-1)/start_step + 1
       ALLOCATE(x(nat,nmo))
       ALLOCATE(y(nat,nmo))
       ALLOCATE(z(nat,nmo))
@@ -232,10 +239,10 @@
         !Calcualte the correlation function n_HB(t)
         !==========================================
         IF (hb(k)>hb_min) THEN
-            DO mt=0,nmo-1    ! time interval
+            DO mt=0, nmo_effective-1   ! time interval, Jie: t in Fig. 2
                 scalar=0.0d0
                 !DO j=1,nmo-mt-1
-                DO j=1,nmo-mt
+                DO j=1, nmo-nmo_effective, start_step ! How many steps? (nmo-nmo_effective-1)/start_step + 1
                     scalar=scalar+h(j)*(1-h(j+mt))*h_d(j+mt)  
                 ENDDO  
                 corr_n(mt+1)=corr_n(mt+1)+scalar !sum_C_k(t)
@@ -254,15 +261,11 @@
               n_bonded_pairs=n_bonded_pairs+1      
           ENDIF
       ENDDO 
-      !==============================
-      !Normalization of n_HB(t) step1
-      !==============================
-      DO mt=0,nmo-1! time interval
-          corr_n(mt+1)=corr_n(mt+1)/REAL(nmo-mt,rk)
-      ENDDO 
-      corr_n = corr_n /REAL(nwat,rk)
-      !Normalization step2
-      corr_n = corr_n/ave_h
+      !========================
+      !Normalization of n_HB(t)
+      !========================
+      corr_n = corr_n / REAL(num_start_points * nwat, rk)
+      corr_n = corr_n / ave_h
       DEALLOCATE(x,y,z,ndx_1,ndx_2)          
      !====================================
      !WRITE the correlation
@@ -272,7 +275,7 @@
       char_thickness = nth(str(thickness),d_len)
       OPEN(10,file=trim(filename)//'_wat_pair_hbacf_n_ihb_'//&
         char_thickness//'.dat')
-        DO i=1,nmo
+        DO i=1,nmo_effective
             WRITE(10,*) REAL(i-1,rk) * delta_t,corr_n(i)
         ENDDO 
         WRITE(6,*)'written in '//trim(filename)//&
