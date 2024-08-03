@@ -1,0 +1,18 @@
+{
+    "name": "128w-120ps-dt40.xyz",
+    "system": "128w-120ps-dt40",
+    "simType": "AIMD",
+    "dt": 0.04,
+    "sizeX": 15.6404,
+    "sizeY": 15.6404,
+    "sizeZ": 31.2808,
+    "numAtoms": 384,
+    "simTime": 120.00,
+    "numFrames": 3001,
+    "numSubTrajCase1": 3,
+    "subTrajTimeCase1": 40,
+    "numSubTrajCase2": 3,
+    "subTrajTimeCase2": 40,
+    "numSubTrajOri": 6,
+    "subTrajTimeOri": 15
+}
