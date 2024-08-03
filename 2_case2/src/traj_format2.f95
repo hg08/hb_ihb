@@ -85,7 +85,7 @@ CONTAINS
     ! To read info from the trajectory file (format: ***.xyz)
     ! to READ data starting from a pattern-matched line.
     USE atom_module, ONLY: atom_info
-    USE parameter_shared, ONLY: sampled_movie, sampled_time, sampled_energy
+    USE parameter_shared, ONLY: sampled_movie, sampled_time
     INTEGER :: iatom,i_sample
     INTEGER, INTENT(IN) :: nat
     INTEGER, INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns)
@@ -101,10 +101,6 @@ CONTAINS
     DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
         !read(indx, '(A4)') head_char
         read(indx, '(1X,A4)') head_char  ! for some other format, one can use this format
-        !------------------------------------------ 
-        !TEST
-        !WRITE(*,*)"head_char AND y:", head_char, y
-        !------------------------------------------ 
         PRE_CHECK:IF (head_char=="i = ") THEN
             BACKSPACE(UNIT=indx) ! Because I am not able to read other lines with the format '(A4,I8)', and have not find any good way, so I try to read it in '(A4)' first 
             !read(indx, '(A4,I8)') head_char, y
@@ -114,47 +110,23 @@ CONTAINS
             !Use ‘&’ to continue the line to avoid Fortran maximum line length of 132 characters. (Stupid Fortran!)
             !CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. &
             !                (ns == 1 .or. MOD(y-(nmo_start-1),ns) == 1))  THEN 
-                !-------------------------------------------------------------------------------------------------------
-                !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
-                !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
-                !-------------------------------------------------------------------------------------------------------
-                !WRITE(*,*)"Debug: CHECK_HEAD:", head_char, i_sample, y
-                !WRITE(*,*)"read_traj():", head_char, y
                 BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
-                read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
+                read(indx,130) sampled_movie(i_sample), sampled_time(i_sample)
                 130 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
-                !130 FORMAT (4X,I8,9X,F12.3,6X,F20.10)
                 131 FORMAT (A4,3F20.10)
                 inner: do iatom= 1,nat
-                  !read (indx,131) atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), & 
-                    !atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
                   read (indx,*) atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), & 
                     atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
                   if (atom_info(iatom, i_sample)%atom_name == "O") THEN
                       atom_info(iatom, i_sample)%mass = 16.00
                   elseif (atom_info(iatom, i_sample)%atom_name == "H") THEN
                       atom_info(iatom, i_sample)%mass = 1.00
-                  elseif (atom_info(iatom, i_sample)%atom_name == "N") THEN
-                      atom_info(iatom, i_sample)%mass = 14.00 
-                  elseif (atom_info(iatom, i_sample)%atom_name == "Li") THEN
-                      atom_info(iatom, i_sample)%mass = 6.94
-                  elseif (atom_info(iatom, i_sample)%atom_name == "Na") THEN
-                      atom_info(iatom, i_sample)%mass = 22.99
-                  elseif (atom_info(iatom, i_sample)%atom_name == "K") THEN
-                      atom_info(iatom, i_sample)%mass = 39.10
                   endif
-                  !WRITE (*,131) & 
-                  !atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), &
-                  !atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
                 enddo inner
                 i_sample = i_sample + 1 !The position is important. It must be located before ENDIF MATCH
             ENDIF CHECK_HEAD
         ENDIF PRE_CHECK
     END DO
-      ! To check if the sampling is finished
-      !check: IF (i_sample > n_samples) THEN 
-      !  WRITE (*,*)'The total number of sample points are: ', n_samples
-      !END IF check
   END SUBROUTINE read_traj
 
   SUBROUTINE skip_lines(indx, i_input)

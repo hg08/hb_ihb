@@ -71,47 +71,79 @@ CONTAINS
     ! Purpose:
     ! To read info from the isosurface trajectory file (format: surf_traj_*.xyz)
     USE surf_module, ONLY: surf_info
-    INTEGER :: i_sample, i_grid
+    INTEGER :: ierror, i_sample, i_grid, ix, iy
     INTEGER, INTENT(IN) :: n_grid  ! KEEP
     INTEGER, INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns) KEEP
     INTEGER, INTENT(IN) :: indx
     INTEGER, INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
     INTEGER, INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
-    CHARACTER(LEN=4) :: head_char
+    CHARACTER(LEN=4) :: head_char,e
     INTEGER :: y
 
-    allocate(surf_info(n_grid,n_samples))
-    i_sample = 1
-    write(*,*) "read_surf_traj(): New total time steps (n_samples):", n_samples
-    DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
-        read(indx, '(A4)') head_char
-        PRE_CHECK:IF (head_char=="i = ") THEN
-            BACKSPACE(UNIT=indx) ! Because I am not able to read other lines with the format '(A4,I8)', and have not find any good way, so I try to read it in '(A4)' first 
-            read(indx, '(A4,I5)') head_char, y
-            !read(indx, '(1X,A4,I5)') head_char, y
-            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 0) THEN
-                !-------------------------------------------------------------------------------------------------------
-                !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
-                !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
-                !-------------------------------------------------------------------------------------------------------
-                WRITE(*,*)"read_traj():", head_char, y
-                BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
-                READ(indx,*) ! skip one line in the unit=indx
-                131 FORMAT (11X,2F13.6)
-                inner: do i_grid= 1, n_grid
-                  read (indx,131) surf_info(i_grid,i_sample)%coord(1), & 
-                    surf_info(i_grid,i_sample)%coord(2)
-                    WRITE (*,131) surf_info(i_grid,i_sample)%coord(1), &
-                    surf_info(i_grid, i_sample)%coord(2)
-                enddo inner
-                i_sample = i_sample + 1 ! The position is important. It must be located before ENDIF MATCH
-            ENDIF CHECK_HEAD
-        ENDIF PRE_CHECK
-    END DO
-
+    ALLOCATE(surf_info(n_grid,n_samples))
+    i_sample = 0
+    IF (nmo_start > 0) THEN
+          DO i_sample = 0, nmo_start ! Skip 
+               read (indx,*) 
+               do i_grid = 1, n_grid
+                  read (indx,*) 
+               enddo
+          END DO
+    ENDIF
+    DO i_sample = 0, n_samples - 1
+          read(indx, *) head_char, e, y 
+          !write(*,*), head_char, e, y
+          do i_grid = 1, n_grid
+              read(indx, *, IOSTAT=ierror) ix, iy, surf_info(1,i_grid,i_sample+1), surf_info(2,i_grid,i_sample+1)
+              !write(*,*) 'ix iy Surf1 Surf2', ix, iy, surf_info(1,i_grid,i_sample+1), surf_info(2,i_grid,i_sample+1)
+          enddo 
+    END DO 
+    close(indx)
   END SUBROUTINE read_surf_traj
+  !SUBROUTINE read_surf_traj(indx,nmo_start,nmo_end,ns,n_grid,n_samples)
+  !  ! Purpose:
+  !  ! To read info from the isosurface trajectory file (format: surf_traj_*.xyz)
+  !  USE surf_module, ONLY: surf_info
+  !  INTEGER :: i_sample, i_grid
+  !  INTEGER, INTENT(IN) :: n_grid  ! KEEP
+  !  INTEGER, INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns) KEEP
+  !  INTEGER, INTENT(IN) :: indx
+  !  INTEGER, INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
+  !  INTEGER, INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
+  !  CHARACTER(LEN=4) :: head_char
+  !  INTEGER :: y
 
+  !  allocate(surf_info(n_grid,n_samples))
+  !  i_sample = 1
+  !  write(*,*) "read_surf_traj(): New total time steps (n_samples):", n_samples
+  !  DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
+  !      read(indx, '(A4)') head_char
+  !      PRE_CHECK:IF (head_char=="i = ") THEN
+  !          BACKSPACE(UNIT=indx) ! Because I am not able to read other lines with the format '(A4,I8)', and have not find any good way, so I try to read it in '(A4)' first 
+  !          read(indx, '(A4,I5)') head_char, y
+  !          !read(indx, '(1X,A4,I5)') head_char, y
+  !          CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 0) THEN
+  !              !-------------------------------------------------------------------------------------------------------
+  !              !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
+  !              !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
+  !              !-------------------------------------------------------------------------------------------------------
+  !              WRITE(*,*)"read_traj():", head_char, y
+  !              BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
+  !              READ(indx,*) ! skip one line in the unit=indx
+  !              131 FORMAT (11X,2F13.6)
+  !              inner: do i_grid= 1, n_grid
+  !                read (indx,131) surf_info(i_grid,i_sample)%coord(1), & 
+  !                  surf_info(i_grid,i_sample)%coord(2)
+  !                  WRITE (*,131) surf_info(i_grid,i_sample)%coord(1), &
+  !                  surf_info(i_grid, i_sample)%coord(2)
+  !              enddo inner
+  !              i_sample = i_sample + 1 ! The position is important. It must be located before ENDIF MATCH
+  !          ENDIF CHECK_HEAD
+  !      ENDIF PRE_CHECK
+  !  END DO
+  !END SUBROUTINE read_surf_traj
 END MODULE surf_traj
+
       MODULE tools 
       !2020/2/15
       !===================================================
@@ -147,128 +179,128 @@ END MODULE surf_traj
           distance2 = dx**2 + dy**2 + dz**2
       END FUNCTION distance2
      
-      REAL FUNCTION dist2(u1,v1,w1,u2,v2,w2,a,b,c)
-          real(KIND=rk),INTENT(INOUT) :: u1,v1,w1,u2,v2,w2,a,b,c
-          logical :: A1,A2,A3,B1,B2,B3,C1,C2,C3
-          A1 = (abs(u1-u2) > a/2 .AND. u1 > u2)
-          A2 = (abs(u1-u2) > a/2 .AND. u2 > u1)
-          A3 = (abs(u1-u2) < a/2)
-          B1 = (abs(v1-v2) > b/2 .AND. v1 > v2)
-          B2 = (abs(v1-v2) > b/2 .AND. v2 > v1)
-          B3 = (abs(v1-v2) < b/2)
-          C1 = (abs(w1-w2) > c/2 .AND. w1 > w2)
-          C2 = (abs(w1-w2) > c/2 .AND. w2 > w1)
-          C3 = (abs(w1-w2) < c/2)
-          if (A3 .and. B3 .and. C3) then
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B3 .and. C3) then
-              u2 = u2-a
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B3 .and. C3) then
-              u1 = u1-a
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A3 .and. B1 .and. C3) then
-              v1 = v1 - b
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A3 .and. B3 .and. C2) then
-              w2 = w2 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A3 .and. B2 .and. C3) then
-              v2 = v2 - b
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A3 .and. B3 .and. C1) then
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B1 .and. C3) then
-              u1 = u1 - a
-              v1 = v1 - b
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B2 .and. C3) then
-              u1 = u1 - a
-              v2 = v2 - b
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B3 .and. C1) then
-              u1 = u1 - a
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B3 .and. C2) then
-              u1 = u1 - a
-              w2 = w2 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B1 .and. C3) then
-              u2 = u2 - a
-              v1 = v1 - b
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B2 .and. C3) then
-              u2 = u2 - a
-              v2 = v2 - b
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B3 .and. C1) then
-              u2 = u2 - a
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B3 .and. C2) then
-              u2 = u2 - a
-              w2 = w2 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A3 .and. B1 .and. C1) then
-              v1 = v1 - b
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A3 .and. B1 .and. C2) then
-              v1 = v1 - b
-              w2 = w2 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A3 .and. B2 .and. C1) then
-              v2 = v2 - b
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A3 .and. B2 .and. C2) then
-              v2 = v2 - b
-              w2 = w2 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B1 .and. C1) then
-              u1 = u1 - a
-              v1 = v1 - b
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B1 .and. C2) then
-              u1 = u1 - a
-              v1 = v1 - b
-              w2 = w2 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B2 .and. C1) then
-              u1 = u1 - a
-              v2 = v2 - b
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A1 .and. B2 .and. C2) then
-              u1 = u1 - a
-              v2 = v2 - b
-              w2 = w2 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B1 .and. C1) then
-              u2 = u2 - a
-              v1 = v1 - b
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B1 .and. C2) then
-              u2 = u2 - a
-              v1 = v1 - b
-              w2 = w2 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B2 .and. C1) then
-              u2 = u2 - a
-              v2 = v2 - b
-              w1 = w1 - c
-              dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
-          elseif (A2 .and. B2 .and. C2) then
-              u2 = u2 - a
-              v2 = v2 - b
-              w2 = w2 - c
-              dist2 = direct_dist2(u1,v1,w1,u2,v2,w2) 
-          endif
-      END FUNCTION dist2
+      !REAL FUNCTION dist2(u1,v1,w1,u2,v2,w2,a,b,c)
+      !    real(KIND=rk),INTENT(INOUT) :: u1,v1,w1,u2,v2,w2,a,b,c
+      !    logical :: A1,A2,A3,B1,B2,B3,C1,C2,C3
+      !    A1 = (abs(u1-u2) > a/2 .AND. u1 > u2)
+      !    A2 = (abs(u1-u2) > a/2 .AND. u2 > u1)
+      !    A3 = (abs(u1-u2) < a/2)
+      !    B1 = (abs(v1-v2) > b/2 .AND. v1 > v2)
+      !    B2 = (abs(v1-v2) > b/2 .AND. v2 > v1)
+      !    B3 = (abs(v1-v2) < b/2)
+      !    C1 = (abs(w1-w2) > c/2 .AND. w1 > w2)
+      !    C2 = (abs(w1-w2) > c/2 .AND. w2 > w1)
+      !    C3 = (abs(w1-w2) < c/2)
+      !    if (A3 .and. B3 .and. C3) then
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B3 .and. C3) then
+      !        u2 = u2-a
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B3 .and. C3) then
+      !        u1 = u1-a
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A3 .and. B1 .and. C3) then
+      !        v1 = v1 - b
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A3 .and. B3 .and. C2) then
+      !        w2 = w2 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A3 .and. B2 .and. C3) then
+      !        v2 = v2 - b
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A3 .and. B3 .and. C1) then
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B1 .and. C3) then
+      !        u1 = u1 - a
+      !        v1 = v1 - b
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B2 .and. C3) then
+      !        u1 = u1 - a
+      !        v2 = v2 - b
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B3 .and. C1) then
+      !        u1 = u1 - a
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B3 .and. C2) then
+      !        u1 = u1 - a
+      !        w2 = w2 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B1 .and. C3) then
+      !        u2 = u2 - a
+      !        v1 = v1 - b
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B2 .and. C3) then
+      !        u2 = u2 - a
+      !        v2 = v2 - b
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B3 .and. C1) then
+      !        u2 = u2 - a
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B3 .and. C2) then
+      !        u2 = u2 - a
+      !        w2 = w2 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A3 .and. B1 .and. C1) then
+      !        v1 = v1 - b
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A3 .and. B1 .and. C2) then
+      !        v1 = v1 - b
+      !        w2 = w2 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A3 .and. B2 .and. C1) then
+      !        v2 = v2 - b
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A3 .and. B2 .and. C2) then
+      !        v2 = v2 - b
+      !        w2 = w2 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B1 .and. C1) then
+      !        u1 = u1 - a
+      !        v1 = v1 - b
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B1 .and. C2) then
+      !        u1 = u1 - a
+      !        v1 = v1 - b
+      !        w2 = w2 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B2 .and. C1) then
+      !        u1 = u1 - a
+      !        v2 = v2 - b
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A1 .and. B2 .and. C2) then
+      !        u1 = u1 - a
+      !        v2 = v2 - b
+      !        w2 = w2 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B1 .and. C1) then
+      !        u2 = u2 - a
+      !        v1 = v1 - b
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B1 .and. C2) then
+      !        u2 = u2 - a
+      !        v1 = v1 - b
+      !        w2 = w2 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B2 .and. C1) then
+      !        u2 = u2 - a
+      !        v2 = v2 - b
+      !        w1 = w1 - c
+      !        dist2= direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    elseif (A2 .and. B2 .and. C2) then
+      !        u2 = u2 - a
+      !        v2 = v2 - b
+      !        w2 = w2 - c
+      !        dist2 = direct_dist2(u1,v1,w1,u2,v2,w2) 
+      !    endif
+      !END FUNCTION dist2
 
       REAL FUNCTION diff_axis(u1,u2,h)
           ! u2 is used as origin
@@ -913,12 +945,11 @@ CONTAINS
     INTEGER, INTENT(IN) :: indx
     INTEGER, INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
     INTEGER,INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
-    !TYPE(atom), INTENT(OUT), ALLOCATABLE, DIMENSION(:,:) :: atom_info
     allocate(atom_info(nat,n_samples))
     i_sample = 1
     outer: DO imovie=1,nmo_end-nmo_start
       read(indx,*)!Neglect data of this line
-      read(indx,120) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
+      read(indx,120) sampled_movie(i_sample), sampled_time(i_sample)
       120 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
       write(*,*) 'the step:', imovie
       inner: do iatom= 1,nat
@@ -953,7 +984,7 @@ CONTAINS
     ! To read info from the trajectory file (format: ***.xyz)
     ! to READ data starting from a pattern-matched line.
     USE atom_module, ONLY: atom_info
-    USE parameter_shared, ONLY: sampled_movie, sampled_time, sampled_energy
+    USE parameter_shared, ONLY: sampled_movie, sampled_time
     INTEGER :: iatom,i_sample
     INTEGER, INTENT(IN) :: nat
     INTEGER, INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns)
@@ -969,53 +1000,32 @@ CONTAINS
     DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
         !read(indx, '(A4)') head_char
         read(indx, '(1X,A4)') head_char  ! for some other format, one can use this format
-        !------------------------------------------ 
-        !TEST
-        !WRITE(*,*)"head_char AND y:", head_char, y
-        !------------------------------------------ 
         PRE_CHECK:IF (head_char=="i = ") THEN
             BACKSPACE(UNIT=indx) ! Because I am not able to read other lines with the format '(A4,I8)', and have not find any good way, so I try to read it in '(A4)' first 
             !read(indx, '(A4,I8)') head_char, y
             read(indx, '(1X,A4,I8)') head_char, y
-            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
-                !-------------------------------------------------------------------------------------------------------
-                !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
-                !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
-                !-------------------------------------------------------------------------------------------------------
-                WRITE(*,*)"read_traj():", head_char, y
+            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-nmo_start,ns) == 0) THEN
+            !Jie: For special case of ns=1, MOD(y-(nmo_start-1),ns) is always 0. Hence, it needs to be checked separately. 
+            !Use ‘&’ to continue the line to avoid Fortran maximum line length of 132 characters. (Stupid Fortran!)
+            !CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. &
+            !                (ns == 1 .or. MOD(y-(nmo_start-1),ns) == 1))  THEN 
                 BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
-                read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
+                read(indx,130) sampled_movie(i_sample), sampled_time(i_sample)
                 130 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
-                !130 FORMAT (4X,I8,9X,F12.3,6X,F20.10)
                 131 FORMAT (A4,3F20.10)
                 inner: do iatom= 1,nat
-                  read (indx,131) atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), & 
+                  read (indx,*) atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), & 
                     atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
                   if (atom_info(iatom, i_sample)%atom_name == "O") THEN
                       atom_info(iatom, i_sample)%mass = 16.00
                   elseif (atom_info(iatom, i_sample)%atom_name == "H") THEN
                       atom_info(iatom, i_sample)%mass = 1.00
-                  elseif (atom_info(iatom, i_sample)%atom_name == "N") THEN
-                      atom_info(iatom, i_sample)%mass = 14.00 
-                  elseif (atom_info(iatom, i_sample)%atom_name == "Li") THEN
-                      atom_info(iatom, i_sample)%mass = 6.94
-                  elseif (atom_info(iatom, i_sample)%atom_name == "Na") THEN
-                      atom_info(iatom, i_sample)%mass = 22.99
-                  elseif (atom_info(iatom, i_sample)%atom_name == "K") THEN
-                      atom_info(iatom, i_sample)%mass = 39.10
                   endif
-                  !WRITE (*,131) & 
-                  !atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), &
-                  !atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
                 enddo inner
                 i_sample = i_sample + 1 !The position is important. It must be located before ENDIF MATCH
             ENDIF CHECK_HEAD
         ENDIF PRE_CHECK
     END DO
-      ! To check if the sampling is finished
-      !check: IF (i_sample > n_samples) THEN 
-      !  WRITE (*,*)'The total number of sample points are: ', n_samples
-      !END IF check
   END SUBROUTINE read_traj
 
   SUBROUTINE skip_lines(indx, i_input)

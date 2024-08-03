@@ -9,7 +9,7 @@ PROGRAM main_interface_c
   !============
   ! Declaration
   !============
-  USE parameter_shared,ONLY:sampled_pos_filename,n_grid
+  USE parameter_shared,ONLY: n_grid
   USE atom_module
   USE count_time, ONLY:begin_time,end_time,rat
   USE types
@@ -46,7 +46,7 @@ PROGRAM main_interface_c
   nat=0
   nwat=nat/3
   criterion=1 ! 1 means ADH criterion of H-Bbond definition
-  filename=""; pos_filename=""; sampled_pos_filename=""
+  filename=""; pos_filename=""
   surf_filename=""
   list_oxygen_pairs=""
   call system_clock(begin_time,rat) !To get the starting time
@@ -62,7 +62,7 @@ PROGRAM main_interface_c
   !CASE1: If we do not need to recenter, we can call sample_format2()
   !CALL sample_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples)
   !CASE2: If we have to recenter, we call sample_and_recenter_format2()
-  CALL sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize)
+  CALL load(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize)
   ! After running the sample() subroutine, now we have a new sampled trajectory file 
   !(stored in atom_info), which is generally shorter than the original one.
   
@@ -71,7 +71,6 @@ PROGRAM main_interface_c
   !====================
   open(20,file=trim(surf_filename))
       CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
-      !CALL read_surf_traj(20,0,999,1,n_grid,1000)
   close(20)
 
   CALL ghbond(filename,pos_filename,list_oxygen_pairs,nat) ! O-O pairs

@@ -17,41 +17,32 @@ CONTAINS
     ! Purpose:
     ! To read info from the isosurface trajectory file (format: surf_traj_*.xyz)
     USE surf_module, ONLY: surf_info
-    INTEGER :: i_sample, i_grid
-    INTEGER, INTENT(IN) :: n_grid  ! KEEP
-    INTEGER, INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns) KEEP
+    INTEGER :: ierror, i_sample, i_grid, ix, iy
+    INTEGER, INTENT(IN) :: n_grid 
+    INTEGER, INTENT(IN) :: n_samples
     INTEGER, INTENT(IN) :: indx
-    INTEGER, INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
-    INTEGER, INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
-    CHARACTER(LEN=4) :: head_char
+    INTEGER, INTENT(IN) :: ns ! Get one sample from the trajectory every ns step.
+    INTEGER, INTENT(IN) :: nmo_start, nmo_end ! To get the total number of moves
+    CHARACTER(LEN=4) :: head_char,e
     INTEGER :: y
 
     ALLOCATE(surf_info(n_grid,n_samples))
-    i_sample = 1
-    WRITE(*,*) "read_surf_traj(): New total time steps (n_samples):", n_samples
-    DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
-        READ(indx, '(A4)') head_char
-        PRE_CHECK:IF (head_char=="i = ") THEN
-            BACKSPACE(UNIT=indx) ! Because I am not able to read other lines with the format '(A4,I8)', and have not find any good way, so I try to read it in '(A4)' first 
-            READ(indx, '(A4,I5)') head_char, y
-            !read(indx, '(1X,A4,I5)') head_char, y
-            CHECK_HEAD:IF (head_char=="i = " .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 0) THEN
-                !-------------------------------------------------------------------------------------------------------
-                !NOTE: if use ' i = ', instead of 'i = ', it will be wrong!
-                !IF (head_char==' i = ' .AND. (y>nmo_start-1 .and. y<nmo_end+1) .AND. MOD(y-(nmo_start-1),ns) == 1) THEN
-                !-------------------------------------------------------------------------------------------------------
-                BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
-                READ(indx,*) ! skip one line in the unit=indx
-                131 FORMAT (11X,2F13.6)
-                inner: DO i_grid= 1, n_grid
-                  READ (indx,131) surf_info(i_grid,i_sample)%coord(1), & 
-                    surf_info(i_grid,i_sample)%coord(2)
-                ENDDO inner
-                i_sample = i_sample + 1 ! The position is important. It must be located before ENDIF MATCH
-            ENDIF CHECK_HEAD
-        ENDIF PRE_CHECK
-    END DO
-
+    i_sample = 0
+    IF (nmo_start > 0) THEN
+          DO i_sample = 0, nmo_start ! Skip 
+               read (indx,*) 
+               do i_grid = 1, n_grid
+                  read (indx,*) 
+               enddo
+          END DO
+    ENDIF
+    DO i_sample = 0, n_samples - 1
+          read(indx, *) head_char, e, y 
+          do i_grid = 1, n_grid
+              read (indx,*) ix, iy, surf_info(i_grid,i_sample+1)%coord(1), surf_info(i_grid,i_sample+1)%coord(2)
+          enddo 
+    END DO 
+    close(indx)
   END SUBROUTINE read_surf_traj
 
 END MODULE surf_traj
