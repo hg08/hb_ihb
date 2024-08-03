@@ -256,19 +256,17 @@
       !==============================
       !Normalization of C_HB(t) step1
       !==============================
-      DO mt = 0, nmo-1 ! time interval
-          !corr_h(mt+1) = corr_h(mt+1) / ((nmo-mt)*nwat*ave_h)
-          corr_h(mt+1) = corr_h(mt+1) / (num_start_points*nwat*ave_h)
-      ENDDO
+      corr_h = corr_h / (num_start_points*nwat)
+      corr_h = corr_h / ave_h
       deallocate(x, y, z, ndx_1, ndx_2)          
-     !===================================
-     !Write the correlation
-     !C_HB(t) for the iterfacial HB (ihb)    
-     !===================================
+      !===================================
+      !Write the correlation
+      !C_HB(t) for the iterfacial HB (ihb)    
+      !===================================
       char_thickness = nth(str(nint(thickness)),d_len)
       OPEN(10,file=trim(filename)//'_wat_pair_hbacf_h_ihb_' &
         //char_thickness//'.dat')
-        DO i =1, nmo
+        DO i =1, nmo_effective
             WRITE(10,*) REAL(i-1, rk) * delta_t, corr_h(i)
         ENDDO
         WRITE(6,*)'written in '//trim(filename)//&

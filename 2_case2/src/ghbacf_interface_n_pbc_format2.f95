@@ -35,7 +35,7 @@
                        grid_index, pair_in_surf1, pair_in_surf2, &
                        str, nth
       USE atom_module
-      USE parameter_shared
+      USE parameter_shared ! Including ndx_O, ndx_H, ...
       USE traj_format2
       USE surf_traj
       USE surf_module, ONLY: surf_info
@@ -58,6 +58,8 @@
       REAL,PARAMETER :: rooc=12.25 ! cutoff distance of rOO (3.5**2 )
       REAL,PARAMETER :: cosPhiC123=0.866 ! 1.732/2; phiC=pi/6.
       REAL,PARAMETER :: cosPhiC132=-0.5 ! -1./2; phiC132=2pi/3.
+      REAL(KIND=rk),PARAMETER :: max_time_for_corr = 10.0 ! Unit: ps. 
+
       REAL(KIND=rk),PARAMETER :: h_min=0.5 ! condition for the existence of a h-bond for a step
       REAL(KIND=rk),PARAMETER :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_, norm_rr
@@ -65,10 +67,13 @@
       REAL(KIND=rk) :: qj, tot_hb, delta_t, hb_per_frame, ave_h
       REAL(KIND=rk),DIMENSION(3) :: r1, r2, r3 ! pbc 
       INTEGER :: m1, m2, m3, mt, nqj, tot_nhb, n_bonded_pairs, ns
+      INTEGER :: idx_O1, idx_O2 ! Indices of O1, O2 in all O atoms
       REAL(KIND=rk),ALLOCATABLE,DIMENSION (:) :: h, hb, corr_n
       REAL(KIND=rk),ALLOCATABLE,DIMENSION (:) :: h_d
       REAL,ALLOCATABLE,DIMENSION (:,:) :: x, y, z
-      INTEGER,ALLOCATABLE,DIMENSION(:) :: ndx_1, ndx_2, nhb_exist
+      INTEGER,ALLOCATABLE,DIMENSION(:) :: nhb_exist
+      INTEGER,ALLOCATABLE,DIMENSION(:,:) :: ndx_1, ndx_2
+      INTEGER :: nmo_effective, start_step, num_start_points
       INTEGER,DIMENSION(4) :: ndx_3_list
       REAL(KIND=rk) :: scalar, tmp 
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: hb_exist
@@ -95,22 +100,27 @@
       norm_rr = 0.0 ! a temporary variable
       tmp = 0.0 ! a temporay variable 
       char_thickness = ''
+      start_step = 1
+      nmo_effective = 0
 
       !To obtain the total number of water pairs
       nwat = get_nwat(list_filename)
-      ALLOCATE(ndx_1(nwat))          
-      ALLOCATE(ndx_2(nwat))          
+      ALLOCATE(ndx_1(nwat,2))          
+      ALLOCATE(ndx_2(nwat,2))          
       !============================
       !read data from the list file
       !============================
       OPEN(10,file=list_filename)     
       DO k = 1, nwat
-          read(10,*)ndx_1(k),ndx_2(k)
+          read(10,*)ndx_1(k,1), ndx_1(k,2), ndx_2(k,1), ndx_2(k,2)
       ENDDO
       CLOSE(10)
       !============================
 
       delta_t = ns * delta_t0  ! unit: ps
+      nmo_effective = nint(max_time_for_corr/delta_t) + 1
+      start_step = nint((nmo_effective-1)/5.0) ! Start step of sliding window. Over-using rate is 1 - 1/5 = 4/5
+      num_start_points = (nmo-nmo_effective-1)/start_step + 1
       WRITE(*,*) "New time step (delta_t):", delta_t
       WRITE(*,*) "New total steps (nmo):", nmo
       ALLOCATE(x(nat,nmo))
@@ -140,13 +150,14 @@
       !=============
       !The main loop
       !=============      
-      kLOOP: DO k = 1, nwat
+      kLOOP: DO k = 1, nwat ! Loop all O-O pairs
         qj = 0
         nqj = 0 ! The number of bonded times for k-th form of quasi-HB 
-        m1 = ndx_1(k)
-        m2 = ndx_2(k)
-        ndx_3_list = & 
-            h_ndx_list(ndx_1(k),ndx_2(k),pos_filename,nat,boxsize)
+        idx_O1 = ndx_1(k,1) ! Index of O1 in all O atoms
+        idx_O2 = ndx_2(k,1) ! Index of O2 in all O atoms
+        m1 = ndx_1(k,2) ! Index of O1 in all atoms
+        m2 = ndx_2(k,2) ! Index of O2 in all atoms
+        ndx_3_list = (/ndx_H(2*idx_O1-1,2), ndx_H(2*idx_O1,2), ndx_H(2*idx_O2-1,2), ndx_H(2*idx_O2,2)/)
         ! Calculate h_d(j)
         TIME: DO jj = 1, nmo
           h(jj) = 0.0
@@ -170,18 +181,16 @@
               surf_info(index_mol2,jj)%coord(2), &
               atom_info(m2,jj)%coord(3),thickness ) 
 
-          !This condition is the additional condition for the establishment 
-          ! of interface hydrogen bonds, which is the core of this method. 
+          !The following condition establish interface hydrogen bonds,
+          !which is the core of this method.
           IF (condition1 .OR. condition2) THEN
-
-              ! A LOOP on ndx_3_list
+              r1 = (/atom_info(m1,jj)%coord(1),atom_info(m1,jj)%coord(2),&
+                     atom_info(m1,jj)%coord(3) /)
+              r2 = (/atom_info(m2,jj)%coord(1),atom_info(m2,jj)%coord(2),&
+                     atom_info(m2,jj)%coord(3) /)
               HYDROGEN: DO j = 1, 4
                   !Try each Hydrogen bond, there are totally 4 hydrogen atoms, for a water-water pair
                   m3 = ndx_3_list(j)
-                  r1 = (/atom_info(m1,jj)%coord(1),atom_info(m1,jj)%coord(2),&
-                         atom_info(m1,jj)%coord(3) /)
-                  r2 = (/atom_info(m2,jj)%coord(1),atom_info(m2,jj)%coord(2),&
-                         atom_info(m2,jj)%coord(3) /)
                   r3 = (/atom_info(m3,jj)%coord(1),atom_info(m3,jj)%coord(2),&
                          atom_info(m3,jj)%coord(3) /)
                   r21 = dist2(r1, r2, boxsize)
@@ -236,10 +245,9 @@
         !Calcualte the correlation function n_HB(t)
         !==========================================
         IF (hb(k)>hb_min) THEN
-            DO mt =0, nmo-1    ! time interval
-                scalar = 0.d0
-                !DO j=1,nmo-mt-1
-                DO j = 1, nmo-mt
+            DO mt =0, nmo_effective-1   ! time interval
+                scalar = 0.0
+                DO j = 1, nmo-nmo_effective, start_step ! How many steps? (nmo-nmo_effective-1)/start_step + 1 
                     tmp = h(j) * (1-h(j+mt)) * h_d(j+mt)
                     scalar = scalar + tmp  
                 ENDDO
@@ -248,8 +256,8 @@
         ENDIF
       ENDDO kLOOP   
       deALLOCATE(hb_exist,nhb_exist,h_d)
-      hb_per_frame = tot_hb/nmo
-      ave_h = hb_per_frame/nwat 
+      hb_per_frame = tot_hb/REAL(nmo,rk)
+      ave_h = hb_per_frame/REAL(nwat,rk) 
       !=========================================
       !Calculate the number of ever bonded pairs
       !=========================================
@@ -262,10 +270,10 @@
       !==============================
       !Normalization of n_HB(t) step1
       !==============================
-      DO mt = 0, nmo-1! time interval
-          corr_n(mt+1) = corr_n(mt+1)/(nmo-mt)
-      ENDDO
-      corr_n = corr_n / nwat
+      !DO mt = 0, nmo-1! time interval
+      !    corr_n(mt+1) = corr_n(mt+1)/num_start_points
+      !ENDDO
+      corr_n = corr_n/(num_start_points * nwat)
       !Normalization step2
       corr_n = corr_n / ave_h
       deALLOCATE(x,y,z,ndx_1,ndx_2)          
@@ -276,7 +284,7 @@
       char_thickness = nth(str(nint(thickness)),d_len)
       OPEN(10,file=trim(filename)//'_wat_pair_hbacf_n_ihb_'//&
         char_thickness//'.dat')
-        DO i = 1, nmo
+        DO i = 1, nmo_effective 
             WRITE(10,*) REAL(i-1)*delta_t, corr_n(i)
         ENDDO
         WRITE(6,*)'written in '//trim(filename)//&

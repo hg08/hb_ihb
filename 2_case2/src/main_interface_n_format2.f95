@@ -71,7 +71,6 @@ PROGRAM main_interface_n
   !====================
   open(20,file=trim(surf_filename))
       CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
-      !CALL read_surf_traj(20,0,999,1,n_grid,1000)
   close(20)
 
   CALL ghbond(filename,pos_filename,list_oxygen_pairs,nat) ! O-O pairs
