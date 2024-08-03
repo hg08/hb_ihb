@@ -1,4 +1,4 @@
-#/usr/bin/env python3
+#!/usr/bin/env python3
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -38,9 +38,9 @@ def plot_data(filename):
     plt.title('Time vs. Potential Energy')
     
     plt.tight_layout()
+    plt.savefig('energies.png')
     plt.show()
     
-    plt.savefig('energies.png')
 
 
 
