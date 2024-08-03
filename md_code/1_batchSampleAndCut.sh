@@ -3,9 +3,8 @@ do
 	echo "Processing $numWater"
 	# Get current path
 	basePath=$(pwd)
-	path="AirWaterInterface${numWater}/run_TIP4P2005_300_hdf5/run_TIP4P2005_300/"
+	path="MB-pol/125h2o/"
 	cd $path
-	reoh dump.xyz # Reorange the order of the atoms
-	$basePath/sampleAndCut.py dump_RROH.xyz ${numWater}w-TIP4P2005.xyz
+	$basePath/sampleAndCut.py dump.xyz ${numWater}h2o-240ps-mbx-pol.xyz
 	cd $basePath
 done
