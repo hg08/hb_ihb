@@ -52,7 +52,7 @@
       REAL,PARAMETER :: rooc=12.25 ! cutoff distance of rOO (3.5**2 )
       REAL,PARAMETER :: cosPhiC123=0.866 ! 1.732/2; phiC=pi/6.
       REAL,PARAMETER :: cosPhiC132=-0.5 ! -1./2; phiC132=2pi/3.
-      REAL(KIND=rk),PARAMETER :: max_time_for_corr = 10.0 ! Unit: ps. 
+      REAL(KIND=rk),PARAMETER :: max_time_for_corr = 12.0 ! Unit: ps. 
       REAL(KIND=rk),PARAMETER :: h_min=0.5 ! condition for the existence of a h-bond for a step
       REAL(KIND=rk),PARAMETER :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_, norm_rr

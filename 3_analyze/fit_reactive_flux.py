@@ -15,9 +15,10 @@ k_file = sys.argv[3]
 
 #For times beyond the transient period
 #IF STUDY LONG-TIME RELAXATION
-start = 5
-end = 300 
-dt = 0.04
+window_size = 10  # ps
+dt = 0.04 # ps
+start = 4 # Get rid of the first few fluctuating data points
+end = int(window_size / dt) + 1 
 
 # IF STUDY SHORT-TIME RELAXTION
 data_c = np.loadtxt(c_file)
