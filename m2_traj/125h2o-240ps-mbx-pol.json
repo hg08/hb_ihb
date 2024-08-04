@@ -1,0 +1,12 @@
+{
+    "name": "125h2o-240ps-mbx-pol.xyz",
+    "system": "125h2o-240ps-mbx-pol",
+    "simType": "MB-pol",
+    "dt": 0.04,
+    "sizeX": 15.521408,
+    "sizeY": 15.521408,
+    "sizeZ": 77.607041,
+    "numAtoms": 375,
+    "simTime": 240.0,
+    "numFrames": 6001
+}
