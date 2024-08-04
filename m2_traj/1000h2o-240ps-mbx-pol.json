@@ -1,0 +1,12 @@
+{
+    "name": "1000h2o-240ps-mbx-pol.xyz",
+    "system": "1000h2o-240ps-mbx-pol",
+    "simType": "MB-pol",
+    "dt": 0.04,
+    "sizeX": 31.289198,
+    "sizeY": 31.289198,
+    "sizeZ": 156.44599,
+    "numAtoms": 3000,
+    "simTime": 240.0,
+    "numFrames": 6001
+}

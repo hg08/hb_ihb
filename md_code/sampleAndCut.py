@@ -61,13 +61,10 @@ if __name__ == '__main__':
     time_step = 0.5 # fs
     dump_every = 1 # dump every dump_freq steps
     ns = 80 # sampling every ns steps
-    #oriSimTime = 120 # ps 
-    #oriNumFrames = int(oriSimTime * 1000 / time_step / dump_freq) # 24,0000
     
-    # Read the the last 100 ps of the trajectory
-    # cuttedSimTime = 100 # ps
-    cuttedSimTime = 40.0 # 40 ps for testing
-    lastNumFrames = int( cuttedSimTime * 1000 / time_step / dump_every) + 1 # 20,0000
+    # Read the the last 240 ps of the trajectory
+    cuttedSimTime = 240.0 
+    lastNumFrames = int( cuttedSimTime * 1000 / time_step / dump_every) + 1 
    
     # --- For the output JSON file ---
     dt = time_step * dump_every * ns / 1000 # ps

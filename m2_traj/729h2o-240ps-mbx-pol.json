@@ -1,0 +1,12 @@
+{
+    "name": "729h2o-240ps-mbx-pol.xyz",
+    "system": "729h2o-240ps-mbx-pol",
+    "simType": "MB-pol",
+    "dt": 0.04,
+    "sizeX": 27.938535,
+    "sizeY": 27.938535,
+    "sizeZ": 139.69267,
+    "numAtoms": 2187,
+    "simTime": 240.0,
+    "numFrames": 6001
+}
