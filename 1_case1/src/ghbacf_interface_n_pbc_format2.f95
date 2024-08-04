@@ -60,7 +60,7 @@
       REAL(KIND=rk),parameter :: cosPhiC123=0.866d0           ! 1.732/2; phiC=pi/6.
       REAL(KIND=rk),parameter :: cosPhiC132=-0.5d0            ! -1./2; phiC132=2pi/3.
       !REAL(KIND=rk), parameter :: h_min=0.d5  ! condition for the existence of a h-bond for a step
-      REAL(KIND=rk),PARAMETER :: max_time_for_corr = 10.0 ! Unit: ps.
+      REAL(KIND=rk),PARAMETER :: max_time_for_corr = 12.0 ! Unit: ps.
       REAL(KIND=rk),parameter :: hb_min=0.5d0 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_
       REAL(KIND=rk) :: r21, r31, r32, r23 ! For the second criterion of HB
