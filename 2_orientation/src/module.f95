@@ -342,7 +342,7 @@ INTERFACE
           ndx_N,ndx_OW,ndx_ON
   END SUBROUTINE ghbond_lino3 
 
-  INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
+  INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divy)
       ! transfer the coordinates (x,y) to grid_index, which is an integer
       IMPLICIT NONE
       !==========
@@ -354,7 +354,7 @@ INTERFACE
       !=========
       INTEGER,DIMENSION(2) :: ind
       REAL(kind=rk),INTENT(IN) :: divx, divy
-      INTEGER,INTENT(IN) :: nb_divx,nb_divy
+      INTEGER,INTENT(IN) :: nb_divy
       REAL(kind=rk),INTENT(IN) :: x,y
   END FUNCTION grid_index
 
@@ -439,7 +439,7 @@ INTERFACE
       INTEGER,INTENT(IN) :: nmo_start, nmo_end ! To get the total number of moves
   END FUNCTION sampling_number
 
-  SUBROUTINE read_traj(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,sampled_energy,atom_info)
+  SUBROUTINE read_traj(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,atom_info)
       ! To read info from the trajectory file (format: ***.xyz)
       ! to READ data starting from a pattern-matched line.
       IMPORT :: atom
@@ -455,7 +455,7 @@ INTERFACE
 
       TYPE(atom),DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
       INTEGER,DIMENSION(n_samples) :: sampled_movie
-      REAL(kind=rk),DIMENSION(n_samples) :: sampled_time, sampled_energy
+      REAL(kind=rk),DIMENSION(n_samples) :: sampled_time
       INTEGER :: y
   END SUBROUTINE read_traj
 
@@ -508,10 +508,9 @@ INTERFACE
     REAL(kind=8),DIMENSION(2,n_samples,n_grid),INTENT(INOUT) :: surf_info_fortran
   END SUBROUTINE read_surf_coord
 
-  SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize, &
-           sampled_pos_filename,sampled_movie,sampled_time,sampled_energy, &
+  SUBROUTINE load(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize, &
+           sampled_pos_filename,sampled_movie,sampled_time, &
            nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
-      ! 0a) The subroutine sample_and_recenter.f95 reduce the size of the trajectory and recenter each step of the trajectory. 
       IMPORT :: atom
       IMPLICIT NONE
       integer, parameter :: rk=8
@@ -529,7 +528,7 @@ INTERFACE
       INTEGER, DIMENSION(n_samples),INTENT(INOUT) :: sampled_movie
       TYPE(atom), DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info !Should be declared after n_samples is decared
       character(LEN=*), INTENT(INOUT):: sampled_pos_filename
-      REAL(kind=rk), DIMENSION(n_samples), INTENT(INOUT) :: sampled_time, sampled_energy
+      REAL(kind=rk), DIMENSION(n_samples), INTENT(INOUT) :: sampled_time
       REAL(kind=rk), INTENT(IN) :: whish_size ! Angstrom
 
       !Local varables
@@ -538,7 +537,7 @@ INTERFACE
       INTEGER :: i,iatom,imovie
       INTEGER :: num_wat_pairs 
       REAL(kind=rk) :: sum_mass
-  END SUBROUTINE sample_and_recenter_format2 
+  END SUBROUTINE load 
 
   SUBROUTINE molecules_in_interface(n_samples,nat,arr,atom_info, &
          n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,&

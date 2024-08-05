@@ -584,37 +584,54 @@
       deallocate(atom_type,x,y,z)
   END FUNCTION get_number_of_iodine
 
-  INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
-      ! transfer the coordinates (x,y) to grid_index, which is an integer
-      implicit none
-      integer,parameter :: rk=8              
-      REAL(kind=rk), INTENT(IN) :: x,y
-      REAL(kind=rk), INTENT(IN) :: divx, divy
-      INTEGER, INTENT(IN) :: nb_divx, nb_divy
-      INTEGER, DIMENSION(2) :: ind
-      
-      !Initialization
-      ind = 0
+  INTEGER FUNCTION grid_index(x,y,divx,divy,n_divy)
+    ! transfer the coordinates (x,y) to grid_index, which is an integer
+    integer,parameter :: rk=8              
+    REAL(KIND=rk), INTENT(IN) :: x,y
+    REAL(KIND=rk), INTENT(IN) :: divx, divy
+    INTEGER, INTENT(IN) :: n_divy
+    INTEGER, DIMENSION(2) :: ind
 
-      ind(1) = FLOOR(x/divx) 
-      ind(2) = FLOOR(y/divy)
+    !Initialization
+    ind = 0.0
 
-      !Correction for avoiding 0 index
-      IF (ind(1) == 0) THEN
-          ind(1) = ind(1) + 1
-      ENDIF
-      IF (ind(2) == 0) THEN
-          ind(2) = ind(2) + 1
-      ENDIF
+    ind(1) = FLOOR(x/divx)
+    ind(2) = FLOOR(y/divy)
 
-      grid_index = (ind(2)-1) * nb_divx + ind(1) 
-      !grid_index = ind(1) * n_divy + ind(2)
-      !WRITE (*,*) "NB_DIVX = ", nb_divx
-      !WRITE (*,*) "nb_divy = ", nb_divy
-      !WRITE (*,*) "index(1) = ", ind(1)
-      !WRITE (*,*) "index(2) = ", ind(2)
-      !WRITE (*,*) "grid_index = ", grid_index
+    grid_index = ind(1) * n_divy + ind(2)+1
   END FUNCTION grid_index
+
+  !INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
+  !    ! transfer the coordinates (x,y) to grid_index, which is an integer
+  !    implicit none
+  !    integer,parameter :: rk=8              
+  !    REAL(kind=rk), INTENT(IN) :: x,y
+  !    REAL(kind=rk), INTENT(IN) :: divx, divy
+  !    INTEGER, INTENT(IN) :: nb_divx, nb_divy
+  !    INTEGER, DIMENSION(2) :: ind
+  !    
+  !    !Initialization
+  !    ind = 0
+
+  !    ind(1) = FLOOR(x/divx) 
+  !    ind(2) = FLOOR(y/divy)
+
+  !    !Correction for avoiding 0 index
+  !    IF (ind(1) == 0) THEN
+  !        ind(1) = ind(1) + 1
+  !    ENDIF
+  !    IF (ind(2) == 0) THEN
+  !        ind(2) = ind(2) + 1
+  !    ENDIF
+
+  !    grid_index = (ind(2)-1) * nb_divx + ind(1) 
+  !    !grid_index = ind(1) * n_divy + ind(2)
+  !    !WRITE (*,*) "NB_DIVX = ", nb_divx
+  !    !WRITE (*,*) "nb_divy = ", nb_divy
+  !    !WRITE (*,*) "index(1) = ", ind(1)
+  !    !WRITE (*,*) "index(2) = ", ind(2)
+  !    !WRITE (*,*) "grid_index = ", grid_index
+  !END FUNCTION grid_index
 
   !TODO: define get_number_of_oxygens_in_nitrate()
   !TODO: define get_number_of_oxygens_in_water()
@@ -740,7 +757,7 @@
       END IF positive
   END FUNCTION sampling_number
 
-  SUBROUTINE read_traj(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,sampled_energy,atom_info)
+  SUBROUTINE read_traj(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,atom_info)
       ! To read info from the trajectory file (format: ***.xyz)
       ! to READ data starting from a pattern-matched line.
       USE module_ihb, ONLY: atom
@@ -758,7 +775,7 @@
 
       TYPE(atom),DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
       INTEGER,DIMENSION(n_samples) :: sampled_movie
-      REAL(kind=rk),DIMENSION(n_samples) :: sampled_time, sampled_energy
+      REAL(kind=rk),DIMENSION(n_samples) :: sampled_time
       INTEGER :: y
       
       i_sample = 1
@@ -774,8 +791,8 @@
                   !-------------------------------------------------------------------------------------------------------
                   !WRITE(*,*)"read_traj():", head_char, y
                   BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
-                  read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
-                  130 FORMAT (1X,4X,I8,9X,F12.3,6X,F20.10)
+                  read(indx,130) sampled_movie(i_sample), sampled_time(i_sample)
+                  130 FORMAT (1X,4X,I8,9X,F12.3)
                   131 FORMAT (A4,3F20.10)
                   inner: do iatom= 1,nat
                     read (indx,131) atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), & 
@@ -784,18 +801,7 @@
                         atom_info(iatom, i_sample)%mass = 16.00d0
                     elseif (atom_info(iatom, i_sample)%atom_name == "H") THEN
                         atom_info(iatom, i_sample)%mass = 1.00d0
-                    elseif (atom_info(iatom, i_sample)%atom_name == "N") THEN
-                        atom_info(iatom, i_sample)%mass = 14.00d0 
-                    elseif (atom_info(iatom, i_sample)%atom_name == "Li") THEN
-                        atom_info(iatom, i_sample)%mass = 6.94d0
-                    elseif (atom_info(iatom, i_sample)%atom_name == "Na") THEN
-                        atom_info(iatom, i_sample)%mass = 22.99d0
-                    elseif (atom_info(iatom, i_sample)%atom_name == "K") THEN
-                        atom_info(iatom, i_sample)%mass = 39.10d0
                     endif
-                    !WRITE (*,131) & 
-                    !atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), &
-                    !atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
                   enddo inner
                   i_sample = i_sample + 1 !The position is important. It must be located before ENDIF 
               ENDIF CHECK_HEAD

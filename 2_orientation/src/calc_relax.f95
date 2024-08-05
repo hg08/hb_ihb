@@ -1,13 +1,14 @@
 !!=======================================================================
 !  2021-3-21
+!  2024-8-5
 !  Author: Huang Gang
-!  subroutine relax21.f95
+!  subroutine calc_relax.f95
 !  Autocorrelation of relative positon vector:
 !  Auto correlation fuction of auto correlation fucntion of O-H vector.
 !  In this function, we calculate the relaxiation of O-H bonds. 
 !=======================================================================
 
-  SUBROUTINE relax21(boxsize,filename,pos_filename,list_filename,delta_t,natoms,nmovie,&
+  SUBROUTINE calc_relax(boxsize,filename,pos_filename,list_filename,delta_t,natoms,nmovie,&
             n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info_fortran) 
     !=========================================================
     !Purpose: to obtain C2(t)= P2(u(0)u(t)) for interfacial HB
@@ -30,13 +31,15 @@
     integer, parameter :: d_len=3 ! for storing the length of the character which represents the thickness of the interface
 
     real(kind=rk),parameter :: rate=0.8d0       ! Condition for cutting off autocorrelation functions
-    
+    REAL(KIND=rk),PARAMETER :: max_time_for_corr = 12.0 ! Unit: ps.
+
     character(LEN=*),INTENT(IN) :: list_filename
     character(LEN=LEN(list_filename)) :: list_filename_temp
     character(LEN=200),INTENT(IN) :: filename, pos_filename
     real(kind=rk),INTENT(IN) :: delta_t      ! ps  Use the time step (delta_t) as a general variable, instead of a parameter.  
     INTEGER,INTENT(IN) :: natoms
     INTEGER,INTENT(IN) :: nmovie
+    INTEGER :: nmo_effective, start_step, num_start_points
     real(kind=rk), dimension(3), INTENT(IN) :: boxsize
     integer :: i,iatom,imovie,j,mt,nts
     integer :: nbonds ! number of OH bonds 
@@ -63,15 +66,18 @@
     mt=0
     nts=0 
     nbonds=0
+    nmo_effective = 0
+    start_step = 1
+    num_start_points = 0
 
+    nmo_effective = nint(max_time_for_corr/delta_t) + 1
+    start_step = nint((nmo_effective-1)/5.0) ! Start step of sliding window. Over-using rate is 1 - 1/5 =     4/5
+    num_start_points = (nmovie - nmo_effective-1)/start_step + 1
     !Write delta_t
     !write(*,*) "RELAX delta_t = ", delta_t , "(ps)" 
     ! I want to calculate 'nbonds' from the list_filename! Then I need to create an explicit interface, therefore, I defined a function calc_num_of_lines_of_file and put it in a module.
     ! Get the total number of OH bond pairs, i.e., the total number of lines in the list file
     list_filename_temp = list_filename
-    !CALL calc_num_of_lines_of_file(list_filename_temp,nbonds)
-    !write(*,*) 'RELAX # of OH bonds (nbonds) =', nbonds
-    !Or use
     nbonds=get_total_number_of_lines(list_filename_temp)
 
     allocate(ndx_1(nbonds))          
@@ -90,12 +96,9 @@
     open(10,file=list_filename_temp,iostat=ierror)
       !Filling the idx_bonds array with the idx of the atoms
       !making the bonds 
-      !TODO: To determine the index of H atoms for each O atom
       do i=1,nbonds
         read(10,*)idx_bonds(1,i),idx_bonds(2,i)
       end do
-      !write(6,*)'number of movie steps:',nmovie
-      !write(6,*)'number of atoms in molecule:',natoms
     close(10)
 
     ! read in TRAJECTORY/VELOCITY file in xyz format 
@@ -113,19 +116,6 @@
     write(6,*)'end of TRAJECTORY reading'
 
     !First: Calculation for ALL the times of ALL the studied bonds
-    !CASE1: IF DO NOT consider the PBC use the following method:
-    !do i = 1,nbonds 
-    !   DO j = 1, nmovie
-    !   rx(i,:) = x(idx_bonds(2,i),:)-x(idx_bonds(1,i),:)
-    !   ry(i,:) = y(idx_bonds(2,i),:)-y(idx_bonds(1,i),:)
-    !   rz(i,:) = z(idx_bonds(2,i),:)-z(idx_bonds(1,i),:)
-    !   temp_leng(:) = SQRT(rx(i,:)**2 + ry(i,:)**2 + rz(i,:)**2)
-    !   ! transfer to unit vector 
-    !   rx(i,:) = rx(i,:)/temp_leng(:)
-    !   ry(i,:) = ry(i,:)/temp_leng(:)
-    !   rz(i,:) = rz(i,:)/temp_leng(:)
-    !enddo
-    !CASE2: IF consider the PBC use the following method. 
     !TODO: remove the timeloop.
     do i = 1,nbonds 
        timeloop:DO j = 1, nmovie 
@@ -139,13 +129,10 @@
        rz(i,j) = rz(i,j)/temp_leng(j)
        END DO timeloop
     enddo
-    !! TEST: both the following lines should print 1.0
-    !write(*,*) rx(1,1)**2 + ry(1,1)**2 + rz(1,1)**2
-    !write(*,*) rx(2,2)**2 + ry(2,2)**2 + rz(2,2)**2
     
-    do mt=0, nmovie-1 ! Loop of Dt (=t-t0)
-       do nts = 1,nmovie-mt ! Loop of t0
-          do i = 1,nbonds ! O(5) in wat1
+    do mt=0, nmo_effective - 1 ! Loop of Dt (=t-t0)
+       do nts = 1, nmovie - nmo_effective, start_step ! Loop of t0
+          do i = 1, nbonds ! O(5) in wat1
              corr(mt+1) = corr(mt+1) +          &
                   P2(( rx(i,nts)*rx(i,nts+mt) + &
                   ry(i,nts)*ry(i,nts+mt) +      &
@@ -153,17 +140,17 @@
                   )) !Scalar product of vectors
           end do
        end do
-       corr(mt+1) = corr(mt+1)/dble(nbonds * (nmovie-mt)) ! Normalization by the number of time steps
+       corr(mt+1) = corr(mt+1)/dble(nbonds * num_start_points) ! Normalization by the number of time steps
     end do
     !Normalization by corr(1)=<r(0).r(0)>
-    do mt=nmovie,1,-1
+    do mt=nmo_effective, 1, -1
       corr(mt)=corr(mt)/corr(1)
     enddo
 
     char_thickness = nth(str(thickness),d_len)
     open(10,file=trim(filename)//'_c2_ihb_' &
       //char_thickness//'.dat')
-    do i = 1,int(nmovie*rate)
+    do i = 1, nmo_effective
        write(10,*)(i-1)*delta_t,corr(i)
     enddo
     write(6,*)'correlation results written in file '//trim(filename)//'_c2_ihb_'//char_thickness//'.dat'

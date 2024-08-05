@@ -21,7 +21,7 @@ PROGRAM main_interface_relax
   !To declare data to share between routines.
   character(LEN=200) :: sampled_pos_filename
   INTEGER, ALLOCATABLE, DIMENSION(:) :: sampled_movie
-  REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time, sampled_energy
+  REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time
   ! For griding
   INTEGER :: nb_divx, nb_divy, nb_divz, n_grid 
   REAL(KIND=rk) :: divx, divy, divz ! divx is how long is each element along x; ...
@@ -84,21 +84,14 @@ PROGRAM main_interface_relax
   write(*,*) "delta_t = ", delta_t, "(ps)"
   allocate(sampled_movie(n_samples))
   allocate(sampled_time(n_samples))
-  allocate(sampled_energy(n_samples))
   allocate(atom_info(nat,n_samples))
  
   !========================
-  ! Sampling the trajectory
+  ! Loadling the trajectory
   !========================
-  !!CASE1: If one does not need to recenter, one can just call sample_format2()
-  !CALL sample_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples)
-  !CASE2: If one have to recenter, one call sample_and_recenter_format2() instead.
-  CALL sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize,&
-       sampled_pos_filename,sampled_movie,sampled_time,sampled_energy, &
+  CALL load(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize,&
+       sampled_pos_filename,sampled_movie,sampled_time, &
        nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
-  !WRITE(*,*)"MAIN nb_divx =", nb_divx
-  ! After running the sample() or sample_format2() subroutine, therefore we have a new sampled trajectory file (stored in atom_info), 
-  ! which is generally shorter than the original one.
   
   !====================
   !read surf trajectory
@@ -115,14 +108,11 @@ PROGRAM main_interface_relax
 
   CALL molecules_in_interface(n_samples,nat,indx_array,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info_fortran)
-  !WRITE(*,*)"MAIN4 nb_divx =", nb_divx
-  !To determine the indices of Oxygens' pairs that located in one of the interface.
-  !CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array)
-  !Similarly, we generate a list for O atoms at one of the interface.
+  !Generate a list for O atoms at one of the interface.
   CALL oh_interface(boxsize,filename,sampled_pos_filename,list_filename,n_samples,nat,indx_array)
 
   !Calculate n_HB(t),k(t),etc for pure water system. If the format of data is different, one may use another funtion, eg ghbacf_n_pbc_format2().
-  CALL relax21(boxsize,filename,sampled_pos_filename,list_filename,delta_t,nat,n_samples,&
+  CALL calc_relax(boxsize,filename,sampled_pos_filename,list_filename,delta_t,nat,n_samples,&
       n_grid,divx,divy,divx,nb_divx,nb_divy,nb_divz,thickness,surf_info_fortran) 
   call system_clock(end_time,rat)
   write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 

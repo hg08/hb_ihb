@@ -30,7 +30,7 @@
       INTEGER,DIMENSION(nmo,nat),INTENT(INOUT) :: arr
 
       ! Local variables
-      INTEGER,PARAMETER :: step=25 ! The parameter 'step' should not be too small, otherwise, you will waste your time on many repeated calculation. 
+      INTEGER,PARAMETER :: step=100 ! The parameter 'step' should not be too small, otherwise, you will waste your time on many repeated calculation. 
                                     ! Here, 100 means : "We select the molecules in interface every 100*ns steps."
       integer :: i,n,jj
       integer,dimension (nat) :: ndx_O
@@ -60,7 +60,6 @@
             n=n+2
           endif
         enddo
-        !write(*,*) "n = ", n
       ENDDO ROW
 
       close(20)
