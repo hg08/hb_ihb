@@ -24,7 +24,7 @@ SUBROUTINE read_surf_traj(surf_filename,nmo_start,nmo_end,ns,n_grid,n_samples,su
   i_sample = 0 ! Frame number
   open(indx,FILE=surf_filename,STATUS='OLD',ACTION='READ',IOSTAT=ierror)
   IF (nmo_start > 0) THEN
-        DO i_sample = 0, nmo_start ! Skip 
+        DO i_sample = 0, nmo_start - 1 ! Skip 
              read (indx,*) 
              do i_grid = 1, n_grid
                 read (indx,*) 
