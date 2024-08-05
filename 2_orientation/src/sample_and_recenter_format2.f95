@@ -40,18 +40,12 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   ! Initialization
   iatom = 0; imovie = 0; i = 0; num_wat_pairs = 0
   nb_divx = nint(boxsize(1)/whish_size) ! round the argument to the nearest integer.
-  !WRITE(*,*) "SAMPLE nb_divx = ", nb_divx 
-  !WRITE(*,*) "SAMPLE whish_size = ", whish_size
   nb_divy = nint(boxsize(2)/whish_size) ! round the argument to the nearest integer.
   nb_divz = nint(boxsize(3)/whish_size) ! round the argument to the nearest integer.
   divx = boxsize(1)/REAL(nb_divx,rk)
   divy = boxsize(2)/REAL(nb_divy,rk)
   divz = boxsize(3)/REAL(nb_divz,rk)
   n_grid = nb_divx * nb_divy
-  !WRITE(*,*)"n_grid=", n_grid
-  !WRITE(*,*)"SAMPLE2 nb_divx = ", nb_divx
-  !For pure water system:
-  !(TODO)Formula may have to added for the cases of other systems
   num_wat_pairs = (nat/3)*(nat/3-1)/2
 
   !=======================
@@ -59,7 +53,6 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   !=======================
   open(10,file=trim(pos_filename))
   ! Now starting read data
-  !write(*,*) "Total number of atoms: ", nat
   CALL read_traj(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,atom_info) 
   close(10)
   write(6,*) 'End of trajectory reading.'
@@ -77,59 +70,17 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
     write (10,'(I8)') nat
     WRITE(10,100) ' i = ',i-1,', time = ',sampled_time(i)
     100 FORMAT (A5,I8,A9,F12.3)
-  
-    DO iatom=1,nat
-        if (n_axis==0) THEN
-            center_pos=center_pos+atom_info(iatom,i)%coord(1)*atom_info(iatom,i)%mass
-        elseif (n_axis==1) THEN 
-            center_pos=center_pos+atom_info(iatom,i)%coord(2)*atom_info(iatom,i)%mass
-        else
-            center_pos=center_pos+atom_info(iatom,i)%coord(3)*atom_info(iatom,i)%mass
-        endif
-        sum_mass=sum_mass+atom_info(iatom,i)%mass
-    ENDDO
-    center_pos=center_pos/sum_mass
-    
-    ! Recenter (along the normal axis only) the atoms according to the mass center
-    DO iatom=1,nat
-        IF (n_axis == 0) THEN
-            atom_info(iatom,i)%coord(1) = atom_info(iatom,i)%coord(1) - center_pos + boxsize(1)/2
-        ELSEIF (n_axis == 1) THEN
-            atom_info(iatom,i)%coord(2) = atom_info(iatom,i)%coord(2) - center_pos + boxsize(2)/2
-        ELSE 
-            atom_info(iatom,i)%coord(3) = atom_info(iatom,i)%coord(3) - center_pos + boxsize(3)/2
-        ENDIF
-    ENDDO     
 
     ! Format for writing in recentered 
-    !200 FORMAT (1X,A3,3F20.10)
     131 FORMAT (A4,3F20.10)
      
     DO iatom = 1, nat
-
-        atom_info(iatom,i)%coord(1)=mod(atom_info(iatom,i)%coord(1),boxsize(1))
-        if (atom_info(iatom,i)%coord(1) < 0) THEN
-           atom_info(iatom,i)%coord(1) = atom_info(iatom,i)%coord(1) + boxsize(1) 
-        endif
-        atom_info(iatom,i)%coord(2)=mod(atom_info(iatom,i)%coord(2),boxsize(2))
-        IF (atom_info(iatom,i)%coord(2) < 0) THEN
-           atom_info(iatom,i)%coord(2) = atom_info(iatom,i)%coord(2) + boxsize(2) 
-        ENDIF
-        atom_info(iatom,i)%coord(3)=mod(atom_info(iatom,i)%coord(3),boxsize(3))
-        IF (atom_info(iatom,i)%coord(3) < 0) THEN
-           atom_info(iatom,i)%coord(3) = atom_info(iatom,i)%coord(3) + boxsize(3) 
-        ENDIF
-
         WRITE(10,131) TRIM(atom_info(iatom, i)%atom_name), &
         atom_info(iatom,i)%coord(1), &
         atom_info(iatom,i)%coord(2), &
         atom_info(iatom,i)%coord(3)
-
     ENDDO
-
   ENDDO step
-
-  !WRITE(*,*)"SAMPLE3 nb_divx = ", nb_divx
 
   write(6,*)'Sampled trajectory is written: ', sampled_pos_filename
   close(10)
