@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import os
 import pandas as pd
@@ -77,7 +77,7 @@ plt.legend()
 plt.grid(True)
 plt.savefig('output/Temp.vs.step.{}_H2O_mbpol.pdf'.format(O_num))
 plt.savefig('output/Temp.vs.step.{}_H2O_mbpol.png'.format(O_num))
-plt.show()
+#plt.show()
 
 # Plot PotEng vs Step
 plt.figure(figsize=(14, 8))
@@ -89,7 +89,7 @@ plt.legend()
 plt.grid(True)
 plt.savefig('output/PotEng.vs.step.{}_H2O_{}.pdf'.format(O_num, simulationType))
 plt.savefig('output/PotEng.vs.step.{}_H2O_{}.png'.format(O_num, simulationType))
-plt.show()
+#plt.show()
 
 # Get rid of the unstable values at the beginning
 data_df = data_df[data_df['Time'] > 20000]
@@ -121,7 +121,7 @@ def calculate_surface_tension(data_slice):
     return surface_tension_mN_per_m
 
 # Apply sliding window calculation
-window_time = 10 # ps
+window_time = 60 # ps
 window_size = int(window_time * 1000 / (time_step * dump_every))  
 surface_tension_values = []
 steps = []
@@ -131,6 +131,15 @@ for i in range(0, len(data_df) - window_size + 1, jump):
     surface_tension = calculate_surface_tension(window_slice)
     surface_tension_values.append(surface_tension)
     steps.append(window_slice['Step'].iloc[-1])
+
+surface_tension_values = np.array(surface_tension_values)
+mean_surface_tension = surface_tension_values.mean()
+std_surface_tension = surface_tension_values.std()
+print('Mean Surface Tension: {:.2f} mN/m'.format(mean_surface_tension))
+print('Standard Deviation: {:.2f} mN/m'.format(std_surface_tension))
+
+# Save mean and std values to a text file using numpy
+np.savetxt('output/ST_mean_std_{}_{}.txt'.format(O_num, simulationType), np.array([[mean_surface_tension, std_surface_tension]]), fmt='%.2f')
 
 times = np.array(steps) * time_step / 1e3 # Time in ps
 # Plotting the surface tension values as a function of step
@@ -144,7 +153,7 @@ plt.legend()
 plt.grid(True)
 plt.savefig('output/ST_Sliding_{}_{}.pdf'.format(O_num, simulationType))
 plt.savefig('output/ST_Sliding_{}_{}.png'.format(O_num, simulationType))
-plt.show()
+#plt.show()
 
 # Calculate the mean value changes with time
 surface_tension_values = []
@@ -164,7 +173,7 @@ plt.legend()
 plt.grid(True)
 plt.savefig('output/Mean_ST_Sliding_{}_{}.pdf'.format(O_num, simulationType))
 plt.savefig('output/Mean_ST_Sliding_{}_{}.png'.format(O_num, simulationType))
-plt.show()
+#plt.show()
 
 # Print the value
 result = 'Surface tension calculated from simulation: {:.2f} mN/m (Exp. ref. 300 K: 71.73 mN/m)'.format(calculate_surface_tension(data_df))
