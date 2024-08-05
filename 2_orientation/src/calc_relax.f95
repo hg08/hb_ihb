@@ -1,13 +1,14 @@
 !!=======================================================================
 !  2021-3-21
+!  2024-8-5
 !  Author: Huang Gang
-!  subroutine relax21.f95
+!  subroutine calc_relax.f95
 !  Autocorrelation of relative positon vector:
 !  Auto correlation fuction of auto correlation fucntion of O-H vector.
 !  In this function, we calculate the relaxiation of O-H bonds. 
 !=======================================================================
 
-  SUBROUTINE relax21(boxsize,filename,pos_filename,list_filename,delta_t,natoms,nmovie,&
+  SUBROUTINE calc_relax(boxsize,filename,pos_filename,list_filename,delta_t,natoms,nmovie,&
             n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info_fortran) 
     !=========================================================
     !Purpose: to obtain C2(t)= P2(u(0)u(t)) for interfacial HB

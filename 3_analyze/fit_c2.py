@@ -23,8 +23,10 @@ def exp_decay(t,tau):
 
 #For times [0: end] 
 #IF STUDY THE DECAY OF C2.
-end = 150 
-dt = 0.04
+window_size = 10  # ps
+dt = 0.04 # ps
+start = 0 # Get rid of the first few fluctuating data points
+end = int(window_size / dt) + 1
 
 data_c2 = np.loadtxt(c2_file)
 

@@ -108,14 +108,11 @@ PROGRAM main_interface_relax
 
   CALL molecules_in_interface(n_samples,nat,indx_array,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info_fortran)
-  !WRITE(*,*)"MAIN4 nb_divx =", nb_divx
-  !To determine the indices of Oxygens' pairs that located in one of the interface.
-  !CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array)
-  !Similarly, we generate a list for O atoms at one of the interface.
+  !Generate a list for O atoms at one of the interface.
   CALL oh_interface(boxsize,filename,sampled_pos_filename,list_filename,n_samples,nat,indx_array)
 
   !Calculate n_HB(t),k(t),etc for pure water system. If the format of data is different, one may use another funtion, eg ghbacf_n_pbc_format2().
-  CALL relax21(boxsize,filename,sampled_pos_filename,list_filename,delta_t,nat,n_samples,&
+  CALL calc_relax(boxsize,filename,sampled_pos_filename,list_filename,delta_t,nat,n_samples,&
       n_grid,divx,divy,divx,nb_divx,nb_divy,nb_divz,thickness,surf_info_fortran) 
   call system_clock(end_time,rat)
   write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
