@@ -1,11 +1,12 @@
-SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize, &
+SUBROUTINE load(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize, &
            sampled_pos_filename,sampled_movie,sampled_time, &
            nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
   !2018/12/27
   ! 0) Purpose:     
-  ! 0a) The subroutine sample_and_recenter.f95 reduces the size of the trajectory and recenter each step of the trajectory. 
+  ! 0a) The subroutine load.f95 loads the trajectory. 
   ! 0b) Date     Programmer     version
-  ! 20.d0-9-16   Gang Huang     1
+  ! 2020-9-16    Gang Huang     1
+  ! 2024-8-5     Gang Huang     2
   ! Declaration
   USE module_ihb, ONLY: atom,read_traj
       
@@ -85,4 +86,4 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   write(6,*)'Sampled trajectory is written: ', sampled_pos_filename
   close(10)
 
-END SUBROUTINE sample_and_recenter_format2
+END SUBROUTINE 

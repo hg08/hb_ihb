@@ -87,17 +87,11 @@ PROGRAM main_interface_relax
   allocate(atom_info(nat,n_samples))
  
   !========================
-  ! Sampling the trajectory
+  ! Loadling the trajectory
   !========================
-  !!CASE1: If one does not need to recenter, one can just call sample_format2()
-  !CALL sample_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples)
-  !CASE2: If one have to recenter, one call sample_and_recenter_format2() instead.
-  CALL sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize,&
+  CALL load(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize,&
        sampled_pos_filename,sampled_movie,sampled_time, &
        nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
-  !WRITE(*,*)"MAIN nb_divx =", nb_divx
-  ! After running the sample() or sample_format2() subroutine, therefore we have a new sampled trajectory file (stored in atom_info), 
-  ! which is generally shorter than the original one.
   
   !====================
   !read surf trajectory

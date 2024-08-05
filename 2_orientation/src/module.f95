@@ -508,10 +508,9 @@ INTERFACE
     REAL(kind=8),DIMENSION(2,n_samples,n_grid),INTENT(INOUT) :: surf_info_fortran
   END SUBROUTINE read_surf_coord
 
-  SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize, &
+  SUBROUTINE load(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize, &
            sampled_pos_filename,sampled_movie,sampled_time, &
            nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
-      ! 0a) The subroutine sample_and_recenter.f95 reduce the size of the trajectory and recenter each step of the trajectory. 
       IMPORT :: atom
       IMPLICIT NONE
       integer, parameter :: rk=8
@@ -538,7 +537,7 @@ INTERFACE
       INTEGER :: i,iatom,imovie
       INTEGER :: num_wat_pairs 
       REAL(kind=rk) :: sum_mass
-  END SUBROUTINE sample_and_recenter_format2 
+  END SUBROUTINE load 
 
   SUBROUTINE molecules_in_interface(n_samples,nat,arr,atom_info, &
          n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,&
