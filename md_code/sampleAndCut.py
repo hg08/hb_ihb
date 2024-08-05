@@ -20,6 +20,7 @@ def extractInfo(logPath):
         lines = file.readlines()
     sizeX, sizeY, sizeZ = None, None, None
     numAtoms = None
+    simulationType = None
 
     for idx, line in enumerate(lines):
         if "orthogonal box" in line:
@@ -34,13 +35,19 @@ def extractInfo(logPath):
             O_num = int(angle_num) # Update the O_num
             print('H2O number: {}'.format(O_num))
             numAtoms = 3 * O_num
+        if "### TIP4P Potential Parameters ##" in line:
+            simulationType = 'TIP4P2005'
+            print('Simulation Type: {}'.format(simulationType))
+        if "MBX: A many-body" in line:
+            simulationType = 'MB-pol'
+            print('Simulation Type: {}'.format(simulationType))
 
     # Ensure that all values were found
     if sizeX is None or sizeY is None or sizeZ is None:
         raise ValueError("The box dimensions could not be found in the log file.")
     if numAtoms is None:
         raise ValueError("The number of atoms could not be found in the log file.")
-    return sizeX, sizeY, sizeZ, numAtoms
+    return sizeX, sizeY, sizeZ, numAtoms, simulationType
 
 if __name__ == '__main__':
     if len(sys.argv) == 3: 
@@ -50,7 +57,6 @@ if __name__ == '__main__':
         #logPath = xyzfile.replace('dump.xyz', 'log.lammps')
         system = sys.argv[2].replace('.xyz', '')
         name = sys.argv[2]
-        simType = 'MB-pol'
         # Print xyz file and log file paths
         print("XYZ file: ", xyzfile)
         print("Log file: ", logPath)
@@ -70,7 +76,7 @@ if __name__ == '__main__':
     dt = time_step * dump_every * ns / 1000 # ps
     simTime = cuttedSimTime
     numFrames = int(simTime / dt) + 1 # numFrames after resampling
-    sizeX, sizeY, sizeZ, numAtoms = extractInfo(logPath)
+    sizeX, sizeY, sizeZ, numAtoms, simType = extractInfo(logPath)
     print("--------------------")
     print("System: {}".format(system))
     print("Name: {}".format(name))
