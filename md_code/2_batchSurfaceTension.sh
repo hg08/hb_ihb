@@ -4,7 +4,7 @@
 simType="MB-pol"
 for numWater in 125 216 343 512 729 1000
 do
-    echo "Processing $numWater"
+    echo "Processing $simType $numWater"
     if [ $simType == "MB-pol" ]; then
     	inputFile="MB-pol/${numWater}h2o/log.lammps"
     else 
