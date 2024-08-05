@@ -8,7 +8,7 @@
 #SBATCH --mem=4G 
 
 # Load environment
-#module load mamba gcc
+module load mamba gcc
 source activate ihb
 
 

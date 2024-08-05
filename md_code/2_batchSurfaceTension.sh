@@ -1,7 +1,7 @@
 #!/bin/bash
 
-simType="TIP4P2005"
-#simType="MB-pol"
+#simType="TIP4P2005"
+simType="MB-pol"
 for numWater in 125 216 343 512 729 1000
 do
     echo "Processing $simType $numWater"

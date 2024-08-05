@@ -121,11 +121,11 @@ def calculate_surface_tension(data_slice):
     return surface_tension_mN_per_m
 
 # Apply sliding window calculation
-window_time = 60 # ps
+window_time = 40 # ps
 window_size = int(window_time * 1000 / (time_step * dump_every))  
 surface_tension_values = []
 steps = []
-jump = 20
+jump = window_size
 for i in range(0, len(data_df) - window_size + 1, jump):
     window_slice = data_df.iloc[i:i + window_size]
     surface_tension = calculate_surface_tension(window_slice)
@@ -135,11 +135,12 @@ for i in range(0, len(data_df) - window_size + 1, jump):
 surface_tension_values = np.array(surface_tension_values)
 mean_surface_tension = surface_tension_values.mean()
 std_surface_tension = surface_tension_values.std()
+std_error = std_surface_tension / np.sqrt(len(surface_tension_values))
 print('Mean Surface Tension: {:.2f} mN/m'.format(mean_surface_tension))
 print('Standard Deviation: {:.2f} mN/m'.format(std_surface_tension))
-
+print('Standard Error: {:.2f} mN/m'.format(std_error))
 # Save mean and std values to a text file using numpy
-np.savetxt('output/ST_mean_std_{}_{}.txt'.format(O_num, simulationType), np.array([[mean_surface_tension, std_surface_tension]]), fmt='%.2f')
+np.savetxt('output/ST_mean_std_{}_{}.txt'.format(O_num, simulationType), np.array([[mean_surface_tension, std_surface_tension, std_error]]), fmt='%.2f')
 
 times = np.array(steps) * time_step / 1e3 # Time in ps
 # Plotting the surface tension values as a function of step
