@@ -21,7 +21,7 @@ PROGRAM main_interface_relax
   !To declare data to share between routines.
   character(LEN=200) :: sampled_pos_filename
   INTEGER, ALLOCATABLE, DIMENSION(:) :: sampled_movie
-  REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time, sampled_energy
+  REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time
   ! For griding
   INTEGER :: nb_divx, nb_divy, nb_divz, n_grid 
   REAL(KIND=rk) :: divx, divy, divz ! divx is how long is each element along x; ...
@@ -84,7 +84,6 @@ PROGRAM main_interface_relax
   write(*,*) "delta_t = ", delta_t, "(ps)"
   allocate(sampled_movie(n_samples))
   allocate(sampled_time(n_samples))
-  allocate(sampled_energy(n_samples))
   allocate(atom_info(nat,n_samples))
  
   !========================
@@ -94,7 +93,7 @@ PROGRAM main_interface_relax
   !CALL sample_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples)
   !CASE2: If one have to recenter, one call sample_and_recenter_format2() instead.
   CALL sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize,&
-       sampled_pos_filename,sampled_movie,sampled_time,sampled_energy, &
+       sampled_pos_filename,sampled_movie,sampled_time, &
        nb_divx,nb_divy,nb_divz,n_grid,divx,divy,divz,whish_size,atom_info)
   !WRITE(*,*)"MAIN nb_divx =", nb_divx
   ! After running the sample() or sample_format2() subroutine, therefore we have a new sampled trajectory file (stored in atom_info), 

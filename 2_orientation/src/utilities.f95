@@ -740,7 +740,7 @@
       END IF positive
   END FUNCTION sampling_number
 
-  SUBROUTINE read_traj(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,sampled_energy,atom_info)
+  SUBROUTINE read_traj(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,atom_info)
       ! To read info from the trajectory file (format: ***.xyz)
       ! to READ data starting from a pattern-matched line.
       USE module_ihb, ONLY: atom
@@ -758,7 +758,7 @@
 
       TYPE(atom),DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
       INTEGER,DIMENSION(n_samples) :: sampled_movie
-      REAL(kind=rk),DIMENSION(n_samples) :: sampled_time, sampled_energy
+      REAL(kind=rk),DIMENSION(n_samples) :: sampled_time
       INTEGER :: y
       
       i_sample = 1
@@ -774,8 +774,8 @@
                   !-------------------------------------------------------------------------------------------------------
                   !WRITE(*,*)"read_traj():", head_char, y
                   BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
-                  read(indx,130) sampled_movie(i_sample), sampled_time(i_sample), sampled_energy(i_sample)
-                  130 FORMAT (1X,4X,I8,9X,F12.3,6X,F20.10)
+                  read(indx,130) sampled_movie(i_sample), sampled_time(i_sample)
+                  130 FORMAT (1X,4X,I8,9X,F12.3)
                   131 FORMAT (A4,3F20.10)
                   inner: do iatom= 1,nat
                     read (indx,131) atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), & 
