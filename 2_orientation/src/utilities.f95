@@ -784,18 +784,7 @@
                         atom_info(iatom, i_sample)%mass = 16.00d0
                     elseif (atom_info(iatom, i_sample)%atom_name == "H") THEN
                         atom_info(iatom, i_sample)%mass = 1.00d0
-                    elseif (atom_info(iatom, i_sample)%atom_name == "N") THEN
-                        atom_info(iatom, i_sample)%mass = 14.00d0 
-                    elseif (atom_info(iatom, i_sample)%atom_name == "Li") THEN
-                        atom_info(iatom, i_sample)%mass = 6.94d0
-                    elseif (atom_info(iatom, i_sample)%atom_name == "Na") THEN
-                        atom_info(iatom, i_sample)%mass = 22.99d0
-                    elseif (atom_info(iatom, i_sample)%atom_name == "K") THEN
-                        atom_info(iatom, i_sample)%mass = 39.10d0
                     endif
-                    !WRITE (*,131) & 
-                    !atom_info(iatom, i_sample)%atom_name, atom_info(iatom,i_sample)%coord(1), &
-                    !atom_info(iatom,i_sample)%coord(2), atom_info(iatom,i_sample)%coord(3)
                   enddo inner
                   i_sample = i_sample + 1 !The position is important. It must be located before ENDIF 
               ENDIF CHECK_HEAD
