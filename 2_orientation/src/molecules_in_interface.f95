@@ -49,15 +49,13 @@
         !=============      
         MOLECULE: DO jj =1, n_samples
           n = 0
-          !WRITE(*,*) "NAT= ", nat, "[molecules_in_interface()]"
-          !WRITE(*,*) "MOL1 nb_divx ", nb_divx
           DO m=1,nat
             ! We use Oxygen atom to idenfy the water molecule, THIS ASSUMPTION IS IMPORTANT
             IF (TRIM(atom_info(m,jj)%atom_name) == "O") THEN
               ! Check if the molecue is located in one of the interfaces 
               !WRITE(*,*) "[MOLecules_in_interface] nb_divx = ", nb_divx
               index_mol = grid_index(atom_info(m,jj)%coord(1), &
-                  atom_info(m,jj)%coord(2),divx,divy,nb_divx, nb_divy) 
+                  atom_info(m,jj)%coord(2),divx,divy, nb_divy) 
               !For surf 1
               !write(*,*)"TESTING :"
               !write(*,*) "thickness = ", thickness

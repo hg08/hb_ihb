@@ -584,37 +584,54 @@
       deallocate(atom_type,x,y,z)
   END FUNCTION get_number_of_iodine
 
-  INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
-      ! transfer the coordinates (x,y) to grid_index, which is an integer
-      implicit none
-      integer,parameter :: rk=8              
-      REAL(kind=rk), INTENT(IN) :: x,y
-      REAL(kind=rk), INTENT(IN) :: divx, divy
-      INTEGER, INTENT(IN) :: nb_divx, nb_divy
-      INTEGER, DIMENSION(2) :: ind
-      
-      !Initialization
-      ind = 0
+  INTEGER FUNCTION grid_index(x,y,divx,divy,n_divy)
+    ! transfer the coordinates (x,y) to grid_index, which is an integer
+    integer,parameter :: rk=8              
+    REAL(KIND=rk), INTENT(IN) :: x,y
+    REAL(KIND=rk), INTENT(IN) :: divx, divy
+    INTEGER, INTENT(IN) :: n_divy
+    INTEGER, DIMENSION(2) :: ind
 
-      ind(1) = FLOOR(x/divx) 
-      ind(2) = FLOOR(y/divy)
+    !Initialization
+    ind = 0.0
 
-      !Correction for avoiding 0 index
-      IF (ind(1) == 0) THEN
-          ind(1) = ind(1) + 1
-      ENDIF
-      IF (ind(2) == 0) THEN
-          ind(2) = ind(2) + 1
-      ENDIF
+    ind(1) = FLOOR(x/divx)
+    ind(2) = FLOOR(y/divy)
 
-      grid_index = (ind(2)-1) * nb_divx + ind(1) 
-      !grid_index = ind(1) * n_divy + ind(2)
-      !WRITE (*,*) "NB_DIVX = ", nb_divx
-      !WRITE (*,*) "nb_divy = ", nb_divy
-      !WRITE (*,*) "index(1) = ", ind(1)
-      !WRITE (*,*) "index(2) = ", ind(2)
-      !WRITE (*,*) "grid_index = ", grid_index
+    grid_index = ind(1) * n_divy + ind(2)+1
   END FUNCTION grid_index
+
+  !INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
+  !    ! transfer the coordinates (x,y) to grid_index, which is an integer
+  !    implicit none
+  !    integer,parameter :: rk=8              
+  !    REAL(kind=rk), INTENT(IN) :: x,y
+  !    REAL(kind=rk), INTENT(IN) :: divx, divy
+  !    INTEGER, INTENT(IN) :: nb_divx, nb_divy
+  !    INTEGER, DIMENSION(2) :: ind
+  !    
+  !    !Initialization
+  !    ind = 0
+
+  !    ind(1) = FLOOR(x/divx) 
+  !    ind(2) = FLOOR(y/divy)
+
+  !    !Correction for avoiding 0 index
+  !    IF (ind(1) == 0) THEN
+  !        ind(1) = ind(1) + 1
+  !    ENDIF
+  !    IF (ind(2) == 0) THEN
+  !        ind(2) = ind(2) + 1
+  !    ENDIF
+
+  !    grid_index = (ind(2)-1) * nb_divx + ind(1) 
+  !    !grid_index = ind(1) * n_divy + ind(2)
+  !    !WRITE (*,*) "NB_DIVX = ", nb_divx
+  !    !WRITE (*,*) "nb_divy = ", nb_divy
+  !    !WRITE (*,*) "index(1) = ", ind(1)
+  !    !WRITE (*,*) "index(2) = ", ind(2)
+  !    !WRITE (*,*) "grid_index = ", grid_index
+  !END FUNCTION grid_index
 
   !TODO: define get_number_of_oxygens_in_nitrate()
   !TODO: define get_number_of_oxygens_in_water()

@@ -342,7 +342,7 @@ INTERFACE
           ndx_N,ndx_OW,ndx_ON
   END SUBROUTINE ghbond_lino3 
 
-  INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
+  INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divy)
       ! transfer the coordinates (x,y) to grid_index, which is an integer
       IMPLICIT NONE
       !==========
@@ -354,7 +354,7 @@ INTERFACE
       !=========
       INTEGER,DIMENSION(2) :: ind
       REAL(kind=rk),INTENT(IN) :: divx, divy
-      INTEGER,INTENT(IN) :: nb_divx,nb_divy
+      INTEGER,INTENT(IN) :: nb_divy
       REAL(kind=rk),INTENT(IN) :: x,y
   END FUNCTION grid_index
 
