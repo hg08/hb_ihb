@@ -223,7 +223,6 @@ ln -s ../m2_traj/$system.xyz .
 rm density
 gfortran -o density density.f95
 
-
 # Run and obtain density
 stepI=0
 stepF=$((stepI + numFrame))
