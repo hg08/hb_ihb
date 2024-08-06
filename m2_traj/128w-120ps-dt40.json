@@ -9,9 +9,9 @@
     "numAtoms": 384,
     "simTime": 120.00,
     "numFrames": 3001,
-    "numSubTrajCase1": 3,
+    "numSubTrajCase1": 6,
     "subTrajTimeCase1": 40,
-    "numSubTrajCase2": 3,
+    "numSubTrajCase2": 6,
     "subTrajTimeCase2": 40,
     "numSubTrajOri": 6,
     "subTrajTimeOri": 30
