@@ -82,6 +82,7 @@
       INTEGER :: i,j,k,jj 
       INTEGER :: index_mol1, index_mol2
       LOGICAL :: condition1,condition2
+      INTEGER :: order_type
 
       !==================
       !Initialization
@@ -145,6 +146,16 @@
       ! loop
       hb(:)=0.d0
       nhb_exist(:)=0 
+
+      ! Check the O H arrange order.
+      if (atom_info(1,1)%atom_name == "O" .and. atom_info(2,1)%atom_name == "O") then
+        ! O O ... H H H H ...
+        order_type = 1
+      else
+        ! O H H O H H ...
+        order_type = 0
+      endif
+
      !=============
      !The main loop
      !=============      
@@ -153,7 +164,19 @@
         nqj=0 ! The number of bonded times for k-th form of quasi-HB 
         m1=ndx_1(k)
         m2=ndx_2(k)
-        ndx_3_list=hydrogen_ndx_list(ndx_1(k),ndx_2(k),pos_filename,nat,boxsize)
+
+        if (order_type == 0) then
+          ndx_3_list(1) = m1 + 1
+          ndx_3_list(2) = m1 + 2
+          ndx_3_list(3) = m2 + 1
+          ndx_3_list(4) = m2 + 2
+        else if (order_type == 1) then
+          ndx_3_list(1) = nat/3 + 2 * (m1 - 1)
+          ndx_3_list(2) = nat/3 + 2 * (m1 - 1)  + 1
+          ndx_3_list(3) = nat/3 + 2 * (m2 - 1)
+          ndx_3_list(4) = nat/3 + 2 * (m2 - 1 ) + 1
+        endif
+
         ! Calculate h(j)
         ! A LOOP on ndx_3_list
         TIME: DO jj =1, nmo
