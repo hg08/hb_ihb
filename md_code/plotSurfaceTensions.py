@@ -16,10 +16,12 @@ for idx, num in enumerate(numMolecules):
     meanValues[idx], stdValues[idx], stdErrors[idx] = data[0], data[1], data[2]
 
 cube_roots = np.cbrt(numMolecules)
-scale = 5.0
+scale = 5
 offset = -0.2
-plt.figure(figsize=(1*scale, 1*scale))
-plt.axhline(y=71.73, linestyle='--', color='grey', linewidth=0.8, label='Experiment')
+fontSize = 14
+plt.rcParams.update({'font.size': fontSize})  
+plt.figure(figsize=(1.05*scale, 1*scale))
+plt.axhline(y=71.73, linestyle='--', color='grey', label='Experiment')
 plt.errorbar(cube_roots, meanValues, yerr=stdErrors, fmt='o', color='black', capsize=5, ecolor='black', label=label)
 plt.xticks(cube_roots, labels=numMolecules)  # Label ticks with the actual cubic numbers
 plt.xlabel('Number of water molecules')
@@ -27,7 +29,7 @@ plt.ylabel('Surface tension $\gamma$ (mN/m)')
 plt.tick_params(direction="in", axis='both', which='both', top=True, right=True)
 plt.ylim(40, 100)
 plt.legend(frameon=False, ncol=2, loc='upper left')
-#plt.tight_layout()
+plt.tight_layout()
 plt.savefig('ST_{}.png'.format(simType), dpi=300)
 plt.savefig('ST_{}.pdf'.format(simType))
 #plt.show()
