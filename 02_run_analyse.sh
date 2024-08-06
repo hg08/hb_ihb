@@ -241,8 +241,16 @@ sed -i "s/SIZEZ/$sizeZ/" $input_density
 
 ./density < $input_density
 mkdir -p output
-out_density=${system}_density_OH.dat # This out_density is defined in the "input_density_OH"
+out_density=density_OH_${system}.dat # This out_density is defined in the "input_density_OH"
 mv $out_density output
+
+density_info_txt=${system}_density_info.txt
+touch ${density_info_txt}
+echo "input_plot = '../2_density/output/${out_density}'" >> ${density_info_txt}
+echo "output_plot = 'density_OH_${system}.eps'" >> ${density_info_txt}
+echo "sizeZ = '$sizeZ'" >> ${density_info_txt}
+
+mv ${density_info_txt} output
 
 ## Recenter (Only for the 128w AIDM simulation )
 #outfile=sorted_density_OH.dat
