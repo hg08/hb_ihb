@@ -211,30 +211,44 @@ done
 cd .. # )
 
 
-## START density
-## Calculate the density of water interface
-#
-#cd 2_density
-#
-##Traj file
-#rm 128w-pos-1.xyz 
-#ln -s ../m2_traj/128w-pos-1.xyz .
-##Compile
-#rm density
-#gfortran -o density density.f95
-#
-#
-## Run and obtain density
-#./density < input_density_OH 
-#mkdir -p output
-#out_density=density_OH.dat # This out_density is defined in the "input_density_OH"
-#mv $out_density output
-#
+# START density
+# Calculate the density of water interface
+
+cd 2_density
+
+#Traj file
+rm $system.xyz 
+ln -s ../m2_traj/$system.xyz .
+#Compile
+rm density
+gfortran -o density density.f95
+
+
+# Run and obtain density
+stepI=0
+stepF=$((stepI + numFrame))
+ndiv=501
+input_density=input_${system}_density_OH
+cp input_density_OH_template $input_density
+sed -i "s/SYSTEM/$system/" $input_density
+sed -i "s/STEPI/$stepI/" $input_density
+sed -i "s/STEPF/$stepF/" $input_density
+sed -i "s/NDIV/$ndiv/" $input_density
+sed -i "s/SIZEX/$sizeX/" $input_density
+sed -i "s/SIZEY/$sizeY/" $input_density
+sed -i "s/SIZEZ/$sizeZ/" $input_density
+
+
+./density < $input_density
+mkdir -p output
+out_density=${system}_density_OH.dat # This out_density is defined in the "input_density_OH"
+mv $out_density output
+
 ## Recenter (Only for the 128w AIDM simulation )
 #outfile=sorted_density_OH.dat
 #awk -f process_and_sort.awk output/$out_density > $outfile
 #mv $outfile output
-#
-##Go back the main direcotry
-#cd .. 
-## END density
+
+#Go back the main direcotry
+cd .. 
+# END density
