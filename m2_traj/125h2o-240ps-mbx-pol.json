@@ -8,5 +8,11 @@
     "sizeZ": 77.607041,
     "numAtoms": 375,
     "simTime": 240.0,
-    "numFrames": 6001
+    "numFrames": 6001,
+    "numSubTrajCase1": 2,
+    "subTrajTimeCase1": 40,
+    "numSubTrajCase2": 2,
+    "subTrajTimeCase2": 40,
+    "numSubTrajOri": 6,
+    "subTrajTimeOri": 30
 }
