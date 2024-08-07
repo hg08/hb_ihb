@@ -210,31 +210,84 @@ do
 done
 cd .. # )
 
+# b2. orientation: for specific d, calculate mean of c2
+for d in {1..6}
+do
+    # b2a: combine all c2 files for specific d into one file
+    for (( i=0; i<numSubTraj; i++ ))
+    do
+	subTraj=${system}_s${i}
+        rm -f fc2_${i}
+    	ln -s 2_orientation/output/${subTraj}_c2_ihb_${d}.0.dat  fc2_${i}
+    done
+    # b2b: calculate the mean c2 and std error over different subTraj's.
+    # obtain the mean c2
+    awk '{a[FNR]+=$2;stderr[FNR]+=$2*$2;b[FNR]++;c[FNR]+=$1}END{for(i=1;i<=FNR;i++)print c[i]/b[i],a[i]/b[i],(stderr[i]/b[i]-(a[i]/b[i])**2)/sqrt(b[i]) }' fc2_* > ${system}_c2_ihb_ave_and_stderr_${d}.dat       
+    rm fc2_*
+    mv ${system}_c2_ihb_ave_*dat 2_orientation/output/
+done
+# b2c: save info for plotting and fitting the mean c2
+orientation_info_txt=${system}_orientation_info.txt
+touch ${orientation_info_txt}
+rm -f ${orientation_info_txt}
+for d in {1..6}
+do 
+    echo "input_plot${d} = '../2_orientation/output/${system}_c2_ihb_ave_and_stderr_${d}.dat'" >> ${orientation_info_txt}
+done
+echo "output_plot = 'c2_${system}.eps'" >> ${orientation_info_txt}
+echo "output_plot_single_fit = 'c2_${system}_single_fit.eps'" >> ${orientation_info_txt}
+echo "output_plot_double_fit = 'c2_${system}_double_fit.eps'" >> ${orientation_info_txt}
+echo "input_plot_fit_para = '../2_orientation/output/para_double_fit_c2_${system}.dat'" >> ${orientation_info_txt}
+echo "output_plot_fit_para = 'para_c2_${system}_double_fit.eps'" >> ${orientation_info_txt}
+mv ${orientation_info_txt} 2_orientation/output
+# b2d: fit the mean c2
 
-## START density
-## Calculate the density of water interface
-#
-#cd 2_density
-#
-##Traj file
-#rm 128w-pos-1.xyz 
-#ln -s ../m2_traj/128w-pos-1.xyz .
-##Compile
-#rm density
-#gfortran -o density density.f95
-#
-#
-## Run and obtain density
-#./density < input_density_OH 
-#mkdir -p output
-#out_density=density_OH.dat # This out_density is defined in the "input_density_OH"
-#mv $out_density output
-#
+
+# START density
+# Calculate the density of water interface
+
+cd 2_density
+
+#Traj file
+rm $system.xyz 
+ln -s ../m2_traj/$system.xyz .
+#Compile
+rm density
+gfortran -o density density.f95
+
+# Run and obtain density
+stepI=0
+stepF=$((stepI + numFrame))
+ndiv=501
+input_density=input_${system}_density_OH
+cp input_density_OH_template $input_density
+sed -i "s/SYSTEM/$system/" $input_density
+sed -i "s/STEPI/$stepI/" $input_density
+sed -i "s/STEPF/$stepF/" $input_density
+sed -i "s/NDIV/$ndiv/" $input_density
+sed -i "s/SIZEX/$sizeX/" $input_density
+sed -i "s/SIZEY/$sizeY/" $input_density
+sed -i "s/SIZEZ/$sizeZ/" $input_density
+
+
+./density < $input_density
+mkdir -p output
+out_density=density_OH_${system}.dat # This out_density is defined in the "input_density_OH"
+mv $out_density output
+
+density_info_txt=${system}_density_info.txt
+touch ${density_info_txt}
+echo "input_plot = '../2_density/output/${out_density}'" >> ${density_info_txt}
+echo "output_plot = 'density_OH_${system}.eps'" >> ${density_info_txt}
+echo "sizeZ = '$sizeZ'" >> ${density_info_txt}
+
+mv ${density_info_txt} output
+
 ## Recenter (Only for the 128w AIDM simulation )
 #outfile=sorted_density_OH.dat
 #awk -f process_and_sort.awk output/$out_density > $outfile
 #mv $outfile output
-#
-##Go back the main direcotry
-#cd .. 
-## END density
+
+#Go back the main direcotry
+cd .. 
+# END density
