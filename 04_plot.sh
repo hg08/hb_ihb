@@ -19,14 +19,25 @@ gnuplot -e "system='$system'" ./plot_Fig2.gp
 gnuplot ./plot_Fig3.gp
 gnuplot ./plot_Fig4.gp
 gnuplot ./plot_Fig5.gp
-gnuplot ./plot_FigS2_${system}.gp
-gnuplot ./plot_FigS3_${system}.gp
 
+cp plot_S2_template.gp ./plot_S2_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_S2_${system}.gp
+gnuplot ./plot_S2_${system}.gp
+
+cp plot_S3_template.gp ./plot_S3_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_S3_${system}.gp
+gnuplot ./plot_S3_${system}.gp
+
+# 4a. plot Fig5S, Fig6S and Fig5 (with double exp. fit).
 rm -f fit.log
+cp plot_S5_template.gp plot_S5_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_S5_${system}.gp
 gnuplot ./plot_S5_${system}.gp &&
 mv fit.log  single_fit_c2_${system}.log
 
 rm -f fit.log
+cp plot_S6_template.gp plot_S6_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_S6_${system}.gp
 gnuplot ./plot_S6_${system}.gp &&
 mv fit.log  double_fit_c2_${system}.log
 # extract the fittting parameters
@@ -44,7 +55,7 @@ mv para_double_fit_c2_${system}.dat ../2_orientation/output
 cp plot_Fig5_template.gp plot_Fig5_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_Fig5_${system}.gp
 gnuplot plot_Fig5_${system}.gp
-
-rm tmp double_fit_c2_${system}.log single_fit_c2_${system}.log 
+# clean the dir
+rm tmp single_fit_c2_${system}.log double_fit_c2_${system}.log
 
 cd ..
