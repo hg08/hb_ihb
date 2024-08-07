@@ -222,12 +222,21 @@ do
     done
     # b2b: calculate the mean c2 and std error over different subTraj's.
     # obtain the mean c2
-    awk '{a[FNR]+=$2;b[FNR]++;c[FNR]+=$1}END{for(i=1;i<=FNR;i++)print c[i]/b[i],a[i]/b[i];}' fc2_* > ${system}_c2_ihb_ave_${d}.dat       
     awk '{a[FNR]+=$2;stderr[FNR]+=$2*$2;b[FNR]++;c[FNR]+=$1}END{for(i=1;i<=FNR;i++)print c[i]/b[i],a[i]/b[i],(stderr[i]/b[i]-(a[i]/b[i])**2)/sqrt(b[i]) }' fc2_* > ${system}_c2_ihb_ave_and_stderr_${d}.dat       
     rm fc2_*
     mv ${system}_c2_ihb_ave_*dat 2_orientation/output/
-# fit the mean c2 
 done
+# b2c: save info for plotting and fitting the mean c2
+orientation_info_txt=${system}_orientation_info.txt
+touch ${orientation_info_txt}
+rm -f ${orientation_info_txt}
+for d in {1..6}
+do 
+    echo "input_plot${d} = '../2_orientation/output/${system}_c2_ihb_ave_and_stderr_${d}.dat'" >> ${orientation_info_txt}
+done
+echo "output_plot = 'c2_${system}.eps'" >> ${orientation_info_txt}
+mv ${orientation_info_txt} 2_orientation/output
+# b2d: fit
 
 # START density
 # Calculate the density of water interface

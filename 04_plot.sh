@@ -21,4 +21,5 @@ gnuplot ./plot_Fig4.gp
 gnuplot ./plot_Fig5.gp
 gnuplot ./plot_FigS2_120ps.gp
 gnuplot ./plot_FigS2_125h2o-240ps-mbx-pol.gp
+gnuplot ./plot_FigS3_216h2o-240ps-mbx-pol.gp
 cd ..
