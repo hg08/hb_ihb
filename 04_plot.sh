@@ -21,6 +21,13 @@ gnuplot ./plot_Fig4.gp
 gnuplot ./plot_Fig5.gp
 gnuplot ./plot_FigS2_${system}.gp
 gnuplot ./plot_FigS3_${system}.gp
-gnuplot ./plot_S5_${system}.gp
-gnuplot ./plot_S6_${system}.gp
+
+rm -f fit.log
+gnuplot ./plot_S5_${system}.gp &&
+mv fit.log  single_fit_c2_${system}.log
+
+rm -f fit.log
+gnuplot ./plot_S6_${system}.gp &&
+mv fit.log  double_fit_c2_${system}.log
+
 cd ..
