@@ -48,8 +48,9 @@ set border 1+2+4+8
 set ylabel "{/Symbol r}(z)  (g/cm^{3})"
 #set label 1 "b" right at graph 0.05, graph 0.95
 set yrange [-0.01: 1.6] 
-#set arrow 3 from 1.0,0.142 to 6,0.142 nohead ls 4 
+set arrow 1 from xmin,1.00 to xmax,1.00 nohead ls 4 
 #set label 7 "0.10" at 0.75,0.25 textcolor rgb '#000000'
+
 plot [xmin:xmax] \
      input_plot u 1:2 with p ls 1 notitle,\
      input_plot u 1:2 with l ls 1 notitle

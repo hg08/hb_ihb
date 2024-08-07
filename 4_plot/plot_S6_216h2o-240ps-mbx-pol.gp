@@ -4,7 +4,7 @@ set encoding iso_8859_1 #
 
 set term postscript eps color solid linewidth 2 "Arial" 32 enhanced
 set output output_plot_double_fit
-set size square 1.10,1.4
+set size square 2.10,1.4
 
 set multiplot
 set key spacing 1.2
@@ -25,7 +25,25 @@ set size 1.1, 1.4
 set xlabel "t (ps)" 
 set border 1+2+4+8
 set ylabel "C_{2}(t)"
-#set label 1 "a" right at graph 0.05, graph 0.95
+set label 1 "(a)" right at graph 0.1, graph 0.95
+set yrange [-0.: 1.0] 
+
+plot input_plot1 u 1:2 w l ls 10021 title "1 \305",\
+ input_plot2 u 1:2 w l ls 10022 title "2 \305",\
+ input_plot3 u 1:2 w l ls 10023 title "3 \305",\
+ input_plot4 u 1:2 w l ls 10024 title "4 \305",\
+ input_plot5 u 1:2 w l ls 10025 title "5 \305",\
+ input_plot6 u 1:2 w l ls 10029 title "6 \305"
+
+#====
+#plot
+#====
+set origin 1.0, 0 
+set size 1.1, 1.4
+set xlabel "t (ps)" 
+set border 1+2+4+8
+set ylabel "C_{2}(t)"
+set label 1 "(b)" right at graph 0.1, graph 0.95
 set yrange [-0.: 1.0] 
 
 
@@ -44,15 +62,9 @@ fit [0:5] f5(x) input_plot5 u 1:2 via a5,b5,c5,d5
 fit [0:5] f6(x) input_plot6 u 1:2 via a6,b6,c6,d6 
 
 plot input_plot1 u 1:2 w l ls 10021 title "1 \305",\
- input_plot2 u 1:2 w l ls 10022 title "2 \305",\
- input_plot3 u 1:2 w l ls 10023 title "3 \305",\
  input_plot4 u 1:2 w l ls 10024 title "4 \305",\
- input_plot5 u 1:2 w l ls 10025 title "5 \305",\
- input_plot6 u 1:2 w l ls 10026 title "6 \305",\
- f1(x) w l ls 20021 notitle,\
- f2(x) w l ls 20022 notitle,\
- f3(x) w l ls 20023 notitle,\
- f4(x) w l ls 20024 notitle,\
- f5(x) w l ls 20025 notitle,\
- f6(x) w l ls 20026 notitle
+ input_plot6 u 1:2 w l ls 10029 title "6 \305",\
+ f1(x) w l ls 20021 title "1 \305 (fitted)",\
+ f4(x) w l ls 20024 title "4 \305 (fitted)",\
+ f6(x) w l ls 20029 title "6 \305 (fitted)"
 
