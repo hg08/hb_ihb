@@ -29,5 +29,12 @@ mv fit.log  single_fit_c2_${system}.log
 rm -f fit.log
 gnuplot ./plot_S6_${system}.gp &&
 mv fit.log  double_fit_c2_${system}.log
+# extract the fittting parameters
+rm -f tmp0 tmp
+keyword="Final set of parameters"
+awk -v var="$keyword" '$0~var{x=NR+5; y=NR+2}(NR<=x && NR >=y){print  $1, $3, $4, $5}' double_fit_c2_${system}.log > tmp0 
+sort -t, -nk1 tmp0 > tmp 
+# The "1;" is a condition that is always true, and will trigger the default action which is to print the current line.
+awk -v n=4 '1; NR % n == 0 {print ""; print ""}' tmp > para_double_fit_c2_${system}.dat 
 
 cd ..
