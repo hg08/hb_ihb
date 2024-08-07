@@ -30,11 +30,21 @@ rm -f fit.log
 gnuplot ./plot_S6_${system}.gp &&
 mv fit.log  double_fit_c2_${system}.log
 # extract the fittting parameters
-rm -f tmp0 tmp
+rm -f  tmp
 keyword="Final set of parameters"
-awk -v var="$keyword" '$0~var{x=NR+5; y=NR+2}(NR<=x && NR >=y){print  $1, $3, $4, $5}' double_fit_c2_${system}.log > tmp0 
-sort -t, -nk1 tmp0 > tmp 
-# The "1;" is a condition that is always true, and will trigger the default action which is to print the current line.
-awk -v n=4 '1; NR % n == 0 {print ""; print ""}' tmp > para_double_fit_c2_${system}.dat 
+awk -v var="$keyword" '$0~var{x=NR+5; y=NR+2}(NR<=x && NR >=y){print $1, $3, $4, $5}' double_fit_c2_${system}.log > original_para_double_fit_c2_${system}.dat 
+# sort in each set of parameters ("DSC") 
+awk -v n=4 '1; NR % n == 0 {print ""; print ""}' original_para_double_fit_c2_${system}.dat > tmp 
+awk -v OFS='\t' ' NF<pNF || NR==1 { blockNr++ } { print blockNr, NF, NR, (NF>1 ? $2 : NR), $0; pNF=NF }' tmp | sort -n -k1,1 -k2,2 -k4,4 -k3,3 | cut -f5-  > para_double_fit_c2_${system}.dat 
+# Now we can remove the blank lines
+sed -i '/^$/d' para_double_fit_c2_${system}.dat
+
+mv para_double_fit_c2_${system}.dat ../2_orientation/output
+#prapare the scripts and plot
+cp plot_Fig5_template.gp plot_Fig5_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_Fig5_${system}.gp
+gnuplot plot_Fig5_${system}.gp
+
+rm tmp double_fit_c2_${system}.log single_fit_c2_${system}.log 
 
 cd ..

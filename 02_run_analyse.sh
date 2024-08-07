@@ -237,6 +237,8 @@ done
 echo "output_plot = 'c2_${system}.eps'" >> ${orientation_info_txt}
 echo "output_plot_single_fit = 'c2_${system}_single_fit.eps'" >> ${orientation_info_txt}
 echo "output_plot_double_fit = 'c2_${system}_double_fit.eps'" >> ${orientation_info_txt}
+echo "input_plot_fit_para = '../2_orientation/output/para_double_fit_c2_${system}.dat'" >> ${orientation_info_txt}
+echo "output_plot_fit_para = 'para_c2_${system}_double_fit.eps'" >> ${orientation_info_txt}
 mv ${orientation_info_txt} 2_orientation/output
 # b2d: fit the mean c2
 
