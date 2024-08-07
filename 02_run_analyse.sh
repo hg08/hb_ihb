@@ -213,26 +213,19 @@ cd .. # )
 # b2. orientation: for specific d, calculate mean of c2
 for d in {1..6}
 do
-# combine all c2 files for specific d into one file
+    # b2a: combine all c2 files for specific d into one file
     for (( i=0; i<numSubTraj; i++ ))
     do
 	subTraj=${system}_s${i}
         rm -f fc2_${i}
-    
     	ln -s 2_orientation/output/${subTraj}_c2_ihb_${d}.0.dat  fc2_${i}
-        #ln -s relax_interface/results_40000_70000/128w_itp_c2_ihb_$i.0.dat fc2_2
-        #ln -s results_50000_80000/128w_itp_c2_ihb_$i.0.dat fc2_3
-        #awk 'FNR==NR{a[$1]=$2;next}{ print $0, a[$1]}' fc2_2 fc2_1 > temp1
-        #awk 'FNR==NR{a[$1]=$2 FS $3; next}{ print $0, a[$1]}' temp1 fc2_3 > 128w_itp_c2_ihb_all_$i.dat
-        #awk '{print $1, ($2+$3+$4)/3 }'  128w_itp_c2_ihb_all_$i.dat > 128w_itp_c2_ihb_ave_$i.dat
-        #rm temp*
     done
+    # b2b: calculate the mean c2 and std error over different subTraj's.
     # obtain the mean c2
     awk '{a[FNR]+=$2;b[FNR]++;c[FNR]+=$1}END{for(i=1;i<=FNR;i++)print c[i]/b[i],a[i]/b[i];}' fc2_* > ${system}_c2_ihb_ave_${d}.dat       
+    awk '{a[FNR]+=$2;stderr[FNR]+=$2*$2;b[FNR]++;c[FNR]+=$1}END{for(i=1;i<=FNR;i++)print c[i]/b[i],a[i]/b[i],(stderr[i]/b[i]-(a[i]/b[i])**2)/sqrt(b[i]) }' fc2_* > ${system}_c2_ihb_ave_and_stderr_${d}.dat       
     rm fc2_*
-           
     mv ${system}_c2_ihb_ave_*dat 2_orientation/output/
-# calculate the mean c2 and std error over different subTraj's.
 # fit the mean c2 
 done
 
