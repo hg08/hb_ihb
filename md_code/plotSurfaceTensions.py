@@ -21,7 +21,7 @@ offset = -0.2
 fontSize = 14
 plt.rcParams.update({'font.size': fontSize})  
 plt.figure(figsize=(1.05*scale, 1*scale))
-plt.axhline(y=71.73, linestyle='--', color='grey', label='Experiment')
+plt.axhline(y=71.70, linestyle='--', color='grey', label='Experiment')
 plt.errorbar(cube_roots, meanValues, yerr=stdErrors, fmt='o', color='black', capsize=5, ecolor='black', label=label)
 plt.xticks(cube_roots, labels=numMolecules)  # Label ticks with the actual cubic numbers
 plt.xlabel('Number of water molecules')
