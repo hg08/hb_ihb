@@ -116,7 +116,7 @@
       delta_t = REAL(ns,rk) * delta_t0  ! unit: ps
       ddelta_t= 2*delta_t ! ddelta_t will be used in calculate k(t)
       nmo_effective = nint(max_time_for_corr/delta_t) + 1
-      start_step = nint((nmo_effective-1)/10.0) ! Start step of sliding window. Over-using rate is 1 - 1/5 = 4/5
+      start_step = nint((nmo_effective-1)/5.0) ! Start step of sliding window. Over-using rate is 1 - 1/5 = 4/5
       num_start_points = (nmo-nmo_effective-1)/start_step + 1
       ALLOCATE(x(nat,nmo))
       ALLOCATE(y(nat,nmo))
