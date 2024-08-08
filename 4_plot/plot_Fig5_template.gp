@@ -45,9 +45,9 @@ fit [0:5] f6(x) input_plot6 u 1:2 via a6,b6,c6,d6
 plot input_plot1 every 3::1 u 1:2 w p ls 30021 title "1 \305",\
  input_plot4 every 3::1 u 1:2 w p ls 30023 title "4 \305",\
  input_plot6 every 3::1 u 1:2 w p ls 30029 title "6 \305",\
- f1(x) w l ls 30021 title "1 \305 (fitted)",\
- f4(x) w l ls 30023 title "4 \305 (fitted)",\
- f6(x) w l ls 30029 title "6 \305 (fitted)"
+ f1(x) w l ls 10021 title "1 \305 (fitted)",\
+ f4(x) w l ls 10023 title "4 \305 (fitted)",\
+ f6(x) w l ls 10029 title "6 \305 (fitted)"
 
 #====
 #plot
@@ -63,19 +63,19 @@ set ytics 0.2
 set ylabel "C_2(t*)"
 set key at graph 0.8, graph 0.9
 set label 1 "(b)" left at graph 0.01, graph 0.95
-yc1=0.4
-yc2=0.27
-yc5=0.10
+yc1=0.385
+yc2=0.250
+yc5=0.077
 set arrow 1 from xmin, yc1 to xmax, yc1 nohead ls 20021
 set arrow 2 from xmin, yc2 to xmax, yc2 nohead ls 20022
 set arrow 3 from xmin, yc5 to xmax, yc5 nohead ls 20023
 plot \
-    '../3_analyze/output/layers_c2_at_ref.dat' i 0 u 1:2 w l ls 10021 title "t* = 1 ps",\
-    '../3_analyze/output/layers_c2_at_ref.dat' i 0 u 1:2:3 w yerrorbars ls 10021 notitle,\
-    '../3_analyze/output/layers_c2_at_ref.dat' i 1 u 1:2 w l ls 10022 title "t* = 2 ps",\
-    '../3_analyze/output/layers_c2_at_ref.dat' i 1 u 1:2:3 w yerrorbars ls 10022 notitle,\
-    '../3_analyze/output/layers_c2_at_ref.dat' i 2 u 1:2 w l ls 10023 title "t* = 5 ps",\
-    '../3_analyze/output/layers_c2_at_ref.dat' i 2 u 1:2:3 w yerrorbars ls 10023 notitle
+    input_c2_ref i 0 u 1:2 w l ls 10021 title "t* = 1 ps",\
+    input_c2_ref i 0 u 1:2:3 w yerrorbars ls 10021 notitle,\
+    input_c2_ref i 1 u 1:2 w l ls 10022 title "t* = 2 ps",\
+    input_c2_ref i 1 u 1:2:3 w yerrorbars ls 10022 notitle,\
+    input_c2_ref i 2 u 1:2 w l ls 10023 title "t* = 5 ps",\
+    input_c2_ref i 2 u 1:2:3 w yerrorbars ls 10023 notitle
 
 #====
 #plot

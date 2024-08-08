@@ -242,8 +242,8 @@ echo "output_plot_fit_para = 'para_c2_${system}_double_fit.eps'" >> ${orientatio
 echo "input_case1_kkprime = '../3_analyze/output/${system}_1_case1_kkprime.dat'" >> ${orientation_info_txt}
 echo "input_case2_kkprime = '../3_analyze/output/${system}_2_case2_kkprime.dat'" >> ${orientation_info_txt}
 echo "input_kkprime = '../3_analyze/output/${system}_kkprime.dat'" >> ${orientation_info_txt}
-echo "output_k = '${system}_k.eps'" >> ${orientation_info_txt}
-echo "output_kprime = '${system}_kprime.eps'" >> ${orientation_info_txt}
+echo "output_k = 'k_${system}.eps'" >> ${orientation_info_txt}
+echo "output_kprime = 'kprime_${system}.eps'" >> ${orientation_info_txt}
 # For cHB
 for d in {1..6}
 do 
@@ -255,6 +255,8 @@ echo "output_cHB = 'cHB_${system}.eps'" >> ${orientation_info_txt}
 echo "input_case1_cHB_ref = '../3_analyze/output/${system}_1_case1_layers_c_at_ref.dat'" >> ${orientation_info_txt}
 echo "input_case2_cHB_ref = '../3_analyze/output/${system}_2_case2_layers_c_at_ref.dat'" >> ${orientation_info_txt}
 echo "output_cHB_ref = 'cHB_ref_${system}.eps'" >> ${orientation_info_txt}
+# For c2_at_ref
+echo "input_c2_ref = '../3_analyze/output/${system}_layers_c2_at_ref.dat'" >> ${orientation_info_txt}
 
 mv ${orientation_info_txt} 2_orientation/output
 # b2d: fit the mean c2

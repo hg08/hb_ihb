@@ -195,16 +195,16 @@ set style line 20030 linecolor rgb '#9e0142' lt 1 linewidth 2 dashtype '.-'
 #========================
 #渐变2A：blue-red-yellow
 #========================
-set style line 30021 lt 1 lc rgb '#5e4fa2' lw 1 pt 6 ps 1.2 
-set style line 30022 lt 1 lc rgb '#3288bd' lw 1 pt 2 ps 1.2
-set style line 30023 lt 1 lc rgb '#66c2a5' lw 1 pt 3 ps 1.2
-set style line 30024 lt 1 lc rgb '#abdaa4' lw 1 pt 6 ps 1.2
-set style line 30025 lt 1 lc rgb '#e6f598' lw 1 pt 9 ps 1.2
-set style line 30026 lt 1 lc rgb '#fee08b' lw 1 pt 7 ps 1.2
-set style line 30027 lt 1 lc rgb '#fdae61' lw 1 pt 12 ps 1.2
-set style line 30028 lt 1 lc rgb '#f46d43' lw 1 pt 13 ps 1.2
-set style line 30029 lt 1 lc rgb '#d53e4f' lw 1 pt 4 ps 1.2
-set style line 30030 lt 1 lc rgb '#9e0142' lw 1 pt 8 ps 1.2
+set style line 30021 lt 1 lc rgb '#5e4fa2' lw 1 pt 6 ps 1.5 
+set style line 30022 lt 1 lc rgb '#3288bd' lw 1 pt 2 ps 1.5
+set style line 30023 lt 1 lc rgb '#66c2a5' lw 1 pt 8 ps 1.5
+set style line 30024 lt 1 lc rgb '#abdaa4' lw 1 pt 8 ps 1.5
+set style line 30025 lt 1 lc rgb '#e6f598' lw 1 pt 8 ps 1.5
+set style line 30026 lt 1 lc rgb '#fee08b' lw 1 pt 7 ps 1.5
+set style line 30027 lt 1 lc rgb '#fdae61' lw 1 pt 12 ps 1.5
+set style line 30028 lt 1 lc rgb '#f46d43' lw 1 pt 13 ps 1.5
+set style line 30029 lt 1 lc rgb '#d53e4f' lw 1 pt 4 ps 1.5
+set style line 30030 lt 1 lc rgb '#9e0142' lw 1 pt 8 ps 1.5
 
 
 set style line 31 lt 1 lc rgb '#af0000'

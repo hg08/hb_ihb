@@ -280,7 +280,7 @@ do
 	files+=("3_analyze/output/${subTraj}_layers_c2_at_ref.dat")
 done
 
-mean_c2=3_analyze/output/layers_c2_at_ref.dat
+mean_c2=3_analyze/output/${system}_layers_c2_at_ref.dat
 rm -rf $mean_c2
 awk '
     # For each line in each file

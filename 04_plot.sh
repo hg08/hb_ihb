@@ -42,6 +42,10 @@ cp plot_S3_template.gp ./plot_S3_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_S3_${system}.gp
 gnuplot ./plot_S3_${system}.gp
 
+cp plot_S4_template.gp ./plot_S4_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_S4_${system}.gp
+gnuplot ./plot_S4_${system}.gp
+
 # 4a. plot Fig5S, Fig6S and Fig5 (with double exp. fit).
 rm -f fit.log
 cp plot_S5_template.gp plot_S5_${system}.gp
@@ -64,6 +68,7 @@ awk -v OFS='\t' ' NF<pNF || NR==1 { blockNr++ } { print blockNr, NF, NR, (NF>1 ?
 # now the blank lines can be removed
 sed -i '/^$/d' para_double_fit_c2_${system}.dat
 
+# Fig.5 can be plotted after we obtain all the fitting parameters.
 mv original_para_double_fit_c2_${system}.dat ../2_orientation/output
 mv para_double_fit_c2_${system}.dat ../2_orientation/output
 # prapare the scripts and plot
