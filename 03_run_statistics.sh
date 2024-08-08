@@ -194,7 +194,7 @@ do
 	files1+=("3_analyze/output/${subTraj}_1_case1_kkprime.dat")
 done
 
-mean_kkprime=3_analyze/output/1_case1_kkprime.dat
+mean_kkprime=3_analyze/output/${system}_1_case1_kkprime.dat
 rm -rf $mean_kkprime
 awk '
     # For each line in each file
@@ -234,7 +234,7 @@ do
 	files2+=("3_analyze/output/${subTraj}_2_case2_kkprime.dat")
 done
 
-mean_kkprime=3_analyze/output/2_case2_kkprime.dat
+mean_kkprime=3_analyze/output/${system}_2_case2_kkprime.dat
 rm -rf $mean_kkprime
 awk '
         # For each line in each file
@@ -265,7 +265,7 @@ awk '
         } '  "${files2[@]}" > $mean_kkprime
 # END--Statistics for 2_case2 kkprime
 # Paste 1_case1_kkprime.dat and 2_case2_kkprime.dat to new file "1_case1_2_case2_kkprime.dat"
-paste 3_analyze/output/1_case1_kkprime.dat 3_analyze/output/2_case2_kkprime.dat > 3_analyze/output/${system}_kkprime.dat
+paste 3_analyze/output/${system}_1_case1_kkprime.dat 3_analyze/output/${system}_2_case2_kkprime.dat > 3_analyze/output/${system}_kkprime.dat
 # END---3_statistics-kkprime
 
 # --- Orientation: 3_statistics-c2
