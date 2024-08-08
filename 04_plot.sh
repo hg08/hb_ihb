@@ -15,10 +15,20 @@ numAtom=$(jq -r '.numAtoms' $JSON_FILE)
 
 # 4_plot
 cd 4_plot
-gnuplot -e "system='$system'" ./plot_Fig2.gp
-gnuplot ./plot_Fig3.gp
+#gnuplot -e "system='$system'" ./plot_Fig2.gp
+#gnuplot ./plot_Fig3.gp
 gnuplot ./plot_Fig4.gp
 gnuplot ./plot_Fig5.gp
+
+
+#plot Fig2 in general
+cp plot_2_template.gp ./plot_2_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_2_${system}.gp
+gnuplot ./plot_2_${system}.gp
+#plot Fig3 in general
+cp plot_3_template.gp ./plot_3_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_3_${system}.gp
+gnuplot ./plot_3_${system}.gp
 
 cp plot_S2_template.gp ./plot_S2_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_S2_${system}.gp

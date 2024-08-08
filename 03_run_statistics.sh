@@ -37,7 +37,7 @@ do
 	subTraj=${system}_s${i}
 	files1+=("3_analyze/output/${subTraj}_1_case1_layers_c_at_ref.dat")
 done
-mean_c_at_ref=3_analyze/output/1_case1_layers_c_at_ref.dat
+mean_c_at_ref=3_analyze/output/${system}_1_case1_layers_c_at_ref.dat
 rm -rf $mean_c_at_ref
 awk '
     # For each line in each file
@@ -72,7 +72,7 @@ do
 	subTraj=${system}_s${i}
 	files2+=("3_analyze/output/${subTraj}_2_case2_layers_c_at_ref.dat")
 done
-mean_c_at_ref=3_analyze/output/2_case2_layers_c_at_ref.dat
+mean_c_at_ref=3_analyze/output/${system}_2_case2_layers_c_at_ref.dat
 rm -rf $mean_c_at_ref
 awk '
     # For each line in each file
@@ -264,6 +264,8 @@ awk '
             }
         } '  "${files2[@]}" > $mean_kkprime
 # END--Statistics for 2_case2 kkprime
+# Paste 1_case1_kkprime.dat and 2_case2_kkprime.dat to new file "1_case1_2_case2_kkprime.dat"
+paste 3_analyze/output/1_case1_kkprime.dat 3_analyze/output/2_case2_kkprime.dat > 3_analyze/output/${system}_kkprime.dat
 # END---3_statistics-kkprime
 
 # --- Orientation: 3_statistics-c2
