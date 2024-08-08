@@ -373,38 +373,40 @@ if __name__ == '__main__':
     #visulizeRhoAlongZ(rho0, nb_divz, divz)
 
     # Read the atoms at 500th step
-    idx = 701
-    atoms = read(name, index=idx)
+    #idx_list = [701]
+    idx_list = [i for i in range(0, nb_steps, 300)]
+    for idx in idx_list:
+        atoms = read(name, index=idx)
 
-    density_threshold = 0.016  # Example threshold value
-    results = []
+        density_threshold = 0.016  # Example threshold value
+        results = []
 
-    # ------------------------------------------------------
-    # If you want to run the code without multiprocessing,
-    # you can use the following codes, which tells the main
-    # idea of the code.
-    # ------------------------------------------------------
-    #view(atoms)
-    atoms.set_cell(box)
-    atoms.set_pbc([True,True,True])
-    atoms = recenterAndWrap(atoms, basedOn='O', n_axis=n_axis)
+        # ------------------------------------------------------
+        # If you want to run the code without multiprocessing,
+        # you can use the following codes, which tells the main
+        # idea of the code.
+        # ------------------------------------------------------
+        #view(atoms)
+        atoms.set_cell(box)
+        atoms.set_pbc([True,True,True])
+        atoms = recenterAndWrap(atoms, basedOn='O', n_axis=n_axis)
 
-    # a) Calculate density
-    O_atoms = atoms[atoms.numbers == atomic_numbers['O']]
-    #view(O_atoms)
-    total_rho = np.zeros_like(rho0)
-    for o_pos in O_atoms.positions:
-       rho = calRhoAt(o_pos, rho0, divx, divy, divz)
-       total_rho = total_rho + rho
-    #visulizeRhoAlongZ(total_rho, nb_divz, divz)
+        # a) Calculate density
+        O_atoms = atoms[atoms.numbers == atomic_numbers['O']]
+        #view(O_atoms)
+        total_rho = np.zeros_like(rho0)
+        for o_pos in O_atoms.positions:
+           rho = calRhoAt(o_pos, rho0, divx, divy, divz)
+           total_rho = total_rho + rho
+        #visulizeRhoAlongZ(total_rho, nb_divz, divz)
 
-    cubeFile = 'Fig.1.{}.cube'.format(idx)
-    writeCubeFile(atoms, total_rho, filename=cubeFile)
+        cubeFile = 'Fig.1.{}.cube'.format(idx)
+        writeCubeFile(atoms, total_rho, filename=cubeFile)
 
-    # b) Calculate the surfaces
-    #surf1, surf2 = obtainSurfaces(total_rho, nb_divx, nb_divy, nb_divz, divz, density_threshold)
-    #print('The shape of surf1 is:', surf1.shape)
-    #print('The shape of surf2 is:', surf2.shape)
-    #visualize_surfaces(surf1, surf2, divx, divy)
+        # b) Calculate the surfaces
+        #surf1, surf2 = obtainSurfaces(total_rho, nb_divx, nb_divy, nb_divz, divz, density_threshold)
+        #print('The shape of surf1 is:', surf1.shape)
+        #print('The shape of surf2 is:', surf2.shape)
+        #visualize_surfaces(surf1, surf2, divx, divy)
 
-    #writeSurfaceToFile(idx, surf1, surf2, filename=surfacesFile)
+        #writeSurfaceToFile(idx, surf1, surf2, filename=surfacesFile)
