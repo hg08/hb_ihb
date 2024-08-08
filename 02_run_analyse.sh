@@ -226,7 +226,7 @@ do
     rm fc2_*
     mv ${system}_c2_ihb_ave_*dat 2_orientation/output/
 done
-# b2c: save info for plotting and fitting the mean c2
+# b2c: save info for plotting and fitting the mean c2, and for plotting others
 orientation_info_txt=${system}_orientation_info.txt
 touch ${orientation_info_txt}
 rm -f ${orientation_info_txt}
@@ -239,6 +239,25 @@ echo "output_plot_single_fit = 'c2_${system}_single_fit.eps'" >> ${orientation_i
 echo "output_plot_double_fit = 'c2_${system}_double_fit.eps'" >> ${orientation_info_txt}
 echo "input_plot_fit_para = '../2_orientation/output/para_double_fit_c2_${system}.dat'" >> ${orientation_info_txt}
 echo "output_plot_fit_para = 'para_c2_${system}_double_fit.eps'" >> ${orientation_info_txt}
+echo "input_case1_kkprime = '../3_analyze/output/${system}_1_case1_kkprime.dat'" >> ${orientation_info_txt}
+echo "input_case2_kkprime = '../3_analyze/output/${system}_2_case2_kkprime.dat'" >> ${orientation_info_txt}
+echo "input_kkprime = '../3_analyze/output/${system}_kkprime.dat'" >> ${orientation_info_txt}
+echo "output_k = 'k_${system}.eps'" >> ${orientation_info_txt}
+echo "output_kprime = 'kprime_${system}.eps'" >> ${orientation_info_txt}
+# For cHB
+for d in {1..6}
+do 
+echo "input_case1_cHB${d} = '../3_analyze/output/${system}_1_case1_c_t_${d}.dat'" >> ${orientation_info_txt}
+echo "input_case2_cHB${d} = '../3_analyze/output/${system}_2_case2_c_t_${d}.dat'" >> ${orientation_info_txt}
+done
+echo "output_cHB = 'cHB_${system}.eps'" >> ${orientation_info_txt}
+# For cHB_at_ref
+echo "input_case1_cHB_ref = '../3_analyze/output/${system}_1_case1_layers_c_at_ref.dat'" >> ${orientation_info_txt}
+echo "input_case2_cHB_ref = '../3_analyze/output/${system}_2_case2_layers_c_at_ref.dat'" >> ${orientation_info_txt}
+echo "output_cHB_ref = 'cHB_ref_${system}.eps'" >> ${orientation_info_txt}
+# For c2_at_ref
+echo "input_c2_ref = '../3_analyze/output/${system}_layers_c2_at_ref.dat'" >> ${orientation_info_txt}
+
 mv ${orientation_info_txt} 2_orientation/output
 # b2d: fit the mean c2
 

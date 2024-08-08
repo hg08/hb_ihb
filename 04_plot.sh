@@ -15,10 +15,24 @@ numAtom=$(jq -r '.numAtoms' $JSON_FILE)
 
 # 4_plot
 cd 4_plot
-gnuplot -e "system='$system'" ./plot_Fig2.gp
-gnuplot ./plot_Fig3.gp
-gnuplot ./plot_Fig4.gp
-gnuplot ./plot_Fig5.gp
+#gnuplot -e "system='$system'" ./plot_Fig2.gp
+#gnuplot ./plot_Fig3.gp
+#gnuplot ./plot_Fig4.gp
+#gnuplot ./plot_Fig5.gp
+
+
+#plot Fig2 in general
+cp plot_2_template.gp ./plot_2_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_2_${system}.gp
+gnuplot ./plot_2_${system}.gp
+#plot Fig3 in general
+cp plot_3_template.gp ./plot_3_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_3_${system}.gp
+gnuplot ./plot_3_${system}.gp
+#plot Fig4 in general
+cp plot_4_template.gp ./plot_4_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_4_${system}.gp
+gnuplot ./plot_4_${system}.gp
 
 cp plot_S2_template.gp ./plot_S2_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_S2_${system}.gp
@@ -27,6 +41,10 @@ gnuplot ./plot_S2_${system}.gp
 cp plot_S3_template.gp ./plot_S3_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_S3_${system}.gp
 gnuplot ./plot_S3_${system}.gp
+
+cp plot_S4_template.gp ./plot_S4_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_S4_${system}.gp
+gnuplot ./plot_S4_${system}.gp
 
 # 4a. plot Fig5S, Fig6S and Fig5 (with double exp. fit).
 rm -f fit.log
@@ -50,6 +68,7 @@ awk -v OFS='\t' ' NF<pNF || NR==1 { blockNr++ } { print blockNr, NF, NR, (NF>1 ?
 # now the blank lines can be removed
 sed -i '/^$/d' para_double_fit_c2_${system}.dat
 
+# Fig.5 can be plotted after we obtain all the fitting parameters.
 mv original_para_double_fit_c2_${system}.dat ../2_orientation/output
 mv para_double_fit_c2_${system}.dat ../2_orientation/output
 # prapare the scripts and plot
