@@ -1,8 +1,19 @@
 load 'colorstyle.gnuplot'
-load '../2_orientation/output/SYSTEM_orientation_info.txt
+load '../2_orientation/output/SYSTEM_orientation_info.txt'
+
+set style line 30021 lt 1 lc rgb '#5e4fa2' lw 2 pt 1 ps 1
+set style line 30022 lt 1 lc rgb '#3288bd' lw 2 pt 1 ps 1
+set style line 30023 lt 1 lc rgb '#66c2a5' lw 2 pt 1 ps 1
+set style line 30024 lt 1 lc rgb '#abdaa4' lw 2 pt 8 ps 1
+set style line 30025 lt 1 lc rgb '#e6f598' lw 2 pt 8 ps 1
+set style line 30026 lt 1 lc rgb '#fee08b' lw 2 pt 7 ps 1
+set style line 30027 lt 1 lc rgb '#fdae61' lw 2 pt 12 ps 1
+set style line 30028 lt 1 lc rgb '#f46d43' lw 2 pt 13 ps 1
+set style line 30029 lt 1 lc rgb '#d53e4f' lw 2 pt 4 ps 1
+set style line 30030 lt 1 lc rgb '#9e0142' lw 2 pt 8 ps 1
 
 set term postscript eps color solid linewidth 2 "Arial" 32 enhanced
-set output output_cHB  # plot correlation function c
+set output output_cHB 
 set encoding iso_8859_1
 set size square 2.2,1.4
 
@@ -20,19 +31,19 @@ set format y "%3.1f"
 # Add arrows and labels for both plots
 dash_length = 4  # Length of the dash
 dash_space = 1    # Space between dashes, adjust this to change the spacing
-set arrow 1 from 2, graph 0.2 to 2, graph 0.75 nohead dashtype (dash_length, dash_space) linecolor rgb "#878787" linewidth 5 front
+set arrow 1 from 2, graph 0.1 to 2, graph 0.65 nohead dashtype (dash_length, dash_space) linecolor rgb "#878787" linewidth 5 front
 
 # Set up the triangle as an arrowhead
 triangle_width = 0.08  # Adjust this value to change the width of the triangle
-y_coord1=0.77
-y_coord2=0.73
+y_coord1=0.67
+y_coord2=0.63
 set object 1 polygon from \
      2, graph y_coord1 to \
      2 + triangle_width, graph y_coord2 to \
      2 - triangle_width, graph y_coord2 to \
      2, graph y_coord1
 set object 1 fc rgb "#878787" fillstyle solid noborder front
-set label 3 at 2, graph 0.16 "increase d" center font "Arial,32" textcolor rgb "black"
+set label 3 at 2, graph 0.06 "increase d" center font "Arial,32" textcolor rgb "black"
 
 plot_interval = 3  # Change this value to adjust the plotting frequency
 
@@ -51,11 +62,11 @@ set label 2 "scenario 1 (LC)" left at graph 0.13, graph 0.95
 #set arrow 1 ls 4 from graph 0.4, graph 0.25 to graph 0.4, graph 0.75 
 # The variable system is passed from the command line
 plot [0.0:xmax] \
-     input_case1_cHB1 every plot_interval::0 u 1:2 w l ls 10021 notitle "1 \305",\
-     input_case1_cHB2 every plot_interval::0 u 1:2 w l ls 10022 notitle "2 \305",\
-     input_case1_cHB3 every plot_interval::0 u 1:2 w l ls 10023 notitle "3 \305",\
-     input_case1_cHB4 every plot_interval::0 u 1:2 w l ls 10024 notitle "4 \305",\
-     input_case1_cHB5 every plot_interval::0 u 1:2 w l ls 10028 notitle "5 \305",\
+     input_case1_cHB1 every plot_interval::0 u 1:2 w lp ls 10021 notitle "1 \305",\
+     input_case1_cHB2 every plot_interval::0 u 1:2 w lp ls 10022 notitle "2 \305",\
+     input_case1_cHB3 every plot_interval::0 u 1:2 w lp ls 10023 notitle "3 \305",\
+     input_case1_cHB4 every plot_interval::0 u 1:2 w lp ls 10024 notitle "4 \305",\
+     input_case1_cHB5 every plot_interval::0 u 1:2 w lp ls 10028 notitle "5 \305",\
      input_case1_cHB1 every plot_interval::0 u 1:2:3 w errorbars ls 10021 title "1 \305",\
      input_case1_cHB2 every plot_interval::0 u 1:2:3 w errorbars ls 10022 title "2 \305",\
      input_case1_cHB3 every plot_interval::0 u 1:2:3 w errorbars ls 10023 title "3 \305",\
@@ -74,11 +85,11 @@ set ylabel "c^{(s)}(t)"
 set label 1 "(b)" right at graph 0.1, graph 0.95
 set label 2 "scenario 2 (IHB)" left at graph 0.13, graph 0.95
 plot [0.0:xmax] \
-     input_case2_cHB1 every plot_interval::0 u 1:2 w l ls 10021 notitle "1 \305",\
-     input_case2_cHB2 every plot_interval::0 u 1:2 w l ls 10022 notitle "2 \305",\
-     input_case2_cHB3 every plot_interval::0 u 1:2 w l ls 10023 notitle "3 \305",\
-     input_case2_cHB4 every plot_interval::0 u 1:2 w l ls 10024 notitle "4 \305",\
-     input_case2_cHB5 every plot_interval::0 u 1:2 w l ls 10028 notitle "5 \305",\
+     input_case2_cHB1 every plot_interval::0 u 1:2 w lp ls 10021 notitle "1 \305",\
+     input_case2_cHB2 every plot_interval::0 u 1:2 w lp ls 10022 notitle "2 \305",\
+     input_case2_cHB3 every plot_interval::0 u 1:2 w lp ls 10023 notitle "3 \305",\
+     input_case2_cHB4 every plot_interval::0 u 1:2 w lp ls 10024 notitle "4 \305",\
+     input_case2_cHB5 every plot_interval::0 u 1:2 w lp ls 10028 notitle "5 \305",\
      input_case2_cHB1 every plot_interval::0 u 1:2:3 w errorbars ls 10021 title "1 \305",\
      input_case2_cHB2 every plot_interval::0 u 1:2:3 w errorbars ls 10022 title "2 \305",\
      input_case2_cHB3 every plot_interval::0 u 1:2:3 w errorbars ls 10023 title "3 \305",\

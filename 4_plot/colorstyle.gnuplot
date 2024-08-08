@@ -169,6 +169,7 @@ set style line 51 lt 1 lc rgb '#fff000'
 #========================
 #渐变2A：blue-red-yellow
 #========================
+set style line 10000 lt 1 lc rgb '#000000' lw 2
 set style line 10021 lt 1 lc rgb '#5e4fa2' lw 2
 set style line 10022 lt 1 lc rgb '#3288bd' lw 2
 set style line 10023 lt 1 lc rgb '#66c2a5' lw 2
@@ -182,6 +183,7 @@ set style line 10030 lt 1 lc rgb '#9e0142' lw 2
 #========================
 #渐变2B：blue-red-yellow
 #========================
+set style line 20000 linecolor rgb '#000000' lt 1 linewidth 2 dashtype '.-'
 set style line 20021 linecolor rgb '#5e4fa2' lt 1 linewidth 2 dashtype '.-'
 set style line 20022 linecolor rgb '#3288bd' lt 1 linewidth 2 dashtype '.-'
 set style line 20023 linecolor rgb '#66c2a5' lt 1 linewidth 2 dashtype '.-'
@@ -193,7 +195,7 @@ set style line 20028 linecolor rgb '#f46d43' lt 1 linewidth 2 dashtype '.-'
 set style line 20029 linecolor rgb '#d53e4f' lt 1 linewidth 2 dashtype '.-'
 set style line 20030 linecolor rgb '#9e0142' lt 1 linewidth 2 dashtype '.-'
 #========================
-#渐变2A：blue-red-yellow
+#lp：blue-red-yellow
 #========================
 set style line 30021 lt 1 lc rgb '#5e4fa2' lw 1 pt 6 ps 1.5 
 set style line 30022 lt 1 lc rgb '#3288bd' lw 1 pt 2 ps 1.5
