@@ -28,9 +28,9 @@ set border 1+2+4+8
 set ylabel "k_{LC}, k_{IHB}  (ps^{-1})"
 #set label 1 "b" right at graph 0.05, graph 0.95
 set yrange [0.0: 1.2] 
-set arrow 3 from 1.0,0.142 to 6,0.142 nohead ls 4 
-set label 6 "k_{bulk}=0.14 ps^{-1}" left at graph 0.02, graph 0.10
-set label 7 "0.14" at 0.25,0.14 textcolor rgb '#000000'
+#set arrow 3 from 1.0,0.142 to 6,0.142 nohead ls 4 
+#set label 6 "k_{bulk}=0.14 ps^{-1}" left at graph 0.02, graph 0.10
+#set label 7 "0.14" at 0.25,0.14 textcolor rgb '#000000'
 plot [xmin:xmax] \
      input_case1_kkprime u 1:2 with line ls 20021 title "scenario 1  (LC)",\
      input_case2_kkprime u 1:2 with line ls 10022 title "scenario 2 (IHB)",\

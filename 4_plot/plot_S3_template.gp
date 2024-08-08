@@ -32,7 +32,7 @@ plot input_plot1 u 1:2 w l ls 10021 title "1 \305",\
      input_plot2 u 1:2 w l ls 10022 title "2 \305",\
      input_plot3 u 1:2 w l ls 10023 title "3 \305",\
      input_plot4 u 1:2 w l ls 10024 title "4 \305",\
-     input_plot5 u 1:2 w l ls 10025 title "5 \305",\
-     input_plot6 u 1:2 w l ls 10026 title "6 \305"
+     input_plot5 u 1:2 w l ls 10028 title "5 \305",\
+     input_plot6 u 1:2 w l ls 10029 title "6 \305"
 
 unset multiplot
