@@ -27,8 +27,8 @@ set size 1.1, 1.4
 set border 1+2+4+8
 set ylabel "k@{/Symbol \242}_{LC}, k@{/Symbol \242}_{IHB}  (ps^{-1})"
 set yrange [0.0: 0.3] 
-set arrow 3 from 1.0,0.10 to 6,0.10 nohead ls 4 
-set label 6 "k@{/Symbol \242}_{bulk}=0.10 ps^{-1}" right at graph 0.95, graph 0.40
+#set arrow 3 from 1.0,0.10 to 6,0.10 nohead ls 4 
+#set label 6 "k@{/Symbol \242}_{bulk}=0.10 ps^{-1}" right at graph 0.95, graph 0.40
 #set label 7 "0.10" at 0.25,0.10 textcolor rgb '#000000'
 plot [xmin:xmax] \
      input_case1_kkprime u 1:4 with line ls 20021 title "scenario 1  (LC)",\
