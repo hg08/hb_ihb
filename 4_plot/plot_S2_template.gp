@@ -1,5 +1,5 @@
 load 'colorstyle.gnuplot'
-load '../2_density/output/SYSTEM_density_info.txt
+load '../2_density/output/SYSTEM_density_info.txt'
 
 set term postscript eps color solid linewidth 2 "Arial" 32 enhanced
 set output output_plot
