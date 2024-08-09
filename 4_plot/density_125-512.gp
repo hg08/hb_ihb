@@ -51,7 +51,7 @@ set label 1 "(a)" right at graph 0.1, graph 0.95
 set yrange [-0.01: 1.5] 
 set label 2 "125 water molecules" at graph 0.15, graph 0.95 textcolor rgb '#000000'
 
-plot [xmin:xmax] \
+plot [20:60] \
      '../2_density/output/density_OH_125h2o-240ps-mbx-pol.dat' u 1:2 with p ls 1 notitle,\
      '../2_density/output/density_OH_125h2o-240ps-mbx-pol.dat' u 1:2 with l ls 1 notitle
 
@@ -83,7 +83,7 @@ set yrange [-0.01: 1.5]
 #set arrow 1 from xmin,1.00 to xmax,1.00 nohead ls 4 
 set label 2 "512 water molecules" at graph 0.15, graph 0.95 textcolor rgb '#000000'
 
-plot [xmin:xmax] \
+plot [30:90] \
      '../2_density/output/density_OH_512h2o-240ps-mbx-pol.dat' u 1:2 with p ls 1 notitl,\
      '../2_density/output/density_OH_512h2o-240ps-mbx-pol.dat' u 1:2 with l ls 1 notitle
 
