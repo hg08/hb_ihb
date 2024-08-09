@@ -65,10 +65,10 @@ set size 1.0, 1.3
 set border 1+2+4+8
 unset ylabel 
 set label 1 "(b)" right at graph 0.1, graph 0.95
+set xrange [xmin : xmax]
 set yrange [-0.01: 1.5] 
 #set arrow 1 from xmin,1.00 to xmax,1.00 nohead ls 4 
 set label 2 "216 water molecules" at graph 0.15, graph 0.95 textcolor rgb '#000000'
-set xrange [xmin : xmax]
 
 plot [xmin:xmax] \
      input_plot u 1:2 with p ls 1 notitle,\
@@ -77,17 +77,17 @@ plot [xmin:xmax] \
 #====
 #plot
 #====
-xmin=30.00
+xmin=30
 xmax=90
 set origin 2*shift, 0 
 set size 1.0, 1.3
 set border 1+2+4+8
 unset ylabel 
 set label 1 "(c)" right at graph 0.1, graph 0.95
+set xrange [xmin : xmax]
 set yrange [-0.01: 1.5] 
 #set arrow 1 from xmin,1.00 to xmax,1.00 nohead ls 4 
 set label 2 "512 water molecules" at graph 0.15, graph 0.95 textcolor rgb '#000000'
-set xrange [xmin : xmax]
 
 plot [xmin:xmax] \
      '../2_density/output/density_OH_512h2o-240ps-mbx-pol.dat' u 1:2 with p ls 1 notitl,\
