@@ -84,6 +84,7 @@ set yrange [-0.01: 1.5]
 set label 2 "512 water molecules" at graph 0.15, graph 0.95 textcolor rgb '#000000'
 
 plot [xmin:xmax] \
-     '../2_density/output/density_OH_512h2o-240ps-mbx-pol.dat' 1:2 with p ls 1 notitl,\
+     '../2_density/output/density_OH_512h2o-240ps-mbx-pol.dat' u 1:2 with p ls 1 notitl,\
      '../2_density/output/density_OH_512h2o-240ps-mbx-pol.dat' u 1:2 with l ls 1 notitle
+
 unset multiplot
