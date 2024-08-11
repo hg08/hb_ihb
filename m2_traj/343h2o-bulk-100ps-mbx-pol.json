@@ -1,0 +1,12 @@
+{
+    "name": "343h2o-bulk-100ps-mbx-pol.xyz",
+    "system": "343h2o-bulk-100ps-mbx-pol",
+    "simType": "MB-pol",
+    "dt": 0.04,
+    "sizeX": 21.729972,
+    "sizeY": 21.729972,
+    "sizeZ": 21.729972,
+    "numAtoms": 1029,
+    "simTime": 100.0,
+    "numFrames": 2501
+}
