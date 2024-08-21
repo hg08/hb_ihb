@@ -25,6 +25,10 @@ cd 4_plot
 cp plot_2_template.gp ./plot_2_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_2_${system}.gp
 gnuplot ./plot_2_${system}.gp
+#plot Fig2 in general in logscale for x and y axis
+cp plot_2_loglog_template.gp ./plot_2_loglog_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_2_loglog_${system}.gp
+gnuplot ./plot_2_loglog_${system}.gp
 #plot Fig3 in general
 cp plot_3_template.gp ./plot_3_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_3_${system}.gp

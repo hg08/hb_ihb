@@ -251,6 +251,7 @@ echo "input_case1_cHB${d} = '../3_analyze/output/${system}_1_case1_c_t_${d}.dat'
 echo "input_case2_cHB${d} = '../3_analyze/output/${system}_2_case2_c_t_${d}.dat'" >> ${orientation_info_txt}
 done
 echo "output_cHB = 'cHB_${system}.eps'" >> ${orientation_info_txt}
+echo "output_cHB_loglog = 'cHB_loglog_${system}.eps'" >> ${orientation_info_txt}
 # For cHB_at_ref
 echo "input_case1_cHB_ref = '../3_analyze/output/${system}_1_case1_layers_c_at_ref.dat'" >> ${orientation_info_txt}
 echo "input_case2_cHB_ref = '../3_analyze/output/${system}_2_case2_layers_c_at_ref.dat'" >> ${orientation_info_txt}
