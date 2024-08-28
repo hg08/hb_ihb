@@ -1,4 +1,4 @@
-# Instantanoues hydrogen bond dynamics 
+# Instantaneous hydrogen bond dynamics 
 
 Source codes for the paper [Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics](https://arxiv.org/abs/2204.13941)
 
