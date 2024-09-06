@@ -93,7 +93,7 @@
       INTEGER :: index_mol
       LOGICAL :: condition1, condition2
       INTEGER :: tmp_index 
-
+      INTEGER :: num_limit ! Temperary varible, represents the largest number of an O atoms' neighbors.
       !==============
       !Initialization
       !==============
@@ -118,7 +118,8 @@
       nmo_effective = 0
       k_O = 0
       tmp_index = 0
-       
+      num_limit = 0
+
       !To obtain the total number of water pairs
       n_H = nat * 2/3 
       n_O = nat / 3
@@ -146,25 +147,24 @@
       allocate(corr_nf(nmo))
       allocate(freeoh_exist(nmo))
       ! loop
-      !corr_h(:) = 0.0      
-      !tot_hb = 0.0
-      !tot_nhb = 0
-      !h(:) = 0.0 
-      !hb(:) = 0.0
-      !nhb_exist(:) = 0 
+      corr_nf(:) = 0.0      
+      tot_nfb = 0.0
+      tot_nfreeoh = 0
+      nf(:) = 0.0 
+      nfb(:) = 0.0
       nfreeoh_exist(:) = 0 
-      !A loop over TOTAL Time Step
+
+      !A loop over TOTAL Time Step. Purpose: Find Oxygen atoms' Oxygen neighbors.
       TTLOOP: DO jj = 1,nmo
       DO k_O1 = 1, n_O
-          ! TODO: 知道一个O,需要先计算其在任意一个时刻jj的O邻居序号之列表.
+          ! For a given O, we calculate the list of Oxygen neighbors of this O atom. 
           tmp_index = 0
           m1 = 3 * k_O1 - 2 ! Host O1, total index
-          write(*,*) "m1=", m1
+          !write(*,*) "m1=", m1
           DO k_O2 = 1 , n_O
               if (k_O2 .ne. k_O1) then
-                  m2 = 3 * k_O2 - 2 ! For searching neighbors of Host O1
+                  m2 = 3 * k_O2 - 2 ! Total order of O2. For searching neighbors of Host O1
                   ! The total inices of H atoms related to O1 (Host O) and O2 (potential neighor O)
-                  !ndx_3_list = (/ndx_H(2*k_O1-1,2), ndx_H(2*k_O1,2), ndx_H(2*k_O2-1,2), ndx_H(2*k_O2,2)/)
                   ! Check if O2 is a neighbor of O1
                   r1 = (/atom_info(m1,jj)%coord(1),atom_info(m1,jj)%coord(2),&
                      atom_info(m1,jj)%coord(3) /)
@@ -172,14 +172,13 @@
                          atom_info(m2,jj)%coord(3) /)
                   r21 = dist2(r1, r2, boxsize)
                   if ((r21 .lt. rooc)) THEN
-                     write(*,*) "m2=", m2
-                     ! TODO: In the neighbor list of O1, add the total indices of O2.
+                     !write(*,*) "m2=", m2
+                     ! In the neighbor list of O1, add the total indices of O2.
                      O_info(k_O1,jj)%num_oxygen_neighbors = O_info(k_O1,jj)%num_oxygen_neighbors + 1 ! increase the number of O neighbors
                      tmp_index = O_info(k_O1,jj)%num_oxygen_neighbors
-                     write(*,*) "num_oxygen_neighbors for",k_O1,"-th O:", jj, "-th step", tmp_index
+                     !write(*,*) "num_oxygen_neighbors for",k_O1,"-th O:", jj, "-th step", tmp_index
                      O_info(k_O1,jj)%self_indices_oxygen_neighbors(tmp_index) = k_O2
                      O_info(k_O1,jj)%indices_oxygen_neighbors(tmp_index) = m2 
-                     !write(*,*) O_info(k_O1,jj)%indices_oxygen_neighbors(tmp_index)
                      O_info( O_info(k_O1,jj)%self_indices_oxygen_neighbors(tmp_index), jj )%atom_id = m2 ! define total index of O
                   endif
               endif          
@@ -187,12 +186,13 @@
       ENDDO
       ENDDO TTLOOP
 
+      !The purpose of this loop is to  define the free OH groups at each time step.
       tLOOP: DO jj = 1,nmo
           !===================================
           !The loop to find out free OH groups
           !===================================
-          DO k_O1 = 1, n_O ! self index of O1
-              idx_O1 = k_O1 * 3 -2 ! The total index of O1
+          Ohost: DO k_O1 = 1, n_O ! self index of O1
+              idx_O1 = k_O1 * 3 - 2 ! The total index of O1
               m1 = idx_O1 ! Indices of total index of the Host 
               OH: DO bond = 1,2
                   idx_H = O_info(k_O1,1)%H_ids(bond) ! 1: the first time step
@@ -208,8 +208,9 @@
                   if (O_info(k_O1,jj)%num_oxygen_neighbors .le. 0) then
                       H_info(k_H,jj)%IsFree = .True.
                   else
-                      allocate(is_free(O_info(k_O1,jj)%num_oxygen_neighbors))
-                      DO k_O2 = 1, O_info(k_O1,jj)%num_oxygen_neighbors 
+                      num_limit = O_info(k_O1,jj)%num_oxygen_neighbors
+                      allocate(is_free(num_limit))
+                      DO k_O2 = 1, num_limit 
                           m2 = O_info(k_O1,jj)%indices_oxygen_neighbors(k_O2) ! Indices of total index of the neighbor O2 
                           ! DONE: 一旦知此列表序列,对于任何一个氢原子,我们可以找到其宿主氧原子idx_O_host (H_info(:,:)%host_id)
                           ! For all tuples (idx_O1, idx_O_neighbor[1]), (idx_O1, idx_O_neighbor[2]), (idx_O1, idx_O_neighbor[3]),...
@@ -228,7 +229,8 @@
                               r23 = dist2(r3, r2, boxsize) 
                               r13 = dist2(r3, r1, boxsize) 
                               pm_ = pmADH(r2,r1,r3,boxsize) ! if H is bound to O1
-                              norm_rr = sqrt(r21*r23)
+                              !norm_rr = sqrt(r21*r23) ! if H is bound to O2 (This is impossible here.)
+                              norm_rr = sqrt(r21*r13) ! if H is bounded to O1
                               cosphi_= pm_/norm_rr
                               if (cosphi_  .lt. cosPhiC123_freeOH)  THEN
                                   is_free(k_O2) = .True. ! The k_O2-th step for checking whether the k_H -th H is free.
@@ -253,15 +255,13 @@
                       deallocate(is_free)
                   endif          
               ENDDO OH
-          ENDDO
+          ENDDO Ohost
       ENDDO tLOOP
 
       OLOOP: DO k_O1 = 1, n_O ! Indices of self-indices of Host O
         freeoh = 0
         nfreeoh = 0 ! The number of freeoh-ed times for k-th OH group
-        !k_O1 =ceiling(k_H * 1.0 / 2) ! indices of self-indices of Host O
-        !m1 = H_info(k_H,jj)%host_id ! Indices of total index of the Host (O1)
-        m1 = 3 * k_O1 -2 ! Host O1, total index
+        m1 = 3 * k_O1 -2 ! Total index of the Host (O1) 
         OHBOND: DO bond = 1, 2
             idx_H = O_info(k_O1,1)%H_ids(bond) ! 1: the fisrt time step
             if (bond == 1) then
