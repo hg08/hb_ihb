@@ -162,7 +162,7 @@ CONTAINS
                 BACKSPACE(UNIT=indx) ! Because we have to read the whole line with ' i = ' line.
                 read(indx,130) sampled_movie(i_sample), sampled_time(i_sample)
                 130 FORMAT (5X,I8,9X,F12.3,6X,F20.10)
-                131 FORMAT (A4,3F20.10)
+                !131 FORMAT (A4,3F20.10)
                 i_O = 0
                 i_H = 0
                 inner: do iatom= 1,nat

@@ -7,7 +7,7 @@ SUBROUTINE load(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize)
   ! Declaration
   USE parameter_shared, ONLY: sampled_movie,sampled_time, &
       nb_divx, nb_divy, nb_divz, n_grid, divx, divy, divz, whish_size
-  USE atom_module, ONLY: atom_info
+  !USE atom_module, ONLY: atom_info
   USE traj_format2
   IMPLICIT NONE
   !==========

@@ -1,5 +1,5 @@
       SUBROUTINE ghbacf_interface_nf_pbc_format2(boxsize, delta_t0, &
-          filename, pos_filename, n_samples, nat, ns, &
+          filename, n_samples, nat, ns, &
           criterion)
       !========================================================================
       !Purpose: to obtain C_feeOH(t):  <nf(0)nf(t)>/<nf> for interfacial free OH
@@ -39,7 +39,7 @@
       !==========
       INTEGER,PARAMETER :: rk=8 ! local 
       INTEGER,PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
-      CHARACTER(LEN=200),INTENT(INOUT) :: filename, pos_filename
+      CHARACTER(LEN=200),INTENT(INOUT) :: filename
       !CHARACTER(LEN=200),INTENT(IN) :: list_filename_H
       INTEGER,INTENT(IN) :: criterion
       INTEGER,INTENT(IN) :: nat ! number of atoms
@@ -171,7 +171,7 @@
                      !write(*,*) "num_oxygen_neighbors for",k_O1,"-th O:", jj, "-th step", tmp_index
                      O_info(k_O1,jj)%self_indices_oxygen_neighbors(tmp_index) = k_O2
                      O_info(k_O1,jj)%indices_oxygen_neighbors(tmp_index) = m2 
-                     O_info( O_info(k_O1,jj)%self_indices_oxygen_neighbors(tmp_index), jj )%atom_id = m2 ! define total index of O
+                     O_info(k_O2, jj )%atom_id = m2 ! define total index of O2
                   endif
               endif          
           ENDDO

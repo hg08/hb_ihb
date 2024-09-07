@@ -72,7 +72,7 @@ PROGRAM main_interface_nf
   close(20)
 
   CALL gfreeoh(filename,pos_filename,list_hydrogen_atoms,nat)
-  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename, &
+  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,&
            n_samples,nat,ns,criterion)
   call system_clock(end_time,rat)
   write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 

@@ -73,7 +73,7 @@ do # Loop over sub-trajectories
 	
 	# b. Run ihb 
 	#for d in {1..6} 
-	for d in {1..2} 
+	for d in {4..6} 
 	do 
 		inputFile=input_${system}_s${i}_${d}
 		./main_interface_nf_format2 < $inputFile
