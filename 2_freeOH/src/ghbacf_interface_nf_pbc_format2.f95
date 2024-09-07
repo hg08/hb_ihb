@@ -305,15 +305,16 @@
       ENDDO OLOOP
       nfb_per_frame = tot_nfb/REAL(nmo,rk)
       ave_nf = nfb_per_frame/REAL(n_H,rk) 
-      !=========================================
-      !Calculate the number of ever bonded pairs
-      !=========================================
+      !==========================================
+      !Calculate the number of ever free OH groups
+      !==========================================
       n_freeoh = 0 
       DO k = 1, n_H
           IF ( nf(k) > nfb_min ) THEN
               n_freeoh = n_freeoh + 1      
           ENDIF
       ENDDO
+      write(*,*) "Number of ever free OH groups", n_freeoh
       !==================================
       !Normalization of C_freeOH(t) step1
       !==================================
