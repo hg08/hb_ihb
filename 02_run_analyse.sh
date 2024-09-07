@@ -159,6 +159,51 @@ do
 	mv tmp $kkprime
 done  # End start_frame loop
 
+# START Free OH statistics
+# Case 2_freeOH
+scenario=2_freeOH
+numSubTraj=$numSubTrajCase2
+for (( i=0; i<numSubTraj; i++ ))
+do
+	subTraj=${system}_s${i} 
+	echo "Processing ${scenario} ${subTraj} ..."
+	rm -rf nf_*.dat
+	for d in {1..6} 
+	do 
+		# The symbol * is used to match 1.dat and 1.0.dat 
+		ln -s ../${scenario}/output/${subTraj}_freeoh_acf_nf_${d}.dat nf_${d}.dat; 
+	done
+	
+	# Extract nf(t_f) from files `nf_${i}.dat`, where t_f = 0, 1, 2,... ps.
+	# ns = 1, dt = 0.04 ps, unit = 1 ps, rows = unit/(dt*ns)
+	rowNum=25 # TO BE UPDATED
+	for d in {1..6} 
+	do 
+		awk -v rowNum=$rowNum "NR%rowNum==1{print}" nf_${d}.dat > output/nf_${d}_at_ref.dat; 
+	done
+	
+	# Combine values of special ref. time (1, 2, 5, 10) for all layers.
+	cd output
+	rm -rf layers_nf_at_ref_temp.dat
+	touch layers_nf_at_ref_temp.dat 
+	for d in {1..6}
+	do  
+		awk 'NR==2 || NR==3 || NR==6 || NR==11{print}' nf_${d}_at_ref.dat > ${d}_at_ref.dat
+		cat layers_nf_at_ref_temp.dat ${d}_at_ref.dat > tmp
+		mv tmp layers_nf_at_ref_temp.dat
+		rm ${d}_at_ref.dat
+	done
+	rm -rf nf_*_at_ref.dat
+	cd ..
+	
+	rm -rf nf_*.dat
+	# Format the output file
+	./formatting.py output/layers_nf_at_ref_temp.dat  output/${subTraj}_${scenario}_layers_nf_at_ref.dat
+	rm output/layers_nf_at_ref_temp.dat
+	
+done  # End start_frame loop
+# END Free OH statistics
+
 
 # b. Orientation: calculate c2
 echo "Processing orientation..."
@@ -249,9 +294,11 @@ for d in {1..6}
 do 
 echo "input_case1_cHB${d} = '../3_analyze/output/${system}_1_case1_c_t_${d}.dat'" >> ${orientation_info_txt}
 echo "input_case2_cHB${d} = '../3_analyze/output/${system}_2_case2_c_t_${d}.dat'" >> ${orientation_info_txt}
+echo "input_case2_nf${d} = '../3_analyze/output/${system}_2_freeOH_nf_t_${d}.dat'" >> ${orientation_info_txt}
 done
 echo "output_cHB = 'cHB_${system}.eps'" >> ${orientation_info_txt}
 echo "output_cHB_loglog = 'cHB_loglog_${system}.eps'" >> ${orientation_info_txt}
+echo "output_nf_loglog = 'nf_loglog_${system}.eps'" >> ${orientation_info_txt}
 # For cHB_at_ref
 echo "input_case1_cHB_ref = '../3_analyze/output/${system}_1_case1_layers_c_at_ref.dat'" >> ${orientation_info_txt}
 echo "input_case2_cHB_ref = '../3_analyze/output/${system}_2_case2_layers_c_at_ref.dat'" >> ${orientation_info_txt}

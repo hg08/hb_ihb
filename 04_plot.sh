@@ -82,4 +82,12 @@ gnuplot plot_Fig5_${system}.gp
 # clean the dir
 rm tmp single_fit_c2_${system}.log double_fit_c2_${system}.log
 
+
+#plot FigS16 in general in logscale for x and y axis
+cp plot_nf_loglog_template.gp ./plot_S16_loglog_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_S16_loglog_${system}.gp
+gnuplot ./plot_S16_loglog_${system}.gp
+
+
+
 cd ..
