@@ -49,7 +49,6 @@ PROGRAM main_interface_nf
   criterion=1 ! 1 means ADH criterion of H-Bbond definition
   filename=""; pos_filename=""
   surf_filename=""
-  !list_oxygen_pairs=""
   list_hydrogen_atoms=""
   call system_clock(begin_time,rat) !To get the starting time
   
@@ -62,7 +61,7 @@ PROGRAM main_interface_nf
   ! Sampling the trajectory
   !========================
   CALL load(pos_filename,nmo_start,nmo_end,nat,ns,n_samples,boxsize)
-  ! After running the load() subroutine, we have a trajectory file. 
+  ! After running load() subroutine, we have a trajectory file. 
   
   !====================
   !read surf trajectory
