@@ -1,5 +1,5 @@
       SUBROUTINE ghbacf_interface_nf_pbc_format2(boxsize, delta_t0, &
-          filename, pos_filename, list_filename,list_filename_H, n_samples, nat, ns, &
+          filename, pos_filename, list_filename_H, n_samples, nat, ns, &
           criterion)
       !========================================================================
       !Purpose: to obtain C_feeOH(t):  <nf(0)nf(t)>/<nf> for interfacial free OH
@@ -40,7 +40,6 @@
       INTEGER,PARAMETER :: rk=8 ! local 
       INTEGER,PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       CHARACTER(LEN=200),INTENT(INOUT) :: filename, pos_filename
-      CHARACTER(LEN=200),INTENT(IN) :: list_filename
       CHARACTER(LEN=200),INTENT(IN) :: list_filename_H
       INTEGER,INTENT(IN) :: criterion
       INTEGER,INTENT(IN) :: nat ! number of atoms
@@ -67,17 +66,13 @@
       INTEGER :: nfreeoh, tot_nfreeoh, n_freeoh
       INTEGER :: idx_O1 ! The self index of O1 in all O atoms
       INTEGER :: idx_H ! The self Index of H in all H atoms
-      !REAL(KIND=rk),ALLOCATABLE,DIMENSION (:) :: h, hb, corr_h 
       REAL(KIND=rk),ALLOCATABLE,DIMENSION (:) :: nf, nfb, corr_nf
       REAL,ALLOCATABLE,DIMENSION (:,:) :: x, y, z
-      !INTEGER,ALLOCATABLE,DIMENSION(:) :: nhb_exist
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nfreeoh_exist
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nf_exist
-      !INTEGER,ALLOCATABLE,DIMENSION(:,:) :: ndx_1, ndx_2
       !INTEGER,ALLOCATABLE,DIMENSION(:,:) :: ndx_H1, ndx_O1
       INTEGER,DIMENSION(4) :: ndx_3_list
       REAL(KIND=rk) :: scalar, tmp 
-      !LOGICAL,ALLOCATABLE,DIMENSION (:) :: hb_exist
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: freeoh_exist
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: is_free
       INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we DO not want to change too much

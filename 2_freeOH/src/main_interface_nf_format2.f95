@@ -71,10 +71,10 @@ PROGRAM main_interface_nf
       CALL read_surf_traj(20,nmo_start,nmo_end,ns,n_grid,n_samples)
   close(20)
 
-  CALL gfreeoh(filename,pos_filename,list_oxygen_pairs,list_hydrogen_atoms,nat) ! O-O pairs
+  CALL gfreeoh(filename,pos_filename,list_hydrogen_atoms,nat)
   !CALL ghbacf_interface_c_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
   !         n_samples,nat,ns,criterion)
-  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs,list_hydrogen_atoms, &
+  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_hydrogen_atoms, &
            n_samples,nat,ns,criterion)
   call system_clock(end_time,rat)
   write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 

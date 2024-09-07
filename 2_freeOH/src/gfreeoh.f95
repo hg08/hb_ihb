@@ -1,4 +1,4 @@
-      SUBROUTINE gfreeoh(filename,pos_filename,list,list_H,natoms)
+      SUBROUTINE gfreeoh(filename,pos_filename,list_H,natoms)
       !
       !Purpose: To generate the index list of all Hydrogen atoms 
       !============
@@ -14,7 +14,6 @@
       !========================
       character(LEN=200),INTENT(IN) :: filename            ! specific filename to analyz data
       character(LEN=200),INTENT(IN) :: pos_filename        ! specific trajectory filename to analyz data
-      character(LEN=200),INTENT(INOUT) :: list
       character(LEN=200),INTENT(INOUT) :: list_H
       INTEGER, INTENT(IN) :: natoms
 
@@ -76,25 +75,11 @@
           endif
       enddo 
       deallocate(atom_type)
-      !========================
-      !Producing the O-O-H list      
-      !========================
-      list=trim(filename)//'_O_list.dat'
-      open(20,file=list)
-          do i1=1, i_O-1 ! No O atom can not be bonded to itself 
-              !m1=ndx_O(i1,2)
-              do i2=i1+1, i_O ! Acceptor 
-                  !m2=ndx_O(i2,2)
-                  write(20,*)  ndx_O(i1,1), ndx_O(i1,2), ndx_O(i2,1), ndx_O(i2,2)
-                  !write(20,*) m1, m2
-              enddo
-          enddo
-      close(20)
       !====================
       !Producing the H list      
       !====================
-      list=trim(filename)//'_H_list.dat'
-      open(20,file=list)
+      list_H=trim(filename)//'_H_list.dat'
+      open(20,file=list_H)
           do i1=1, i_H 
               write(20,*)  ndx_H(i1,1), ndx_H(i1,2)
           enddo
