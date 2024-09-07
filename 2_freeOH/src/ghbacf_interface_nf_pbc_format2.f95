@@ -204,11 +204,9 @@
                       allocate(is_free(num_limit))
                       DO k_O2 = 1, num_limit 
                           m2 = O_info(k_O1,jj)%indices_oxygen_neighbors(k_O2) ! Indices of total index of the neighbor O2 
-                          ! DONE: 一旦知此列表序列,对于任何一个氢原子,我们可以找到其宿主氧原子idx_O_host (H_info(:,:)%host_id)
                           ! For all tuples (idx_O1, idx_O_neighbor[1]), (idx_O1, idx_O_neighbor[2]), (idx_O1, idx_O_neighbor[3]),...
                           !Check whether the OH is free OH group respectively. Then based on these results, we can know that whether
-                          !the OH is free OH or not. 
-                          ! so that we can Calculate nf(j) later.
+                          !the OH is free OH or not, so that can Calculate nf(j) later.
 
                           r1 = (/atom_info(m1,jj)%coord(1),atom_info(m1,jj)%coord(2),&
                                  atom_info(m1,jj)%coord(3) /)
