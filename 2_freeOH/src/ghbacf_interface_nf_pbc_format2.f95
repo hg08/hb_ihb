@@ -60,14 +60,13 @@
       REAL(KIND=rk),PARAMETER :: nfb_min=0.5 ! condition for the existence of free OH for a  OH in water molecule
       REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_, norm_rr
       REAL(KIND=rk) :: r21, r31, r32, r23 ! For the second criterion of HB
-      REAL(KIND=rk) :: qj, tot_hb, delta_t, hb_per_frame, ave_h
+      REAL(KIND=rk) :: delta_t
       REAL(KIND=rk) :: freeoh, tot_nfb, nfb_per_frame, ave_nf 
       REAL(KIND=rk),DIMENSION(3) :: r1, r2, r3 ! pbc 
-      INTEGER :: m1, m2, m3, mt, nqj, tot_nhb, n_bonded_pairs, ns
-      INTEGER ::                 nfreeoh, tot_nfreeoh, n_freeoh
-      INTEGER :: m1_neighbor, n_neighbor
-      INTEGER :: idx_O1, idx_O2 ! Indices of O1, O2 in all O atoms
-      INTEGER :: idx_H ! Indices of H in all O atoms
+      INTEGER :: m1, m2, m3, mt, ns
+      INTEGER :: nfreeoh, tot_nfreeoh, n_freeoh
+      INTEGER :: idx_O1 ! The self index of O1 in all O atoms
+      INTEGER :: idx_H ! The self Index of H in all H atoms
       !REAL(KIND=rk),ALLOCATABLE,DIMENSION (:) :: h, hb, corr_h 
       REAL(KIND=rk),ALLOCATABLE,DIMENSION (:) :: nf, nfb, corr_nf
       REAL,ALLOCATABLE,DIMENSION (:,:) :: x, y, z
@@ -97,12 +96,10 @@
       !==============
       !Initialization
       !==============
-      !ave_h = 0.0; 
       scalar = 0.0
       pm = 0.0; cosphi = 0.0
       r21 = 0.0; r23 = 0.0
       r31 = 0.0; r13 = 0.0; r32 = 0.0
-      !hb_per_frame = 0.0; tot_hb = 0.0
       nfb_per_frame = 0.0; tot_nfb = 0.0
       r1 = 0.0; r2 = 0.0; r3 = 0.0
       nmo = n_samples; nwat = 0 
