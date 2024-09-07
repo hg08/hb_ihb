@@ -21,7 +21,7 @@
       integer,parameter :: rk=8              
       real,parameter :: r_ohc=1.44             ! rOH (1.2**2)
       integer :: i,nmovie,iatom,& 
-                    i1,i2,ii,jj,i_O,i_H
+                    i1,ii,jj,i_O,i_H
       real,allocatable,dimension (:,:) :: x,y,z
       character(LEN=3),allocatable,dimension (:) :: atom_type
       !integer,allocatable,dimension (:) :: ndx_O,ndx_H

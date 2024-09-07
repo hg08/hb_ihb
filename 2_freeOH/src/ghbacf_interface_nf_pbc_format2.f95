@@ -1,5 +1,5 @@
       SUBROUTINE ghbacf_interface_nf_pbc_format2(boxsize, delta_t0, &
-          filename, pos_filename, list_filename_H, n_samples, nat, ns, &
+          filename, pos_filename, n_samples, nat, ns, &
           criterion)
       !========================================================================
       !Purpose: to obtain C_feeOH(t):  <nf(0)nf(t)>/<nf> for interfacial free OH
@@ -40,7 +40,7 @@
       INTEGER,PARAMETER :: rk=8 ! local 
       INTEGER,PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       CHARACTER(LEN=200),INTENT(INOUT) :: filename, pos_filename
-      CHARACTER(LEN=200),INTENT(IN) :: list_filename_H
+      !CHARACTER(LEN=200),INTENT(IN) :: list_filename_H
       INTEGER,INTENT(IN) :: criterion
       INTEGER,INTENT(IN) :: nat ! number of atoms
       INTEGER,INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns)

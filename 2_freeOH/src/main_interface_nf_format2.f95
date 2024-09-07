@@ -31,7 +31,7 @@ PROGRAM main_interface_nf
   INTEGER :: n_samples   ! n_samples = INT(nmo/ns)
   REAL(KIND=rk) :: delta_t0   ! For reading data
   character(LEN=200) :: surf_filename
-  character(LEN=200) :: filename, pos_filename,list_oxygen_pairs
+  character(LEN=200) :: filename, pos_filename
   character(LEN=200) :: list_hydrogen_atoms 
   CHARACTER(LEN=2) :: guest_atom, host_atom
   real(KIND=rk), dimension(3) :: boxsize
@@ -49,7 +49,7 @@ PROGRAM main_interface_nf
   criterion=1 ! 1 means ADH criterion of H-Bbond definition
   filename=""; pos_filename=""
   surf_filename=""
-  list_oxygen_pairs=""
+  !list_oxygen_pairs=""
   list_hydrogen_atoms=""
   call system_clock(begin_time,rat) !To get the starting time
   
@@ -72,9 +72,7 @@ PROGRAM main_interface_nf
   close(20)
 
   CALL gfreeoh(filename,pos_filename,list_hydrogen_atoms,nat)
-  !CALL ghbacf_interface_c_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
-  !         n_samples,nat,ns,criterion)
-  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_hydrogen_atoms, &
+  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename, &
            n_samples,nat,ns,criterion)
   call system_clock(end_time,rat)
   write(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
