@@ -309,7 +309,7 @@ INTERFACE
   SUBROUTINE ghbond_lino3(filename,pos_filename,natoms,&
       list_ow_ow_pairs,list_on_ow_pairs,boxsize)
 
-      IMPORT distance2
+      IMPORT :: distance2
       !Purpose: To generate the index list of possible Nitrate O -- water O pairs, and water O --water O pairs (quasi-bonds)
       !Returns: two list file. One is the Nitrate O -- water O pairs
       !         The other is water O --water O pairs
@@ -343,20 +343,29 @@ INTERFACE
           ndx_N,ndx_OW,ndx_ON
   END SUBROUTINE ghbond_lino3 
 
-  INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
-      ! transfer the coordinates (x,y) to grid_index, which is an INTEGER
-      IMPLICIT NONE
-      !==========
-      !Parameters
-      !==========
-      INTEGER,PARAMETER :: rk=8              
-      !=========
-      !variables
-      !=========
-      INTEGER,DIMENSION(2) :: ind
-      REAL(KIND=rk),INTENT(IN) :: divx, divy
-      INTEGER,INTENT(IN) :: nb_divx,nb_divy
-      REAL(KIND=rk),INTENT(IN) :: x,y
+  !INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
+  !    ! transfer the coordinates (x,y) to grid_index, which is an INTEGER
+  !    IMPLICIT NONE
+  !    !==========
+  !    !Parameters
+  !    !==========
+  !    INTEGER,PARAMETER :: rk=8              
+  !    !=========
+  !    !variables
+  !    !=========
+  !    INTEGER,DIMENSION(2) :: ind
+  !    REAL(KIND=rk),INTENT(IN) :: divx, divy
+  !    INTEGER,INTENT(IN) :: nb_divx,nb_divy
+  !    REAL(KIND=rk),INTENT(IN) :: x,y
+  !END FUNCTION grid_index
+
+  INTEGER FUNCTION grid_index(x,y,divx,divy,n_divy)
+      ! transfer the coordinates (x,y) to grid_index, which is an integer
+      INTEGER, PARAMETER :: rk=8
+      REAL(KIND=rk), INTENT(IN) :: x,y
+      REAL(KIND=rk), INTENT(IN) :: divx, divy
+      INTEGER, INTENT(IN) :: n_divy
+      INTEGER, DIMENSION(2) :: ind
   END FUNCTION grid_index
 
   LOGICAL FUNCTION oh_in_surf1(surf1_mol1,z1,thickness)
@@ -395,6 +404,23 @@ INTERFACE
       REAL(KIND=8), INTENT(IN) :: z1,z2
   END FUNCTION pair_in_surf2    
 
+  LOGICAL FUNCTION atom_in_surf1(surf1_mol1,z1,thickness)
+      INTEGER, PARAMETER :: rk=8
+      REAL(KIND=rk), INTENT(IN) :: surf1_mol1
+      REAL(KIND=rk), INTENT(IN) :: z1,thickness
+      LOGICAL :: mol1_in_surf1
+
+  END FUNCTION atom_in_surf1
+
+  LOGICAL FUNCTION atom_in_surf2(surf2_mol1,z1,thickness)
+      INTEGER, PARAMETER :: rk=8
+      REAL(KIND=rk), INTENT(IN) :: surf2_mol1
+      REAL(KIND=rk), INTENT(IN) :: z1,thickness
+      LOGICAL :: mol1_in_surf2
+
+  END FUNCTION atom_in_surf2
+
+
   LOGICAL FUNCTION mol_in_surf1(surf1_mol,z1,thickness)
       IMPLICIT NONE
       !Check if a molecule is in the surf1 (the lower layer)
@@ -413,16 +439,12 @@ INTERFACE
       REAL(KIND=rk),INTENT(IN) :: z2
   END FUNCTION mol_in_surf2    
   
-  CHARACTER(LEN=20) function int2str(k)
-      !  "Convert an INTEGER to string."
-      INTEGER, intent(in) :: k
-  end function int2str
 
   CHARACTER(LEN=20) function str(k)
-      !  "Convert an INTEGER/real to string."
+      !  "Convert a real to string."
       real (KIND=8), intent(in) :: k
   end function str
-  
+
   FUNCTION nth(k,n)
       !To return a string containing the first N characters
       !of the alphabet.
@@ -440,27 +462,101 @@ INTERFACE
       INTEGER,INTENT(IN) :: nmo_start, nmo_end ! To get the total number of moves
   END FUNCTION sampling_number
 
-  SUBROUTINE read_traj_3(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time)
-      ! To read info from the trajectory file (format: ***.xyz)
-      ! to READ data starting from a pattern-matched line.
-      USE atom_module, ONLY: atom, atom_info
+  !SUBROUTINE read_traj_3(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,boxsize,criterion)
+  !    ! To read info from the trajectory file (format: ***.xyz)
+  !    ! to READ data starting from a pattern-matched line.
+  !    USE atom_module, ONLY: atom, atom_info
+  !    USE water_molecule_types, ONLY: O_info, H_info
+  !    IMPLICIT NONE
 
+  !    REAL,PARAMETER :: rooc=12.25 ! cutoff distance of rOO (3.5**2 )
+  !    REAL,PARAMETER :: cosPhiC123=0.866 ! 1.732/2; phiC=pi/6.
+  !    REAL,PARAMETER :: cosPhiC123_freeOH= 0.6428 !  phiC= 50 degree. (Ref. J. Chem. Theory Comput. 2018, 14, 357−364)
+  !    REAL,PARAMETER :: cosPhiC132=-0.5 ! -1./2; phiC132=2pi/3.
+  !    REAL,PARAMETER :: cosPhiC132_freeOH = -0.342 ! ; phiC132= 110. (Ref. Tang, J. Chem. Theory Comput. 2018, 14, 357−364)
+  !    INTEGER, PARAMETER :: rk=8
+  !    REAL(kind=rk) :: distance2
+  !    REAL(KIND=rk),PARAMETER :: max_time_for_corr = 12.0 ! Unit: ps. 
+  !    REAL(KIND=rk),PARAMETER :: h_min=0.5 ! condition for the existence of a h-bond for a step
+  !    REAL(KIND=rk),PARAMETER :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
+  !    REAL(KIND=rk),PARAMETER :: nfb_min=0.5 ! condition for the existence of free OH for a  OH in water molecule
+
+  !    CHARACTER(LEN=4) :: head_char
+  !    INTEGER :: iatom, i_sample
+  !    INTEGER :: i_O, i_H
+  !    INTEGER :: n_H ! number of OH groups; or num of H atoms
+  !    INTEGER :: n_O ! number of O atoms
+  !    INTEGER :: i, j, k, jj, bond
+  !    INTEGER :: k_H, k_O, k_O1, k_O2
+  !    INTEGER,INTENT(IN) :: criterion 
+  !    INTEGER,INTENT(IN) :: indx
+  !    INTEGER,INTENT(IN) :: nat
+  !    INTEGER,INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
+  !    INTEGER,INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
+  !    INTEGER,INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns)
+  !    REAL(KIND=rk),DIMENSION(3),INTENT(IN) :: boxsize      
+  !    REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_, norm_rr
+  !    REAL(KIND=rk) :: r21, r31, r32, r23 ! For the second criterion of HB
+
+  !    REAL(KIND=rk),DIMENSION(3) :: r1, r2, r3 ! pbc 
+  !    INTEGER :: m1, m2, m3
+  !    !TYPE(atom),DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
+  !    INTEGER,DIMENSION(n_samples) :: sampled_movie
+  !    REAL(kind=rk),DIMENSION(n_samples) :: sampled_time
+  !    INTEGER :: y
+  !    INTEGER :: tmp_index
+  !    INTEGER :: num_limit ! Temperary varible, represents the largest number of an O atoms' neighbors.
+  !    LOGICAL,ALLOCATABLE,DIMENSION (:) :: is_free
+  !END SUBROUTINE read_traj_3
+
+   SUBROUTINE read_traj_3(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,boxsize,criterion)
+      USE atom_module, ONLY: atom, atom_info
+      USE water_molecule_types, ONLY: hydrogen_atom, oxygen_atom, O_info, H_info
       IMPLICIT NONE
-      INTEGER,PARAMETER :: rk=8              
+
+      REAL,PARAMETER :: rooc=12.25 ! cutoff distance of rOO (3.5**2 )
+      REAL,PARAMETER :: cosPhiC123=0.866 ! 1.732/2; phiC=pi/6.
+      REAL,PARAMETER :: cosPhiC123_freeOH= 0.6428 !  phiC= 50 degree. (Ref. J. Chem. Theory Comput. 2018, 14, 357−364)
+      REAL,PARAMETER :: cosPhiC132=-0.5 ! -1./2; phiC132=2pi/3.
+      REAL,PARAMETER :: cosPhiC132_freeOH = -0.342 ! ; phiC132= 110. (Ref. Tang, J. Chem. Theory Comput. 2018, 14, 357−364)
+      INTEGER, PARAMETER :: rk=8
+      REAL(KIND=rk),PARAMETER :: max_time_for_corr = 12.0 ! Unit: ps. 
+      REAL(KIND=rk),PARAMETER :: h_min=0.5 ! condition for the existence of a h-bond for a step
+      REAL(KIND=rk),PARAMETER :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
+      REAL(KIND=rk),PARAMETER :: nfb_min=0.5 ! condition for the existence of free OH for a  OH in water molecule
+
       CHARACTER(LEN=4) :: head_char
-      INTEGER :: iatom,i_sample
+      INTEGER :: iatom, i_sample
+      INTEGER :: i_O, i_H
+      INTEGER :: n_H ! number of OH groups; or num of H atoms
+      INTEGER :: n_O ! number of O atoms
+      INTEGER :: i, j, k, jj, bond
+      INTEGER :: k_H, k_O, k_O1, k_O2
+      REAL(KIND=rk) :: distance2, pm_adh, pm_ahd
+      INTEGER,INTENT(IN) :: criterion
       INTEGER,INTENT(IN) :: indx
       INTEGER,INTENT(IN) :: nat
       INTEGER,INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
-      INTEGER,INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns)
       INTEGER,INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
+      INTEGER,INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns)
+      REAL(KIND=rk),DIMENSION(3),INTENT(IN) :: boxsize
+      REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_, norm_rr
+      REAL(KIND=rk) :: r21, r31, r32, r23 ! For the second criterion of HB
+
+      REAL(KIND=rk),DIMENSION(3) :: r1, r2, r3 ! pbc 
+      INTEGER :: m1, m2, m3
+      INTEGER :: idx_O1 ! The self index of O1 in all O atoms
+      INTEGER :: idx_H ! The self Index of H in all H atoms
 
       !TYPE(atom),DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
       INTEGER,DIMENSION(n_samples) :: sampled_movie
-      REAL(KIND=rk),DIMENSION(n_samples) :: sampled_time
+      REAL(kind=rk),DIMENSION(n_samples) :: sampled_time
       INTEGER :: y
+      INTEGER :: tmp_index
+      INTEGER :: num_limit ! Temperary varible, represents the largest number of an O atoms' neighbors.
+      LOGICAL,ALLOCATABLE,DIMENSION (:) :: is_free
   END SUBROUTINE read_traj_3
-
+ 
   SUBROUTINE read_traj_sphere(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,sampled_energy,sphere_info)
       ! To read info from the trajectory file (format: ***.xyz)
       ! to READ data starting from a pattern-matched line.

@@ -47,11 +47,11 @@ SUBROUTINE sample_and_recenter_format2(pos_filename,nmo_start,nmo_end,nat,ns,n_s
   !=======================
   !read in trajectory file 
   !=======================
-  OPEN(10,file=trim(pos_filename))
-  ! Now starting read data
-  CALL read_traj_3(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time) 
-  CLOSE(10)
-  WRITE(6,*) 'End of trajectory reading.'
+  !OPEN(10,file=trim(pos_filename))
+  !! Now starting read data
+  !CALL read_traj_3(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,boxsize) 
+  !CLOSE(10)
+  !WRITE(6,*) 'End of trajectory reading.'
 
   !=============
   !write in file

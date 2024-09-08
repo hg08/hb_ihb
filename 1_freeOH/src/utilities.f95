@@ -563,39 +563,54 @@
       deallocate(atom_type,x,y,z)
   END FUNCTION get_number_of_iodine
 
-  INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
+  !INTEGER FUNCTION grid_index(x,y,divx,divy,nb_divx,nb_divy)
+  !    ! transfer the coordinates (x,y) to grid_index, which is an integer
+  !    implicit none
+  !    integer,parameter :: rk=8              
+  !    REAL(kind=rk), INTENT(IN) :: x,y
+  !    REAL(kind=rk), INTENT(IN) :: divx, divy
+  !    INTEGER, INTENT(IN) :: nb_divx, nb_divy
+  !    INTEGER, DIMENSION(2) :: ind
+  !    
+  !    !Initialization
+  !    ind = 0
+
+  !    ind(1) = floor(x/divx) 
+  !    ind(2) = floor(y/divy)
+
+  !    !Correction for avoiding 0 index
+  !    !IF (ind(1) == 0) THEN
+  !    !    ind(1) = ind(1) + 1
+  !    !ENDIF
+  !    !IF (ind(2) == 0) THEN
+  !    !    ind(2) = ind(2) + 1
+  !    !ENDIF
+  !    if (ind(1) == 0) then
+  !      grid_index = ind(2) 
+  !    else
+  !      grid_index = ind(1)*nb_divy + ind(2) 
+  !    endif
+  !    grid_index = grid_index + 1
+  !END FUNCTION grid_index
+
+  INTEGER FUNCTION grid_index(x,y,divx,divy,n_divy)
       ! transfer the coordinates (x,y) to grid_index, which is an integer
-      implicit none
-      integer,parameter :: rk=8              
-      REAL(kind=rk), INTENT(IN) :: x,y
-      REAL(kind=rk), INTENT(IN) :: divx, divy
-      INTEGER, INTENT(IN) :: nb_divx, nb_divy
+      INTEGER, PARAMETER :: rk=8
+      REAL(KIND=rk), INTENT(IN) :: x,y
+      REAL(KIND=rk), INTENT(IN) :: divx, divy
+      INTEGER, INTENT(IN) :: n_divy
       INTEGER, DIMENSION(2) :: ind
-      
+
       !Initialization
-      ind = 0
+      ind = 0.0
 
-      ind(1) = floor(x/divx) 
-      ind(2) = floor(y/divy)
+      ind(1) = FLOOR(x/divx)
+      ind(2) = FLOOR(y/divy)
 
-      !Correction for avoiding 0 index
-      !IF (ind(1) == 0) THEN
-      !    ind(1) = ind(1) + 1
-      !ENDIF
-      !IF (ind(2) == 0) THEN
-      !    ind(2) = ind(2) + 1
-      !ENDIF
-      if (ind(1) == 0) then
-        grid_index = ind(2) 
-      else
-        grid_index = ind(1)*nb_divy + ind(2) 
-      endif
-      grid_index = grid_index + 1
+      grid_index = ind(1) * n_divy + ind(2)+1
+
   END FUNCTION grid_index
 
-  !TODO: define get_number_of_oxygens_in_nitrate()
-  !TODO: define get_number_of_oxygens_in_water()
-  !TODO: define get_number_of_iodine() Done
 
   LOGICAL FUNCTION oh_in_surf1(surf1_mol1,z1,thickness)
       implicit none
@@ -649,6 +664,30 @@
       pair_in_surf2 = mol1_in_surf2 .and. mol2_in_surf2
   END FUNCTION pair_in_surf2    
 
+  LOGICAL FUNCTION atom_in_surf1(surf1_mol1,z1,thickness)
+      INTEGER, PARAMETER :: rk=8
+      REAL(KIND=rk), INTENT(IN) :: surf1_mol1
+      REAL(KIND=rk), INTENT(IN) :: z1,thickness
+      LOGICAL :: mol1_in_surf1
+
+      mol1_in_surf1 = surf1_mol1 + &
+          thickness > z1
+      atom_in_surf1 = mol1_in_surf1
+
+  END FUNCTION atom_in_surf1
+
+  LOGICAL FUNCTION atom_in_surf2(surf2_mol1,z1,thickness)
+      INTEGER, PARAMETER :: rk=8    
+      REAL(KIND=rk), INTENT(IN) :: surf2_mol1
+      REAL(KIND=rk), INTENT(IN) :: z1,thickness
+      LOGICAL :: mol1_in_surf2
+
+      mol1_in_surf2 = surf2_mol1 - &
+          thickness < z1
+      atom_in_surf2 = mol1_in_surf2
+
+  END FUNCTION atom_in_surf2
+
   LOGICAL FUNCTION mol_in_surf1(surf1_mol,z1,thickness)
       !Check if a molecule is in the surf1 ( the lower layer)
       implicit none
@@ -682,15 +721,15 @@
       write (str, '(F3.1)') k
       str = adjustl(str)
   end function str
-  
+
   FUNCTION nth(k,n)
       ! To return a string containing the first N characters
       ! of the alphabet.
       IMPLICIT NONE
   
       ! Declaring calling parameters:
-      CHARACTER(len=20), INTENT(IN) :: k ! String which is adjustl-ed
       INTEGER, INTENT(IN) :: n ! Length of string to return
+      CHARACTER(len=20), INTENT(IN) :: k ! String which is adjustl-ed
       CHARACTER(len=n) nth ! Returned string
       
       ! Get string to return
@@ -704,8 +743,6 @@
       INTEGER, INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
       INTEGER, INTENT(IN) :: ns ! Get one sample from the trajectory every ns step.
 
-      !write(*,*) 'In function sampling_number: nmo_end = ', nmo_end
-      ! no. of samples = INT({no. of moves}/ns)
       positive: IF (nmo_end <0 .OR. nmo_start < 0 .OR. ns <0) THEN
         write(*,*) 'Please enter non-negative values for the ns, starting step and ending step.'
       ELSE IF (nmo_end < nmo_start) THEN
@@ -717,32 +754,62 @@
       END IF positive
   END FUNCTION sampling_number
 
-  SUBROUTINE read_traj_3(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time)
-      ! To read info from the trajectory file (format: ***.xyz)
-      ! to READ data starting from a pattern-matched line.
+  SUBROUTINE read_traj_3(indx,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,boxsize,criterion)
+      ! Purpose:
+      !  To read info from the trajectory file (format: ***.xyz)
+      !  1. Read data starting from a pattern-matched line.
+      !  2. Determine free OH groups.
       USE atom_module, ONLY: atom, atom_info
-      USE water_molecule_types, ONLY: O_info, H_info
+      USE water_molecule_types, ONLY: hydrogen_atom, oxygen_atom, O_info, H_info
       IMPLICIT NONE
 
+      REAL,PARAMETER :: rooc=12.25 ! cutoff distance of rOO (3.5**2 )
+      REAL,PARAMETER :: cosPhiC123=0.866 ! 1.732/2; phiC=pi/6.
+      REAL,PARAMETER :: cosPhiC123_freeOH= 0.6428 !  phiC= 50 degree. (Ref. J. Chem. Theory Comput. 2018, 14, 357−364)
+      REAL,PARAMETER :: cosPhiC132=-0.5 ! -1./2; phiC132=2pi/3.
+      REAL,PARAMETER :: cosPhiC132_freeOH = -0.342 ! ; phiC132= 110. (Ref. Tang, J. Chem. Theory Comput. 2018, 14, 357−364)
       INTEGER, PARAMETER :: rk=8
+      REAL(KIND=rk) :: distance2, pm_adh, pm_ahd
+      !REAL(kind=rk) :: distance2, pm_adh, pm_ahd
+      REAL(KIND=rk),PARAMETER :: max_time_for_corr = 12.0 ! Unit: ps. 
+      REAL(KIND=rk),PARAMETER :: h_min=0.5 ! condition for the existence of a h-bond for a step
+      REAL(KIND=rk),PARAMETER :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
+      REAL(KIND=rk),PARAMETER :: nfb_min=0.5 ! condition for the existence of free OH for a  OH in water molecule
 
       CHARACTER(LEN=4) :: head_char
       INTEGER :: iatom, i_sample
       INTEGER :: i_O, i_H
+      INTEGER :: n_H ! number of OH groups; or num of H atoms
+      INTEGER :: n_O ! number of O atoms
+      INTEGER :: i, j, k, jj, bond
+      INTEGER :: k_H, k_O, k_O1, k_O2
+      INTEGER,INTENT(IN) :: criterion 
       INTEGER,INTENT(IN) :: indx
       INTEGER,INTENT(IN) :: nat
       INTEGER,INTENT(IN) :: nmo_start, nmo_end  ! To get the total number of moves
       INTEGER,INTENT(IN) :: ns  ! Get one sample from the trajectory every ns step.
       INTEGER,INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns)
+      REAL(KIND=rk),DIMENSION(3),INTENT(IN) :: boxsize      
+      REAL(KIND=rk) :: r13, cosphi, pm, cosphi_, pm_, norm_rr
+      REAL(KIND=rk) :: r21, r31, r32, r23 ! For the second criterion of HB
+
+      REAL(KIND=rk),DIMENSION(3) :: r1, r2, r3 ! pbc 
+      INTEGER :: m1, m2, m3
+      INTEGER :: idx_O1 ! The self index of O1 in all O atoms
+      INTEGER :: idx_H ! The self Index of H in all H atoms
 
       !TYPE(atom),DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
       INTEGER,DIMENSION(n_samples) :: sampled_movie
       REAL(kind=rk),DIMENSION(n_samples) :: sampled_time
       INTEGER :: y
-       
+      INTEGER :: tmp_index
+      INTEGER :: num_limit ! Temperary varible, represents the largest number of an O atoms' neighbors.
+      LOGICAL,ALLOCATABLE,DIMENSION (:) :: is_free
+
       !allocate(atom_info(nat,n_samples)) ! Define atom_info
-      allocate(O_info(nat/3,n_samples))
-      allocate(H_info(2*nat/3,n_samples))
+
+      n_O = nat / 3
+      n_H = nat * 2 / 3
       i_sample = 1
       DO WHILE (i_sample < n_samples+1) ! +1 means i_sample can take the value of n_samples 
           read(indx, '(1X,A4)') head_char  ! for some other format, one can use this format
@@ -798,6 +865,110 @@
           ENDIF PRE_CHECK
       END DO
       write(*,*) "Total numFrames", i_sample -1 ! To check the total number of samples)
+
+
+      !A loop over TOTAL Time Step. Purpose: Find Oxygen atoms' Oxygen neighbors.
+      TTLOOP: DO jj = 1,n_samples
+      DO k_O1 = 1, n_O
+          ! For a given O, we calculate the list of Oxygen neighbors of this O atom. 
+          tmp_index = 0
+          m1 = 3 * k_O1 - 2 ! Host O1, total index
+          !write(*,*) "m1=", m1
+          DO k_O2 = 1 , n_O
+              if (k_O2 .ne. k_O1) then
+                  m2 = 3 * k_O2 - 2 ! Total order of O2. For searching neighbors of Host O1
+                  ! The total inices of H atoms related to O1 (Host O) and O2 (potential neighor O)
+                  ! Check if O2 is a neighbor of O1
+                  r1 = (/atom_info(m1,jj)%coord(1),atom_info(m1,jj)%coord(2),&
+                     atom_info(m1,jj)%coord(3) /)
+                  r2 = (/atom_info(m2,jj)%coord(1),atom_info(m2,jj)%coord(2),&
+                         atom_info(m2,jj)%coord(3) /)
+                  r21 = distance2(r1, r2, boxsize)
+                  if ((r21 .lt. rooc)) THEN
+                     write(*,*) "m2=", m2
+                     ! In the neighbor list of O1, add the total indices of O2.
+                     O_info(k_O1,jj)%num_oxygen_neighbors = O_info(k_O1,jj)%num_oxygen_neighbors + 1 ! increase the number of O neighbors
+                     tmp_index = O_info(k_O1,jj)%num_oxygen_neighbors
+                     write(*,*) "num_oxygen_neighbors for",k_O1,"-th O:", jj, "-th step", tmp_index
+                     O_info(k_O1,jj)%self_indices_oxygen_neighbors(tmp_index) = k_O2
+                     O_info(k_O1,jj)%indices_oxygen_neighbors(tmp_index) = m2
+                     O_info(k_O2, jj )%atom_id = m2 ! define total index of O2
+                  endif
+              endif
+          ENDDO
+      ENDDO
+      ENDDO TTLOOP
+
+
+      !The purpose of this loop is to  define the free OH groups at each time step.
+      tLOOP: DO jj = 1,n_samples
+          !===================================
+          !The loop to find out free OH groups
+          !===================================
+          Ohost: DO k_O1 = 1, n_O ! self index of O1
+              idx_O1 = k_O1 * 3 - 2 ! The total index of O1
+              m1 = idx_O1 ! Indices of total index of the Host 
+              OH: DO bond = 1,2
+                  idx_H = O_info(k_O1,1)%H_ids(bond) ! 1: the first time step
+                  m3 = idx_H 
+                  if (bond == 1) then
+                      k_H = (idx_H + 1) * 2/3 - 1
+                  else
+                      k_H = (idx_H ) * 2/3 
+                  endif
+                  if (m1 < 1) then
+                      write(*,*) "Error: m1 must be positive!"
+                  endif
+                  if (O_info(k_O1,jj)%num_oxygen_neighbors .le. 0) then
+                      H_info(k_H,jj)%IsFree = .True.
+                  else
+                      num_limit = O_info(k_O1,jj)%num_oxygen_neighbors
+                      allocate(is_free(num_limit))
+                      DO k_O2 = 1, num_limit 
+                          m2 = O_info(k_O1,jj)%indices_oxygen_neighbors(k_O2) ! Indices of total index of the neighbor O2 
+                          ! For all tuples (idx_O1, idx_O_neighbor[1]), (idx_O1, idx_O_neighbor[2]), (idx_O1, idx_O_neighbor[3]),...
+                          !Check whether the OH is free OH group respectively. Then based on these results, we can know that whether
+                          !the OH is free OH or not, so that can Calculate nf(j) later.
+
+                          r1 = (/atom_info(m1,jj)%coord(1),atom_info(m1,jj)%coord(2),&
+                                 atom_info(m1,jj)%coord(3) /)
+                          r2 = (/atom_info(m2,jj)%coord(1),atom_info(m2,jj)%coord(2),&
+                                 atom_info(m2,jj)%coord(3) /)
+                          r3 = (/atom_info(m3,jj)%coord(1),atom_info(m3,jj)%coord(2),&
+                                 atom_info(m3,jj)%coord(3) /)
+                          r21 = distance2(r1, r2, boxsize) 
+                          if (criterion == 1) THEN
+                              r23 = distance2(r3, r2, boxsize) 
+                              r13 = distance2(r3, r1, boxsize) 
+                              pm_ = pm_adh(r2,r1,r3,boxsize) ! if H is bound to O1
+                              !norm_rr = sqrt(r21*r23) ! if H is bound to O2 (Not for here.)
+                              norm_rr = sqrt(r21*r13) ! if H is bounded to O1
+                              cosphi_= pm_/norm_rr
+                              if (cosphi_  .lt. cosPhiC123_freeOH)  THEN
+                                  is_free(k_O2) = .True. ! The k_O2-th step for checking whether the k_H -th H is free.
+                              endif
+                          elseif (criterion == 2) THEN
+                              !Follow the second cirterion of HB.
+                              r31 = distance2(r1,r3,boxsize) 
+                              r32 = distance2(r2,r3, boxsize) 
+                              pm = pm_adh(r1,r2,r3,boxsize)
+                              cosphi = pm/(sqrt(r31*r32))
+
+                              !Follow the scond criterion of HB.
+                              !-0.342 comes from cos(110 degree)
+                              if (cosphi .gt. cosPhiC132_freeOH) THEN 
+                                  is_free(k_O2) = .True.
+                              endif
+                          endif
+                          if ( all(is_free .eqv. .True.) .eqv. .True. ) then
+                              H_info(k_H,jj)%IsFree = .True.
+                          endif
+                      ENDDO
+                      deallocate(is_free)
+                  endif          
+              ENDDO OH
+          ENDDO Ohost
+      ENDDO tLOOP
   END SUBROUTINE read_traj_3
 
   SUBROUTINE read_surf_coord(indx,n_samples,n_grid,surf_info_fortran)
@@ -929,7 +1100,6 @@
     TYPE(sphere),DIMENSION(nat,n_samples),INTENT(INOUT) :: sphere_info
     INTEGER,DIMENSION(nat),INTENT(INOUT) :: neighbors_number
     INTEGER,DIMENSION(num_coord_max,nat),INTENT(INOUT) :: neighbors_indices
-    !REAL(kind=rk) :: dist2
     
     INTEGER,PARAMETER :: start_step = 1
     REAL(kind=rk) :: r_LU2 ! LU: Least Upper bound; 2: squared value 

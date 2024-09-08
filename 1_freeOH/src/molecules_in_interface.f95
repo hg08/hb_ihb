@@ -61,7 +61,7 @@
               !write(*,*) "divx", divx
               !write(*,*) "divy", divy
               index_mol = grid_index(atom_info(m,jj)%coord(1), &
-                  atom_info(m,jj)%coord(2),divx,divy,nb_divx,nb_divy) 
+                  atom_info(m,jj)%coord(2),divx,divy,nb_divy) 
               !write(*,*) "index_mol", index_mol
               !For surf 1
               condition1 = mol_in_surf1(surf_info(1,index_mol,jj),&

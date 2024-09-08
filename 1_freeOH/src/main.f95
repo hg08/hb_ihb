@@ -10,6 +10,7 @@ PROGRAM main_freeoh
   !============
   USE module_ihb
   USE atom_module, ONLY: atom, atom_info
+  USE water_molecule_types
   IMPLICIT NONE
 
   !==========
@@ -53,7 +54,9 @@ PROGRAM main_freeoh
   INTEGER :: nwat ! number of water molecules
   CHARACTER(LEN=200) :: surf_filename
   CHARACTER(LEN=200) :: pos_filename
-  
+  INTEGER :: n_H ! number of OH groups; or num of H atoms
+  INTEGER :: n_O ! number of O atoms
+ 
   !==============
   !Initialization
   !==============
@@ -94,14 +97,18 @@ PROGRAM main_freeoh
   n_samples = sampling_number(nmo_start, nmo_end,ns)
   ALLOCATE(sampled_movie(n_samples))
   ALLOCATE(sampled_time(n_samples))
+  n_H = nat * 2/3
+  n_O = nat / 3
   ALLOCATE(atom_info(nat,n_samples))
+  ALLOCATE(H_info(n_H,n_samples))
+  ALLOCATE(O_info(n_O,n_samples))
 
 
   !=======================
   !read in trajectory file
   !=======================
   OPEN(10,file=trim(pos_filename))
-  CALL read_traj_3(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time)
+  CALL read_traj_3(10,nmo_start,nmo_end,ns,nat,n_samples,sampled_movie,sampled_time,boxsize, criterion)
   CLOSE(10)
   WRITE(6,*) 'End of trajectory reading.'
 
@@ -122,14 +129,10 @@ PROGRAM main_freeoh
 
   !To determine the indices of Oxygens' pairs that located in one of the interfaces.
   CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array1,indx_array2)
-  !Calculate c(t)
-  CALL ghbacf_interface_c_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
-                    n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
-                    nb_divz,thickness,surf_info)
   !Calculate nf(t)
   CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
-                    nb_divz,thickness,surf_info)
+                    nb_divz,thickness,surf_info,O_info,H_info)
   call system_clock(end_time,rat)
   WRITE(6, *)"elapsed time: ", real(end_time-begin_time)/real(rat) 
 
