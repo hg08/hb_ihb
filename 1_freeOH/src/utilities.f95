@@ -885,11 +885,11 @@
                          atom_info(m2,jj)%coord(3) /)
                   r21 = distance2(r1, r2, boxsize)
                   if ((r21 .lt. rooc)) THEN
-                     write(*,*) "m2=", m2
+                     !write(*,*) "m2=", m2
                      ! In the neighbor list of O1, add the total indices of O2.
                      O_info(k_O1,jj)%num_oxygen_neighbors = O_info(k_O1,jj)%num_oxygen_neighbors + 1 ! increase the number of O neighbors
                      tmp_index = O_info(k_O1,jj)%num_oxygen_neighbors
-                     write(*,*) "num_oxygen_neighbors for",k_O1,"-th O:", jj, "-th step", tmp_index
+                     !write(*,*) "num_oxygen_neighbors for",k_O1,"-th O:", jj, "-th step", tmp_index
                      O_info(k_O1,jj)%self_indices_oxygen_neighbors(tmp_index) = k_O2
                      O_info(k_O1,jj)%indices_oxygen_neighbors(tmp_index) = m2
                      O_info(k_O2, jj )%atom_id = m2 ! define total index of O2

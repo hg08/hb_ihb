@@ -86,7 +86,7 @@ do # Loop over sub-trajectories
 	done
 	
 	# b. Run Chandler
-	for d in {1..2}
+	for d in {1..6}
 	do 
 		inputFile=input_${system}_s${i}_${d}
 		./ifreeoh_sulpizi < $inputFile 
