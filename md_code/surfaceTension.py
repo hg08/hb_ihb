@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from tqdm import tqdm
 
 # Read the uploaded file
 file_path = sys.argv[1] if len(sys.argv) == 2 else 'log.lammps'
@@ -13,7 +14,7 @@ if not os.path.exists('output'):
     os.makedirs('output')
 
 time_step = 0.5 # fs
-dump_every = 1  # dump every 5 steps
+#dump_every = 1  # dump every 5 steps
 
 # Check the content of the file
 with open(file_path, 'r') as file:
@@ -43,6 +44,14 @@ for idx, line in enumerate(lines):
     if "MBX: A many-body" in line:
         simulationType = 'MB-pol'
         print('Simulation Type: {}'.format(simulationType))
+    if "thermo_freq" in line and "equal" in line:
+        thermo_every = int(line.split(' ')[-1])
+        thermo_every = thermo_every
+        print('Thermo every: {}'.format(thermo_every))
+    if "dump_freq" in line and "equal" in line:
+        dump_every = int(line.split(' ')[-1])
+        dump_every = dump_every   
+        print('Dump every: {}'.format(dump_every))
 
 # Ensure L_z was found
 if L_z is None:
@@ -120,9 +129,11 @@ def calculate_surface_tension(data_slice):
     
     return surface_tension_mN_per_m
 
+# --------------------------------
 # Apply sliding window calculation
+# --------------------------------
 window_time = 40 # ps
-window_size = int(window_time * 1000 / (time_step * dump_every))  
+window_size = int(window_time * 1000 / (time_step * thermo_every))  
 surface_tension_values = []
 steps = []
 jump = window_size
@@ -135,17 +146,20 @@ for i in range(0, len(data_df) - window_size + 1, jump):
 surface_tension_values = np.array(surface_tension_values)
 mean_surface_tension = surface_tension_values.mean()
 std_surface_tension = surface_tension_values.std()
-std_error = std_surface_tension / np.sqrt(len(surface_tension_values))
+n = len(surface_tension_values)
+std_error = std_surface_tension / np.sqrt(n)
 print('Mean Surface Tension: {:.2f} mN/m'.format(mean_surface_tension))
 print('Standard Deviation: {:.2f} mN/m'.format(std_surface_tension))
 print('Standard Error: {:.2f} mN/m'.format(std_error))
+print('Number of data points: {}'.format(n))
 # Save mean and std values to a text file using numpy
-np.savetxt('output/ST_mean_std_{}_{}.txt'.format(O_num, simulationType), np.array([[mean_surface_tension, std_surface_tension, std_error]]), fmt='%.2f')
+np.savetxt('output/ST_mean_std_{}_{}.txt'.format(O_num, simulationType), np.array([[mean_surface_tension, std_surface_tension, std_error, n]]), fmt='%.2f')
 
 times = np.array(steps) * time_step / 1e3 # Time in ps
 # Plotting the surface tension values as a function of step
 plt.figure(figsize=(14, 8))
 plt.plot(times, surface_tension_values, label='Surface Tension (mN/m)')
+np.savetxt('output/ST_Sliding_{}_{}.txt'.format(O_num, simulationType), np.array([times, surface_tension_values]).T, fmt='%.2f')
 plt.axhline(y=71.73, color='r', linestyle='--', label='Surface Tension Exp. 300 K: 71.73 mN/m')
 plt.xlabel('Time (ps)')
 plt.ylabel('Surface Tension (mN/m)')
@@ -156,16 +170,25 @@ plt.savefig('output/ST_Sliding_{}_{}.pdf'.format(O_num, simulationType))
 plt.savefig('output/ST_Sliding_{}_{}.png'.format(O_num, simulationType))
 #plt.show()
 
-# Calculate the mean value changes with time
+# --------------------------------
+# Calculate the acummulated mean 
+# value changes with time
+# --------------------------------
 surface_tension_values = []
-for i in range(0, len(data_df) - window_size + 1, jump):
+jump = 1
+steps = []
+for i in tqdm(range(0, len(data_df) - window_size + 1, jump)):
     window_slice = data_df.iloc[0:i + window_size] # From start to now
     surface_tension = calculate_surface_tension(window_slice)
     surface_tension_values.append(surface_tension)
+    steps.append(window_slice['Step'].iloc[-1])
 
+
+times = np.array(steps) * time_step / 1e3 # Time in ps
 # Plotting the surface tension values as a function of step
 plt.figure(figsize=(14, 8))
 plt.plot(times, surface_tension_values, label='Surface Tension (mN/m)')
+np.savetxt('output/ST_accumulated_{}_{}.txt'.format(O_num, simulationType), np.array([times, surface_tension_values]).T, fmt='%.2f')
 plt.axhline(y=71.73, color='r', linestyle='--', label='Surface Tension Exp. 300 K: 71.73 mN/m')
 plt.xlabel('Time (ps)')
 plt.ylabel('Surface Tension (mN/m)')

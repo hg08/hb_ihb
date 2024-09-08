@@ -1,1 +1,1 @@
-Surface tension calculated from simulation: 67.38 mN/m (Exp. ref. 300 K: 71.73 mN/m)
+Surface tension calculated from simulation: 64.86 mN/m (Exp. ref. 300 K: 71.73 mN/m)
