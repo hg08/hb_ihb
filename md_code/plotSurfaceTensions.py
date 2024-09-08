@@ -85,14 +85,13 @@ plt.savefig('ST_Sliding_Accumulated_{}.pdf'.format(simType))
 meanValues = np.zeros(numMolecules.shape)
 stdValues = np.zeros(numMolecules.shape)
 stdErrors = np.zeros(numMolecules.shape)
-confidence95 = 1.96  # Z-value for 95% confidence interval
 for idx, num in enumerate(numMolecules):
     sliding_filename = "output/ST_Sliding_{}_{}.txt".format(num, simType)
     sliding_data = np.loadtxt(sliding_filename)
     time_sliding, st_values_sliding = sliding_data[:, 0], sliding_data[:, 1]
     meanValues[idx] = np.mean(st_values_sliding)
     stdValues[idx] = np.std(st_values_sliding)
-    stdErrors[idx] = confidence95 * (stdValues[idx] / np.sqrt(len(st_values_sliding)))
+    stdErrors[idx] = stdValues[idx] / np.sqrt(len(st_values_sliding))
 
 confidence_interval = 2 * stdErrors
 cube_roots = np.cbrt(numMolecules)
