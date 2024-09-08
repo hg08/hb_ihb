@@ -80,6 +80,7 @@ fig.text(0.01, 0.5, 'Surface tension $\gamma$ (mN/m)', ha='center', va='center',
 plt.tight_layout()
 plt.subplots_adjust(hspace=0.1, wspace=0.1)  # Adjust space between plots
 plt.savefig('ST_Sliding_Accumulated_{}.png'.format(simType), dpi=300)
+plt.savefig('ST_Sliding_Accumulated_{}.pdf'.format(simType))
 
 meanValues = np.zeros(numMolecules.shape)
 stdValues = np.zeros(numMolecules.shape)
