@@ -67,14 +67,14 @@
       REAL(KIND=rk), PARAMETER :: nfb_min=0.5 ! condition for the existence of free OH for a  OH in water molecule
       REAL(KIND=rk) :: r13,cosphi,pm, cosphi_, pm_, norm_rr
       REAL(KIND=rk) :: r21,r31,r32,r23 ! For the second criterion of HB
-      REAL(KIND=rk) :: qj,tot_hb,delta_t,hb_per_frame,ave_h
+      REAL(KIND=rk) :: qj,delta_t,hb_per_frame,ave_h
       REAL(KIND=rk), DIMENSION(3) :: r1, r2, r3 ! pbc 
       REAL(KIND=rk) :: freeoh, tot_nfb, nfb_per_frame, ave_nf
-      INTEGER :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs
+      INTEGER :: m1,m2,m3,mt,nqj,n_bonded_pairs
       INTEGER :: nfreeoh, tot_nfreeoh, n_freeoh
       INTEGER :: idx_O1
       INTEGER :: idx_H
-      REAL(KIND=rk), allocatable,DIMENSION (:) :: h,hb,corr_h
+      !REAL(KIND=rk), allocatable,DIMENSION (:) :: h,hb,corr_h
       REAL(KIND=rk),ALLOCATABLE,DIMENSION (:) :: nf, nfb, corr_nf
       REAL(KIND=rk), allocatable,DIMENSION (:,:) :: x,y,z
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nfreeoh_exist
@@ -82,7 +82,7 @@
       !INTEGER, allocatable,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
       INTEGER, DIMENSION(4)   :: ndx_3_list
       REAL(KIND=rk)  :: scalar, sq, tmp 
-      LOGICAL,allocatable,DIMENSION (:)  :: hb_exist
+      !LOGICAL,allocatable,DIMENSION (:)  :: hb_exist
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: freeoh_exist
       INTEGER  :: nmo  ! nmo is not necessary, we set nmo = n_samples
       INTEGER :: nmo_effective, start_step, num_start_points
@@ -101,12 +101,12 @@
       !==============
       !Initialization
       !==============
-      ave_h =0.d0; scalar = 0.d0; sq = 0.d0;
+      scalar = 0.d0; sq = 0.d0;
       pm =0.d0; cosphi =0.d0
       r21 = 0.d0; r23 = 0.d0
       r31 = 0.d0; r13= 0.d0; r32 = 0.d0
       nfb_per_frame = 0.0; tot_nfb = 0.0
-      hb_per_frame = 0.d0; tot_hb = 0.d0
+      hb_per_frame = 0.d0
       r1 = 0.d0; r2 = 0.d0; r3 = 0.d0
       nmo = n_samples; nwat=0 
       ndx_3_list=0
@@ -143,8 +143,6 @@
       ALLOCATE(x(nat,nmo))
       ALLOCATE(y(nat,nmo))
       ALLOCATE(z(nat,nmo))
-      ALLOCATE(h(nmo))
-      ALLOCATE(hb(nwat))    ! Average H-bonded population 
       ALLOCATE(nf(nmo))
       !ALLOCATE(nhb_exist(nwat))
       allocate(nfreeoh_exist(n_H))
@@ -155,25 +153,17 @@
       ! and over all starting time points i
       ! with nf(i)=1.
       !====================================      
-      ALLOCATE(corr_h(nmo))
-      ALLOCATE(hb_exist(nmo))
+      !ALLOCATE(hb_exist(nmo))
       ALLOCATE(corr_nf(nmo))
       ALLOCATE(freeoh_exist(nmo))
       ! loop
-      corr_h(:)=0.d0      
       corr_nf(:)=0.d0 
       tot_nfb = 0
       tot_nfreeoh = 0
       nf(:) = 0
       nfb(:) = 0     
       nfreeoh_exist(:) = 0
-      tot_hb=0.d0
-      tot_nhb=0
       
-      hb(:)=0.d0
-      !nhb_exist(:)=0 
-
-
       !! Check the O H arrange order.
       !if (atom_info(1,1)%atom_name == "O" .and. atom_info(2,1)%atom_name == "O") then
       !  ! O O ... H H H H ...
