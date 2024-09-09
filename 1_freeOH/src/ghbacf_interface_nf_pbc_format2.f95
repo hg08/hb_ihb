@@ -1,5 +1,5 @@
       SUBROUTINE ghbacf_interface_nf_pbc_format2(boxsize,delta_t0, &
-          filename,pos_filename,list_filename,n_samples,nat,ns,&
+          filename,pos_filename,n_samples,nat,ns,&
           criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
           nb_divz,thickness,surf_info)
       !========================================================================
@@ -39,7 +39,7 @@
       INTEGER, PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       
       character(LEN=200), INTENT(INOUT) :: filename,pos_filename
-      character(LEN=200), INTENT(IN) :: list_filename
+      !character(LEN=200), INTENT(IN) :: list_filename
       INTEGER, INTENT(IN) :: criterion
       INTEGER, INTENT(IN) :: nat ! number of atoms
       INTEGER, INTENT(IN) :: ns
@@ -86,7 +86,6 @@
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: freeoh_exist
       INTEGER  :: nmo  ! nmo is not necessary, we set nmo = n_samples
       INTEGER :: nmo_effective, start_step, num_start_points
-      INTEGER :: nwat ! number of water molecules
       INTEGER :: n_H ! number of OH groups; or num of H atoms
       INTEGER :: n_O ! number of O atoms
       INTEGER :: i,j,k,jj, bond 
@@ -108,7 +107,7 @@
       nfb_per_frame = 0.0; tot_nfb = 0.0
       hb_per_frame = 0.d0
       r1 = 0.d0; r2 = 0.d0; r3 = 0.d0
-      nmo = n_samples; nwat=0 
+      nmo = n_samples
       ndx_3_list=0
       index_mol = 0
       index_mol1=0; index_mol2=0
@@ -122,20 +121,6 @@
       n_O = nat / 3
       allocate(nfb(n_H))
        
-      !To obtain the total number of water pairs
-      nwat=get_total_number_of_lines(list_filename)
-      !ALLOCATE(ndx_1(nwat))          
-      !ALLOCATE(ndx_2(nwat))          
-      !!============================
-      !!read data from the list file
-      !!============================
-      !OPEN(10,file=list_filename)     
-      !DO k=1,nwat
-      !    read(10,*)ndx_1(k),ndx_2(k)
-      !ENDDO  
-      !CLOSE(10)
-      !!============================
-
       delta_t=REAL(ns,rk)*delta_t0  ! unit: ps
       nmo_effective = nint(max_time_for_corr/delta_t) + 1
       start_step = nint((nmo_effective-1)/10.0) ! Start step of sliding window. Over-using rate is 1 - 1/5 = 4/5
@@ -144,7 +129,6 @@
       ALLOCATE(y(nat,nmo))
       ALLOCATE(z(nat,nmo))
       ALLOCATE(nf(nmo))
-      !ALLOCATE(nhb_exist(nwat))
       allocate(nfreeoh_exist(n_H))
       !====================================
       ! Calculate <nf(0)nf(t)>/<nf>  

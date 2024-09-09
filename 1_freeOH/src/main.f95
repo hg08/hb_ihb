@@ -127,7 +127,7 @@ PROGRAM main_freeoh
 
   CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array1,indx_array2)
   !Calculate nf(t)
-  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
+  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info,O_info,H_info)
   call system_clock(end_time,rat)
