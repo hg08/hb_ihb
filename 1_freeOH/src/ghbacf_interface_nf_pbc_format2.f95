@@ -25,9 +25,6 @@
       use module_ihb, ONLY: distance2, pm_adh, pm_ahd, & 
                        grid_index, atom_in_surf1, atom_in_surf2, &
                        str, nth
-                       !hydrogen_ndx_list,
-                       !pair_in_surf1, pair_in_surf2,&
-      !get_total_number_of_lines, &
       implicit none
       
       !==========
@@ -47,24 +44,24 @@
       TYPE(atom), DIMENSION(nat,n_samples), INTENT(IN) :: atom_info
       
       REAL(KIND=rk), INTENT(IN) :: thickness ! the thickness of the instantaneous interfaces
-      !REAL, PARAMETER :: whish_size=0.5 ! Angstrom
       INTEGER, INTENT(IN) :: nb_divx, nb_divy, nb_divz, n_grid 
       REAL(KIND=rk), INTENT(IN) :: divx, divy, divz
       REAL(KIND=rk),DIMENSION(2,n_grid,n_samples),INTENT(IN) :: surf_info
 
       !Local variables
       REAL(KIND=rk), PARAMETER :: rooc=12.25d0                 ! cutoff distance of rOO (3.5**2 )
-      REAL(KIND=rk), PARAMETER :: cosPhiC123=0.866             !  phiC= 50 (degree).
-      REAL(KIND=rk), PARAMETER :: cosPhiC132=-0.5            !  phiC132= 110 (degree).
-      REAL(KIND=rk), PARAMETER :: cosPhiC123_freeOH=0.643             !  phiC= 50 (degree).
-      REAL(KIND=rk), PARAMETER :: cosPhiC132_freeOH=-0.342            !  phiC132= 110 (degree).
+      !REAL(KIND=rk), PARAMETER :: cosPhiC123=0.866             !  phiC= 50 (degree).
+      !REAL(KIND=rk), PARAMETER :: cosPhiC132=-0.5            !  phiC132= 110 (degree).
+      !REAL(KIND=rk), PARAMETER :: cosPhiC123_freeOH=0.643             !  phiC= 50 (degree).
+      !REAL(KIND=rk), PARAMETER :: cosPhiC132_freeOH=-0.342            !  phiC132= 110 (degree).
       REAL(KIND=rk),PARAMETER :: h_min=0.5 ! condition for the existence of a h-bond for a step
       REAL(KIND=rk),PARAMETER :: max_time_for_corr = 12.0 ! Unit: ps.
       REAL(KIND=rk), PARAMETER :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk), PARAMETER :: nfb_min=0.5 ! condition for the existence of free OH for a  OH in water molecule
       REAL(KIND=rk) :: r13,cosphi,pm, cosphi_, pm_, norm_rr
       REAL(KIND=rk) :: r21,r31,r32,r23 ! For the second criterion of HB
-      REAL(KIND=rk) :: qj,delta_t,hb_per_frame,ave_h
+      REAL(KIND=rk) :: qj,delta_t
+      !,hb_per_frame
       REAL(KIND=rk), DIMENSION(3) :: r1, r2, r3 ! pbc 
       REAL(KIND=rk) :: freeoh, tot_nfb, nfb_per_frame, ave_nf
       INTEGER :: m1,m2,m3,mt,nqj,n_bonded_pairs
@@ -77,7 +74,7 @@
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nfreeoh_exist
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nf_exist
       !INTEGER, allocatable,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
-      INTEGER, DIMENSION(4)   :: ndx_3_list
+      !INTEGER, DIMENSION(4)   :: ndx_3_list
       REAL(KIND=rk)  :: scalar, sq, tmp 
       !LOGICAL,allocatable,DIMENSION (:)  :: hb_exist
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: freeoh_exist
@@ -102,10 +99,10 @@
       r21 = 0.d0; r23 = 0.d0
       r31 = 0.d0; r13= 0.d0; r32 = 0.d0
       nfb_per_frame = 0.0; tot_nfb = 0.0
-      hb_per_frame = 0.d0
+      !hb_per_frame = 0.d0
       r1 = 0.d0; r2 = 0.d0; r3 = 0.d0
       nmo = n_samples
-      ndx_3_list=0
+      !ndx_3_list=0
       index_mol = 0
       index_mol1=0; index_mol2=0
       condition1=.FALSE.
