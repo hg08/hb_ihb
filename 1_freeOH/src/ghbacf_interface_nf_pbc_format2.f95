@@ -14,7 +14,6 @@
       ! time step
       ! name of system
       ! name of trajectory
-      ! name of list
       ! nmo
       ! nat
       ! Hydrogen bond definition (1 or 2)
@@ -23,13 +22,12 @@
       !Modules
       USE atom_module, ONLY: atom
       USE water_molecule_types, ONLY: oxygen_atom, hydrogen_atom, O_info, H_info
-      use module_ihb, ONLY: get_total_number_of_lines, &
-                       hydrogen_ndx_list, &
-                       distance2, &
-                       pm_adh, pm_ahd, & 
-                       grid_index, pair_in_surf1, pair_in_surf2,&
-                       atom_in_surf1, atom_in_surf2, &
+      use module_ihb, ONLY: distance2, pm_adh, pm_ahd, & 
+                       grid_index, atom_in_surf1, atom_in_surf2, &
                        str, nth
+                       !hydrogen_ndx_list,
+                       !pair_in_surf1, pair_in_surf2,&
+      !get_total_number_of_lines, &
       implicit none
       
       !==========
@@ -39,7 +37,6 @@
       INTEGER, PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       
       character(LEN=200), INTENT(INOUT) :: filename,pos_filename
-      !character(LEN=200), INTENT(IN) :: list_filename
       INTEGER, INTENT(IN) :: criterion
       INTEGER, INTENT(IN) :: nat ! number of atoms
       INTEGER, INTENT(IN) :: ns
