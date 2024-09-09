@@ -83,6 +83,7 @@
       INTEGER :: i, j, k, jj, bond 
       INTEGER :: k_H, k_O, k_O1, k_O2
       CHARACTER(LEN=d_len) :: char_thickness ! for saving the thickness in the files' names
+      CHARACTER(LEN=d_len) :: char_criterion ! for saving the criterion of HB in the files' names
       INTEGER :: index_mol1, index_mol2
       INTEGER :: index_mol
       LOGICAL :: condition1, condition2
@@ -106,6 +107,7 @@
       norm_rr = 0.0 ! a temporary variable
       tmp = 0.0 ! a temporay variable 
       char_thickness = ''
+      char_criterion = ''
       start_step = 1
       nmo_effective = 0
       k_O = 0
@@ -324,23 +326,24 @@
       !C_freeOH(t) for the iterfacial freeOH   
       !======================================
       char_thickness = nth(str(nint(thickness)), d_len)
-      OPEN(10,file=trim(filename)//'_freeoh_acf_nf_' &
+      char_criterion = nth(str(criterion), d_len) ! criterion is an integer.
+      OPEN(10,file=trim(filename)//'_freeoh_acf_nf_'//char_criterion//"_" &
         //char_thickness//'.dat')
         DO i =1, nmo_effective
             WRITE(10,*) REAL(i-1, rk) * delta_t, corr_nf(i)
         ENDDO
         WRITE(6,*)'written in '//trim(filename)//&
-                  '_freeoh_acf_nf_'//char_thickness//'.dat'
+                  '_freeoh_acf_nf_'//char_criterion//"_"//char_thickness//'.dat'
       close(10)
      !===========
      ! Print <nf>      
      !===========      
-      OPEN(10,file=trim(filename)//'_freeoh_ave_nf_'//&
+      OPEN(10,file=trim(filename)//'_freeoh_ave_nf_'//char_criterion//"_"//&
         char_thickness//'.dat')
         WRITE(10,*) 'Ave. No. free OHs:', nfb_per_frame
         WRITE(10,*) '<nf>:', ave_nf
         WRITE(6,*)'written in '//trim(filename)//&
-                  '_freeoh_ave_nf_'//char_thickness//'.dat'
+                  '_freeoh_ave_nf_'//char_criterion//"_"//char_thickness//'.dat'
       close(10)
       deallocate (nf,corr_nf,nfb)
       END SUBROUTINE

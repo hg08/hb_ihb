@@ -54,30 +54,36 @@ do # Loop over sub-trajectories
         #end_frame=$(echo "scale=0; 1 + $start_frame + $subTrajTime / $dt" | bc -l)
         end_frame=$(echo "scale=0;  $start_frame + $subTrajTime / $dt" | bc -l)
         echo "Sub-trajectory $i end frame: $end_frame"
-	for d in {1..6}
+	for criterion in {1..2}
 	do 
-		inputFile=input_${system}_s${i}_${d}
-		cp input_template $inputFile
-		sed -i "s/SIZEX/${sizeX}/g" $inputFile
-		sed -i "s/SIZEY/${sizeY}/g" $inputFile
-		sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
-		sed -i "s/DTINPS/${dt}/g" $inputFile
-		sed -i "s/SYSTEM/${system}_s${i}/g" $inputFile
-		sed -i "s/WHOLETRAJ/${system}/g" $inputFile
-		sed -i "s/FRAMESTART/${start_frame}/g" $inputFile
-		sed -i "s/FRAMEEND/${end_frame}/g" $inputFile
-		sed -i "s/NUMATOM/${numAtom}/g" $inputFile
-		sed -i "s/SURFTRAJFILE/${surfTrajFile}/g" $inputFile
-		sed -i "s/THICKNESS/${d}/g" $inputFile
-	done
+	    for d in {1..6}
+	    do 
+	    	inputFile=input_${system}_s${i}_${d}_criterion${criterion}
+	    	cp input_template $inputFile
+	    	sed -i "s/SIZEX/${sizeX}/g" $inputFile
+	    	sed -i "s/SIZEY/${sizeY}/g" $inputFile
+	    	sed -i "s/SIZEZ/${sizeZ}/g" $inputFile
+	    	sed -i "s/DTINPS/${dt}/g" $inputFile
+	    	sed -i "s/SYSTEM/${system}_s${i}/g" $inputFile
+	    	sed -i "s/WHOLETRAJ/${system}/g" $inputFile
+	    	sed -i "s/FRAMESTART/${start_frame}/g" $inputFile
+	    	sed -i "s/FRAMEEND/${end_frame}/g" $inputFile
+	    	sed -i "s/NUMATOM/${numAtom}/g" $inputFile
+	    	sed -i "s/CRITERION/${criterion}/g" $inputFile
+	    	sed -i "s/SURFTRAJFILE/${surfTrajFile}/g" $inputFile
+	    	sed -i "s/THICKNESS/${d}/g" $inputFile
+	    done
+        done
 	
 	# b. Run ihb 
-	for d in {1..6} 
+	for criterion in {1..2}
 	do 
-		inputFile=input_${system}_s${i}_${d}
-		./main_interface_nf_format2 < $inputFile
-	done
-
+	    for d in {1..6} 
+	    do 
+	    	inputFile=input_${system}_s${i}_${d}_criterion${criterion}
+	    	./main_interface_nf_format2 < $inputFile
+	    done
+        done
 	# c. Clean up
 	mkdir -p output
 	mv ${system}_* output/
