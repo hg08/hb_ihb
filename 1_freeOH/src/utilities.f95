@@ -906,7 +906,7 @@
           !===================================
           Ohost: DO k_O1 = 1, n_O ! self index of O1
               idx_O1 = k_O1 * 3 - 2 ! The total index of O1
-              m1 = idx_O1 ! Indices of total index of the Host 
+              m1 = idx_O1 ! Indices of total index of the Host Oxygen atom (O1) 
               OH: DO bond = 1,2
                   idx_H = O_info(k_O1,1)%H_ids(bond) ! 1: the first time step
                   m3 = idx_H 
@@ -948,13 +948,12 @@
                               endif
                           elseif (criterion == 2) THEN
                               !Follow the second cirterion of HB.
+                              !-0.342 comes from cos(110 degree)
                               r31 = distance2(r1,r3,boxsize) 
                               r32 = distance2(r2,r3, boxsize) 
                               pm = pm_adh(r1,r2,r3,boxsize)
                               cosphi = pm/(sqrt(r31*r32))
 
-                              !Follow the scond criterion of HB.
-                              !-0.342 comes from cos(110 degree)
                               if (cosphi .gt. cosPhiC132_freeOH) THEN 
                                   is_free(k_O2) = .True.
                               endif

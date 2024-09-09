@@ -73,11 +73,11 @@
               !If the atom is in either surf1 or surf2
               IF (condition1) THEN
                   n1 = n1+1
-                  !! Now write out the data into a 2-D array: arr1.
+                  ! Now write out the data into a 2-D array: arr1.
                   arr1(jj,n1)=m ! Jie: There should be two arrays, one for surf1, the other for surf2
               ELSE IF (condition2) THEN
                   n2 = n2+1
-                  !! Now write out the data into a 2-D array: arr2.
+                  ! Now write out the data into a 2-D array: arr2.
                   arr2(jj,n2)=m 
               ENDIF
             ENDIF

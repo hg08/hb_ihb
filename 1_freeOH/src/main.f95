@@ -125,7 +125,6 @@ PROGRAM main_freeoh
   CALL molecules_in_interface(n_samples,nat,indx_array1,indx_array2,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info)
 
-  !To determine the indices of Oxygens' pairs that located in one of the interfaces.
   CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array1,indx_array2)
   !Calculate nf(t)
   CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
