@@ -764,9 +764,9 @@
       IMPLICIT NONE
 
       REAL,PARAMETER :: rooc=12.25 ! cutoff distance of rOO (3.5**2 )
-      REAL,PARAMETER :: cosPhiC123=0.866 ! 1.732/2; phiC=pi/6.
+      !REAL,PARAMETER :: cosPhiC123=0.866 ! 1.732/2; phiC=pi/6.
       REAL,PARAMETER :: cosPhiC123_freeOH= 0.6428 !  phiC= 50 degree. (Ref. J. Chem. Theory Comput. 2018, 14, 357−364)
-      REAL,PARAMETER :: cosPhiC132=-0.5 ! -1./2; phiC132=2pi/3.
+      !REAL,PARAMETER :: cosPhiC132=-0.5 ! -1./2; phiC132=2pi/3.
       REAL,PARAMETER :: cosPhiC132_freeOH = -0.342 ! ; phiC132= 110. (Ref. Tang, J. Chem. Theory Comput. 2018, 14, 357−364)
       INTEGER, PARAMETER :: rk=8
       REAL(KIND=rk) :: distance2, pm_adh, pm_ahd
@@ -798,7 +798,6 @@
       INTEGER :: idx_O1 ! The self index of O1 in all O atoms
       INTEGER :: idx_H ! The self Index of H in all H atoms
 
-      !TYPE(atom),DIMENSION(nat,n_samples),INTENT(INOUT) :: atom_info
       INTEGER,DIMENSION(n_samples) :: sampled_movie
       REAL(kind=rk),DIMENSION(n_samples) :: sampled_time
       INTEGER :: y
