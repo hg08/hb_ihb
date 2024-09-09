@@ -3,7 +3,10 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-#ST_mean_std_343_MB-pol.txt
+# ----------------------------
+# Plot the surface tension values
+# with standard error bars
+# ----------------------------
 simType = 'MB-pol' if len(sys.argv) < 2 else sys.argv[1]
 label = 'TIP4P/2005' if simType == 'TIP4P2005' else simType
 numMolecules = np.array([125, 216, 343, 512, 729, 1000])
@@ -41,9 +44,13 @@ plt.savefig('ST_{}.png'.format(simType), dpi=300)
 plt.savefig('ST_{}.pdf'.format(simType))
 #plt.show()
 
+
+# ----------------------------
+# Plot the surface tension values
+# with sliding and accumulated averages
+# ----------------------------
 plt.rcParams.update({'font.size': fontSize})
 fig, axes = plt.subplots(3, 2, figsize=(3 * scale, 1.5 * scale), sharex=True)
-
 # Flatten the 2D axes array for easier iteration
 axes = axes.flatten()
 
@@ -82,6 +89,53 @@ plt.subplots_adjust(hspace=0.1, wspace=0.1)  # Adjust space between plots
 plt.savefig('ST_Sliding_Accumulated_{}.png'.format(simType), dpi=300)
 plt.savefig('ST_Sliding_Accumulated_{}.pdf'.format(simType))
 
+if simType == 'MB-pol':
+    # ----------------------------
+    # Plot the surface tension values
+    # ----------------------------
+    plt.rcParams.update({'font.size': fontSize})
+    fig, axes = plt.subplots(3, 1, figsize=(1.7 * scale, 1.5 * scale), sharex=True)
+    # Flatten the 2D axes array for easier iteration
+    axes = axes.flatten()
+    for idx, (num, ax) in enumerate(zip((125, 216, 512), axes)): # Only plot for 125, 216, and 512 molecules
+        # Plot sliding values
+        sliding_filename = "output/ST_Sliding_{}_{}.txt".format(num, simType)
+        sliding_data = np.loadtxt(sliding_filename)
+        time_sliding, st_values_sliding = sliding_data[:, 0], sliding_data[:, 1]
+        ax.plot(time_sliding, st_values_sliding, linewidth=1, label='Sliding Average', color='black', marker='o', markersize=2.5)
+    
+        # Plot accumulated values
+        accumulated_filename = "output/ST_accumulated_{}_{}.txt".format(num, simType)
+        accumulated_data = np.loadtxt(accumulated_filename)
+        time_accumulated, accumulated_st = accumulated_data[:, 0], accumulated_data[:, 1]
+        ax.plot(time_accumulated, accumulated_st, label='Accumulated Average', color='#57b796')
+    
+        # Horizontal line for experiment
+        ax.axhline(y=71.70, linestyle='--', color='grey')
+        # Add label in the top right corner
+        ax.text(0.95, 0.95, 'N={}'.format(num), transform=ax.transAxes,
+                fontsize=fontSize, verticalalignment='top', horizontalalignment='right')
+    
+        # Formatting each subplot
+        ax.set_ylim(40, 100)
+        ax.set_xlim(0, 4000) if simType == 'TIP4P2005' else ax.set_xlim(0, 800)
+        ax.tick_params(direction="in", axis='both', which='both', top=True, right=True)
+        ax.legend(frameon=False, ncol=1, loc='upper left')
+        if idx in [2]:
+            ax.set_xlabel('Time (ps)')
+    
+    # Shared labels for x and y axis
+    fig.text(0.015, 0.5, 'Surface tension $\gamma$ (mN/m)', ha='center', va='center', rotation='vertical')
+    
+    plt.tight_layout()
+    plt.subplots_adjust(hspace=0.1)  # Adjust space between plots
+    plt.savefig('ST_Sliding_Accumulated_{}_.png'.format(simType), dpi=300)
+    plt.savefig('ST_Sliding_Accumulated_{}_.pdf'.format(simType))
+
+# ----------------------------
+# Plot the surface tension values 
+# with 95% confidence interval
+# ----------------------------
 meanValues = np.zeros(numMolecules.shape)
 stdValues = np.zeros(numMolecules.shape)
 stdErrors = np.zeros(numMolecules.shape)
@@ -119,44 +173,3 @@ plt.savefig('ST95_{}.png'.format(simType), dpi=300)
 plt.savefig('ST95_{}.pdf'.format(simType))
 plt.show()
 
-'''
-# ST_Sliding_1000_TIP4P2005.txt
-plt.rcParams.update({'font.size': fontSize})
-plt.figure(figsize=(1.05*scale, 1*scale))
-plt.axhline(y=71.70, linestyle='--', color='grey', label='Experiment')
-for idx, num in enumerate(numMolecules):
-    filename = "output/ST_Sliding_{}_{}.txt".format(num, simType)
-    data = np.loadtxt(filename)
-    time, st_values = data[:, 0], data[:, 1]
-    plt.plot(time, st_values, label=num)
-
-plt.xlabel('Time (ps)')
-plt.ylabel('Surface tension $\gamma$ (mN/m)')
-plt.tick_params(direction="in", axis='both', which='both', top=True, right=True)
-
-plt.ylim(40, 100)
-plt.legend(frameon=False, ncol=2, loc='upper left')
-plt.tight_layout()
-#plt.savefig('ST_Sliding_{}.png'.format(simType), dpi=300)
-#plt.savefig('ST_Sliding_{}.pdf'.format(simType))
-#plt.show()
-
-# Accumulated surface tension
-plt.rcParams.update({'font.size': fontSize})
-plt.figure(figsize=(1.05*scale, 1*scale))
-plt.axhline(y=71.70, linestyle='--', color='grey', label='Experiment')
-for idx, num in enumerate(numMolecules):
-    filename = "output/ST_accumulated_{}_{}.txt".format(num, simType)
-    data = np.loadtxt(filename)
-    time, accumulated_st = data[:, 0], data[:, 1]
-    plt.plot(time, accumulated_st, label=num)
-plt.xlabel('Time (ps)')
-plt.ylabel('Accumulated surface tension $\gamma$ (mN/m)')
-plt.tick_params(direction="in", axis='both', which='both', top=True, right=True)
-plt.ylim(40, 100)
-plt.legend(frameon=False, ncol=2, loc='upper left')
-plt.tight_layout()
-#plt.savefig('ST_accumulated_{}.png'.format(simType), dpi=300)
-#plt.savefig('ST_accumulated_{}.pdf'.format(simType))
-plt.show()
-'''
