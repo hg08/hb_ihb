@@ -1,5 +1,5 @@
       SUBROUTINE ghbacf_interface_nf_pbc_format2(boxsize,delta_t0, &
-          filename,pos_filename,list_filename,n_samples,nat,ns,&
+          filename,pos_filename,n_samples,nat,ns,&
           criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
           nb_divz,thickness,surf_info)
       !========================================================================
@@ -14,7 +14,6 @@
       ! time step
       ! name of system
       ! name of trajectory
-      ! name of list
       ! nmo
       ! nat
       ! Hydrogen bond definition (1 or 2)
@@ -23,13 +22,7 @@
       !Modules
       USE atom_module, ONLY: atom
       USE water_molecule_types, ONLY: oxygen_atom, hydrogen_atom, O_info, H_info
-      use module_ihb, ONLY: get_total_number_of_lines, &
-                       hydrogen_ndx_list, &
-                       distance2, &
-                       pm_adh, pm_ahd, & 
-                       grid_index, pair_in_surf1, pair_in_surf2,&
-                       atom_in_surf1, atom_in_surf2, &
-                       str, nth
+      use module_ihb, ONLY: distance2, grid_index, atom_in_surf1, atom_in_surf2, str, nth
       implicit none
       
       !==========
@@ -39,103 +32,61 @@
       INTEGER, PARAMETER :: d_len=1 ! for storing the length of the character which represents the thickness of the interface
       
       character(LEN=200), INTENT(INOUT) :: filename,pos_filename
-      character(LEN=200), INTENT(IN) :: list_filename
       INTEGER, INTENT(IN) :: criterion
       INTEGER, INTENT(IN) :: nat ! number of atoms
       INTEGER, INTENT(IN) :: ns
       INTEGER, INTENT(IN) :: n_samples  !n_samples = INT(nmo/ns)
       REAL(KIND=rk), DIMENSION(3), INTENT(IN) :: boxsize
       REAL(KIND=rk),INTENT(IN) :: delta_t0
-
       TYPE(atom), DIMENSION(nat,n_samples), INTENT(IN) :: atom_info
-      
       REAL(KIND=rk), INTENT(IN) :: thickness ! the thickness of the instantaneous interfaces
-      !REAL, PARAMETER :: whish_size=0.5 ! Angstrom
       INTEGER, INTENT(IN) :: nb_divx, nb_divy, nb_divz, n_grid 
       REAL(KIND=rk), INTENT(IN) :: divx, divy, divz
       REAL(KIND=rk),DIMENSION(2,n_grid,n_samples),INTENT(IN) :: surf_info
 
       !Local variables
-      REAL(KIND=rk), PARAMETER :: rooc=12.25d0                 ! cutoff distance of rOO (3.5**2 )
-      REAL(KIND=rk), PARAMETER :: cosPhiC123=0.866             !  phiC= 50 (degree).
-      REAL(KIND=rk), PARAMETER :: cosPhiC132=-0.5            !  phiC132= 110 (degree).
-      REAL(KIND=rk), PARAMETER :: cosPhiC123_freeOH=0.643             !  phiC= 50 (degree).
-      REAL(KIND=rk), PARAMETER :: cosPhiC132_freeOH=-0.342            !  phiC132= 110 (degree).
-      REAL(KIND=rk),PARAMETER :: h_min=0.5 ! condition for the existence of a h-bond for a step
       REAL(KIND=rk),PARAMETER :: max_time_for_corr = 12.0 ! Unit: ps.
-      REAL(KIND=rk), PARAMETER :: hb_min=0.5 ! condition for the existence of h-bond for a pair of water molecules
       REAL(KIND=rk), PARAMETER :: nfb_min=0.5 ! condition for the existence of free OH for a  OH in water molecule
-      REAL(KIND=rk) :: r13,cosphi,pm, cosphi_, pm_, norm_rr
-      REAL(KIND=rk) :: r21,r31,r32,r23 ! For the second criterion of HB
-      REAL(KIND=rk) :: qj,tot_hb,delta_t,hb_per_frame,ave_h
-      REAL(KIND=rk), DIMENSION(3) :: r1, r2, r3 ! pbc 
+      REAL(KIND=rk) :: norm_rr
+      REAL(KIND=rk) :: delta_t
       REAL(KIND=rk) :: freeoh, tot_nfb, nfb_per_frame, ave_nf
-      INTEGER :: m1,m2,m3,mt,nqj,tot_nhb,n_bonded_pairs
+      INTEGER :: m1,m2,m3,mt
       INTEGER :: nfreeoh, tot_nfreeoh, n_freeoh
       INTEGER :: idx_O1
       INTEGER :: idx_H
-      REAL(KIND=rk), allocatable,DIMENSION (:) :: h,hb,corr_h
       REAL(KIND=rk),ALLOCATABLE,DIMENSION (:) :: nf, nfb, corr_nf
       REAL(KIND=rk), allocatable,DIMENSION (:,:) :: x,y,z
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nfreeoh_exist
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nf_exist
-      INTEGER, allocatable,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
-      INTEGER, DIMENSION(4)   :: ndx_3_list
-      REAL(KIND=rk)  :: scalar, sq, tmp 
-      LOGICAL,allocatable,DIMENSION (:)  :: hb_exist
+      REAL(KIND=rk)  :: scalar, tmp 
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: freeoh_exist
       INTEGER  :: nmo  ! nmo is not necessary, we set nmo = n_samples
       INTEGER :: nmo_effective, start_step, num_start_points
-      INTEGER :: nwat ! number of water molecules
       INTEGER :: n_H ! number of OH groups; or num of H atoms
       INTEGER :: n_O ! number of O atoms
       INTEGER :: i,j,k,jj, bond 
       INTEGER :: k_H, k_O, k_O1, k_O2
       CHARACTER(LEN=d_len) :: char_thickness ! for saving the thickness in the files' names
       INTEGER :: index_mol
-      INTEGER :: index_mol1, index_mol2
       LOGICAL :: condition1, condition2
-      INTEGER :: order_type
       INTEGER :: tmp_index
-      INTEGER :: num_limit ! Temperary varible, represents the largest number of an O atoms' neighbors.
+
       !==============
       !Initialization
       !==============
-      ave_h =0.d0; scalar = 0.d0; sq = 0.d0;
-      pm =0.d0; cosphi =0.d0
-      r21 = 0.d0; r23 = 0.d0
-      r31 = 0.d0; r13= 0.d0; r32 = 0.d0
+      scalar = 0.0
       nfb_per_frame = 0.0; tot_nfb = 0.0
-      hb_per_frame = 0.d0; tot_hb = 0.d0
-      r1 = 0.d0; r2 = 0.d0; r3 = 0.d0
-      nmo = n_samples; nwat=0 
-      ndx_3_list=0
+      nmo = n_samples
       index_mol = 0
-      index_mol1=0; index_mol2=0
       condition1=.FALSE.
       condition2=.FALSE.
       nmo_effective = 0
       start_step = 1
-      order_type = 0
 
       n_H = nat * 2/3
       n_O = nat / 3
       allocate(nfb(n_H))
        
-      !To obtain the total number of water pairs
-      nwat=get_total_number_of_lines(list_filename)
-      ALLOCATE(ndx_1(nwat))          
-      ALLOCATE(ndx_2(nwat))          
-      !============================
-      !read data from the list file
-      !============================
-      OPEN(10,file=list_filename)     
-      DO k=1,nwat
-          read(10,*)ndx_1(k),ndx_2(k)
-      ENDDO  
-      CLOSE(10)
-      !============================
-
       delta_t=REAL(ns,rk)*delta_t0  ! unit: ps
       nmo_effective = nint(max_time_for_corr/delta_t) + 1
       start_step = nint((nmo_effective-1)/10.0) ! Start step of sliding window. Over-using rate is 1 - 1/5 = 4/5
@@ -143,11 +94,7 @@
       ALLOCATE(x(nat,nmo))
       ALLOCATE(y(nat,nmo))
       ALLOCATE(z(nat,nmo))
-      ALLOCATE(h(nmo))
-      ALLOCATE(hb(nwat))    ! Average H-bonded population 
-      ALLOCATE(nf(nmo))
-      ALLOCATE(nhb_exist(nwat))
-      allocate(nfreeoh_exist(n_H))
+
       !====================================
       ! Calculate <nf(0)nf(t)>/<nf>  
       ! Notice here <> is average over
@@ -155,35 +102,17 @@
       ! and over all starting time points i
       ! with nf(i)=1.
       !====================================      
-      ALLOCATE(corr_h(nmo))
-      ALLOCATE(hb_exist(nmo))
+      ALLOCATE(nf(nmo))
+      allocate(nfreeoh_exist(n_H))
       ALLOCATE(corr_nf(nmo))
       ALLOCATE(freeoh_exist(nmo))
-      ! loop
-      corr_h(:)=0.d0      
-      corr_nf(:)=0.d0 
+      corr_nf(:)=0.0 
       tot_nfb = 0
       tot_nfreeoh = 0
       nf(:) = 0
       nfb(:) = 0     
       nfreeoh_exist(:) = 0
-      tot_hb=0.d0
-      tot_nhb=0
       
-      hb(:)=0.d0
-      nhb_exist(:)=0 
-
-
-      !! Check the O H arrange order.
-      !if (atom_info(1,1)%atom_name == "O" .and. atom_info(2,1)%atom_name == "O") then
-      !  ! O O ... H H H H ...
-      !  order_type = 1
-      !else
-      !  ! O H H O H H ...
-      !  order_type = 0
-      !endif
-
-
       ! Calculate the correlation function
       OLOOP: DO k_O1 = 1, n_O ! Indices of self-indices of Host O
         freeoh = 0

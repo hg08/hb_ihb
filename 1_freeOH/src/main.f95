@@ -26,7 +26,6 @@ PROGRAM main_freeoh
   INTEGER, ALLOCATABLE, DIMENSION(:) :: sampled_movie
   REAL(KIND=rk), ALLOCATABLE, DIMENSION(:) :: sampled_time
   ! For griding
-  !REAL(KIND=rk), PARAMETER :: whish_size=0.5d0! Angstrom
   INTEGER :: nb_divx, nb_divy, nb_divz, n_grid, i_grid
   REAL(KIND=rk) :: divx, divy, divz
 
@@ -41,7 +40,6 @@ PROGRAM main_freeoh
   CHARACTER(LEN=2) :: guest_atom
   CHARACTER(LEN=2) :: host_atom
   INTEGER :: i, iatom, imovie, i_sample
-  !To save the indices of the molecules for generating list file, we define an array for each time point (jj, in this code)
   INTEGER, ALLOCATABLE, DIMENSION(:,:) :: indx_array1, indx_array2
   CHARACTER(LEN=200) :: list_oxygen_pairs
   INTEGER :: nat ! number of atoms
@@ -127,10 +125,9 @@ PROGRAM main_freeoh
   CALL molecules_in_interface(n_samples,nat,indx_array1,indx_array2,atom_info,&
      n_grid,divx,divy,divz,nb_divx,nb_divy,nb_divz,thickness,surf_info)
 
-  !To determine the indices of Oxygens' pairs that located in one of the interfaces.
   CALL ghbond_interface(filename,list_oxygen_pairs,n_samples,nat,indx_array1,indx_array2)
   !Calculate nf(t)
-  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename,list_oxygen_pairs, &
+  CALL ghbacf_interface_nf_pbc_format2(boxsize,delta_t0,filename,pos_filename, &
                     n_samples,nat,ns,criterion,atom_info,n_grid,divx,divy,divz,nb_divx,nb_divy,&
                     nb_divz,thickness,surf_info,O_info,H_info)
   call system_clock(end_time,rat)
