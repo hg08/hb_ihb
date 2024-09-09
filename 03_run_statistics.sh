@@ -100,38 +100,41 @@ sed -i "s/0.000000/        /g" $mean_c_at_ref
 # END--Statistics for 2_case2
     
 # Statistics for 2_freeOH
-files2=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_layers_nf_at_ref.dat"
-numSubTraj=$numSubTrajCase2
-for (( i=0; i<numSubTraj; i++ ))
-do 
-	subTraj=${system}_s${i}
-	files2+=("3_analyze/output/${subTraj}_2_freeOH_layers_nf_at_ref.dat")
-done
-mean_nf_at_ref=3_analyze/output/${system}_2_freeOH_layers_nf_at_ref.dat
-rm -rf $mean_nf_at_ref
-awk '
-    # For each line in each file
-    {
-    	if (FNR > maxFNR) {
-    	    maxFNR = FNR;
-    	}
-    	ndex[FNR] = $1;
-            count[FNR]++
-            sum[FNR] += $2
-            sumsq[FNR] += ($2*$2)
-    }
-    # After processing all files
-    END {
-        for (i = 1; i <= FNR; i++){
-        mean = sum[i] / count[i]
-        stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
-        std_err = stddev/ sqrt(count[i])
-        printf ("%s %f %f\n", ndex[i], mean, std_err)
-    
+for criterion in {1..2}
+do
+    files2=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_layers_nf_at_ref.dat"
+    numSubTraj=$numSubTrajCase2
+    for (( i=0; i<numSubTraj; i++ ))
+    do 
+    	subTraj=${system}_s${i}
+    	files2+=("3_analyze/output/${subTraj}_2_freeOH_layers_nf_criterion${criterion}_at_ref.dat")
+    done
+    mean_nf_at_ref=3_analyze/output/${system}_2_freeOH_layers_nf_criterion${criterion}_at_ref.dat
+    rm -rf $mean_nf_at_ref
+    awk '
+        # For each line in each file
+        {
+        	if (FNR > maxFNR) {
+        	    maxFNR = FNR;
+        	}
+        	ndex[FNR] = $1;
+                count[FNR]++
+                sum[FNR] += $2
+                sumsq[FNR] += ($2*$2)
         }
-    } '  "${files2[@]}" > $mean_nf_at_ref
-    
-sed -i "s/0.000000/        /g" $mean_nf_at_ref
+        # After processing all files
+        END {
+            for (i = 1; i <= FNR; i++){
+            mean = sum[i] / count[i]
+            stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+            std_err = stddev/ sqrt(count[i])
+            printf ("%s %f %f\n", ndex[i], mean, std_err)
+        
+            }
+        } '  "${files2[@]}" > $mean_nf_at_ref
+        
+    sed -i "s/0.000000/        /g" $mean_nf_at_ref
+done
 # END--Statistics for 2_freeOH
 
 # --- Fig. 3. 3_statistics-C(t)
@@ -213,8 +216,9 @@ do
 
 done
 
-scenario=2_freeOH
-numSubTraj=$numSubTrajCase2
+#
+scenario=1_freeOH
+numSubTraj=$numSubTrajCase1
 for d in {1..6} 
 do 
 	files=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_**_nf_*.dat"
@@ -249,7 +253,48 @@ do
 
             }
     	} '  "${files[@]}" > $mean_nf_t
+done
 
+#
+scenario=2_freeOH
+numSubTraj=$numSubTrajCase2
+for criterion in {1..2} 
+do 
+    for d in {1..6} 
+    do 
+    	files=() # Initialize an empty array, for saving "output/${subTraj}_${scenario}_**_nf_*.dat"
+    	for (( i=0; i<numSubTraj; i++ ))
+    	do
+           		subTraj=${system}_s${i}
+           		files+=(${scenario}/output/${subTraj}_freeoh_acf_nf_${criterion}_${d}.dat)
+    	done
+           	# The symbol * is used to match 1.dat and 1.0.dat 
+        	mean_nf_t=3_analyze/output/${system}_${scenario}_nf_t_${criterion}_${d}.dat
+    
+    	rm -rf $mean_nf_t
+        	awk '
+            # For each line in each file
+            {
+                    if (FNR > maxFNR) {
+                        maxFNR = FNR;
+                    }
+                    ndex[FNR] = $1;
+                    count[FNR]++
+                    sum[FNR] += $2
+                    sumsq[FNR] += ($2*$2)
+            }
+    
+            # After processing all files
+            END {
+                for (i = 1; i <= FNR; i++){
+                mean = sum[i] / count[i]
+                stddev = sqrt(sumsq[i]/count[i] - (mean * mean))
+                std_err = stddev/ sqrt(count[i])
+                printf ("%s %f %f\n", ndex[i], mean, std_err)
+    
+                }
+        	} '  "${files[@]}" > $mean_nf_t
+    done
 done
 # END--3_statistics-C(t)
 
