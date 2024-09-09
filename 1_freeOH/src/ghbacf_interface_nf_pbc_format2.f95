@@ -79,7 +79,7 @@
       REAL(KIND=rk), allocatable,DIMENSION (:,:) :: x,y,z
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nfreeoh_exist
       INTEGER,ALLOCATABLE,DIMENSION(:) :: nf_exist
-      INTEGER, allocatable,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
+      !INTEGER, allocatable,DIMENSION(:) :: ndx_1,ndx_2,nhb_exist
       INTEGER, DIMENSION(4)   :: ndx_3_list
       REAL(KIND=rk)  :: scalar, sq, tmp 
       LOGICAL,allocatable,DIMENSION (:)  :: hb_exist
@@ -124,17 +124,17 @@
        
       !To obtain the total number of water pairs
       nwat=get_total_number_of_lines(list_filename)
-      ALLOCATE(ndx_1(nwat))          
-      ALLOCATE(ndx_2(nwat))          
-      !============================
-      !read data from the list file
-      !============================
-      OPEN(10,file=list_filename)     
-      DO k=1,nwat
-          read(10,*)ndx_1(k),ndx_2(k)
-      ENDDO  
-      CLOSE(10)
-      !============================
+      !ALLOCATE(ndx_1(nwat))          
+      !ALLOCATE(ndx_2(nwat))          
+      !!============================
+      !!read data from the list file
+      !!============================
+      !OPEN(10,file=list_filename)     
+      !DO k=1,nwat
+      !    read(10,*)ndx_1(k),ndx_2(k)
+      !ENDDO  
+      !CLOSE(10)
+      !!============================
 
       delta_t=REAL(ns,rk)*delta_t0  ! unit: ps
       nmo_effective = nint(max_time_for_corr/delta_t) + 1
@@ -146,7 +146,7 @@
       ALLOCATE(h(nmo))
       ALLOCATE(hb(nwat))    ! Average H-bonded population 
       ALLOCATE(nf(nmo))
-      ALLOCATE(nhb_exist(nwat))
+      !ALLOCATE(nhb_exist(nwat))
       allocate(nfreeoh_exist(n_H))
       !====================================
       ! Calculate <nf(0)nf(t)>/<nf>  
@@ -171,7 +171,7 @@
       tot_nhb=0
       
       hb(:)=0.d0
-      nhb_exist(:)=0 
+      !nhb_exist(:)=0 
 
 
       !! Check the O H arrange order.
