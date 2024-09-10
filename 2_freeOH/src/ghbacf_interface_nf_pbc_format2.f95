@@ -75,9 +75,8 @@
       REAL(KIND=rk) :: scalar, tmp 
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: freeoh_exist
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: is_free
-      INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we DO not want to change too much
+      INTEGER :: nmo ! nmo is the total number of steps,  nmo = n_samples
       INTEGER :: nmo_effective, start_step, num_start_points 
-      INTEGER :: nwat ! number of water molecules
       INTEGER :: n_H ! number of OH groups; or num of H atoms
       INTEGER :: n_O ! number of O atoms
       INTEGER :: i, j, k, jj, bond 
@@ -98,7 +97,7 @@
       r31 = 0.0; r13 = 0.0; r32 = 0.0
       nfb_per_frame = 0.0; tot_nfb = 0.0
       r1 = 0.0; r2 = 0.0; r3 = 0.0
-      nmo = n_samples; nwat = 0 
+      nmo = 0 
       ndx_3_list = 0
       index_mol = 0
       index_mol1 = 0; index_mol2 = 0
@@ -117,9 +116,8 @@
       !To obtain the total number of water pairs
       n_H = nat * 2/3 
       n_O = nat / 3
+      nmo = n_samples 
       allocate(nfb(n_H))          
-      close(10)
-      !============================
 
       delta_t = ns * delta_t0 ! unit: ps
       nmo_effective = nint(max_time_for_corr/delta_t) + 1 
