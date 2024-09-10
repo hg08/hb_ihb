@@ -354,6 +354,7 @@ do
 done
 echo "output_cHB = 'cHB_${system}.eps'" >> ${orientation_info_txt}
 echo "output_cHB_loglog = 'cHB_loglog_${system}.eps'" >> ${orientation_info_txt}
+echo "output_nfacf = 'nf_${system}.eps'" >> ${orientation_info_txt}
 echo "output_nf_loglog = 'nf_loglog_${system}.eps'" >> ${orientation_info_txt}
 # For cHB_at_ref
 echo "input_case1_cHB_ref = '../3_analyze/output/${system}_1_case1_layers_c_at_ref.dat'" >> ${orientation_info_txt}

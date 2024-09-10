@@ -25,7 +25,7 @@ xmin=0.95
 xmax=6.05
 
 set xrange [xmin : xmax]
-set yrange [0 : 0.4]
+set yrange [0 : 0.6]
 set xtics 1 
 #set mxtics 2
 set ytics 0.10 
