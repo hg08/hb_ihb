@@ -217,7 +217,7 @@ do
     	for d in {1..6} 
     	do 
     		# The symbol * is used to match 1.dat and 1.0.dat 
-    		ln -s ../${scenario}/output/${subTraj}_freeoh_acf_nf_${criterion}_${d}.dat nf_${criterion}_${d}.dat; 
+    		ln -s ../${scenario}/output/${subTraj}_freeoh_acf_nf_${criterion}_${d}.dat nf_criterion${criterion}_${d}.dat; 
     	done
     	
     	# Extract nf(t_f) from files `nf_${i}.dat`, where t_f = 0, 1, 2,... ps.
@@ -225,7 +225,7 @@ do
     	rowNum=25 # TO BE UPDATED
     	for d in {1..6} 
     	do 
-    		awk -v rowNum=$rowNum "NR%rowNum==1{print}" nf_${criterion}_${d}.dat > output/nf_${criterion}_${d}_at_ref.dat; 
+    		awk -v rowNum=$rowNum "NR%rowNum==1{print}" nf_criterion${criterion}_${d}.dat > output/nf_criterion${criterion}_${d}_at_ref.dat; 
     	done
     	
     	# Combine values of special ref. time (1, 2, 5, 10) for all layers.
@@ -234,7 +234,7 @@ do
     	touch layers_nf_at_ref_temp.dat 
     	for d in {1..6}
     	do  
-    		awk 'NR==2 || NR==3 || NR==6 || NR==11{print}' nf_${criterion}_${d}_at_ref.dat > ${criterion}_${d}_at_ref.dat
+    		awk 'NR==2 || NR==3 || NR==6 || NR==11{print}' nf_criterion${criterion}_${d}_at_ref.dat > ${criterion}_${d}_at_ref.dat
     		cat layers_nf_at_ref_temp.dat ${criterion}_${d}_at_ref.dat > tmp
     		mv tmp layers_nf_at_ref_temp.dat
     		rm ${criterion}_${d}_at_ref.dat
@@ -349,6 +349,7 @@ do
     do 
         echo "input_case2_nf_${criterion}_${d} = '../3_analyze/output/${system}_2_freeOH_nf_t_${criterion}_${d}.dat'" >> ${orientation_info_txt}
         echo "input_case2_nf_${criterion}_${d} = '../3_analyze/output/${system}_2_freeOH_nf_t_${criterion}_${d}.dat'" >> ${orientation_info_txt}
+        echo "input_case2_nf_criterion${criterion}_ref = '../3_analyze/output/${system}_2_freeOH_layers_nf_criterion${criterion}_at_ref.dat'" >> ${orientation_info_txt}
     done
 done
 echo "output_cHB = 'cHB_${system}.eps'" >> ${orientation_info_txt}
@@ -358,6 +359,7 @@ echo "output_nf_loglog = 'nf_loglog_${system}.eps'" >> ${orientation_info_txt}
 echo "input_case1_cHB_ref = '../3_analyze/output/${system}_1_case1_layers_c_at_ref.dat'" >> ${orientation_info_txt}
 echo "input_case2_cHB_ref = '../3_analyze/output/${system}_2_case2_layers_c_at_ref.dat'" >> ${orientation_info_txt}
 echo "output_cHB_ref = 'cHB_ref_${system}.eps'" >> ${orientation_info_txt}
+echo "output_nf_ref = 'nf_ref_${system}.eps'" >> ${orientation_info_txt}
 # For c2_at_ref
 echo "input_c2_ref = '../3_analyze/output/${system}_layers_c2_at_ref.dat'" >> ${orientation_info_txt}
 
