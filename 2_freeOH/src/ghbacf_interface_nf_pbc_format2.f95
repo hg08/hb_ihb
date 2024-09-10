@@ -75,9 +75,8 @@
       REAL(KIND=rk) :: scalar, tmp 
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: freeoh_exist
       LOGICAL,ALLOCATABLE,DIMENSION (:) :: is_free
-      INTEGER :: nmo ! nmo is not necessary, we set nmo = n_samples, because we DO not want to change too much
+      INTEGER :: nmo ! nmo is the total number of steps,  nmo = n_samples
       INTEGER :: nmo_effective, start_step, num_start_points 
-      INTEGER :: nwat ! number of water molecules
       INTEGER :: n_H ! number of OH groups; or num of H atoms
       INTEGER :: n_O ! number of O atoms
       INTEGER :: i, j, k, jj, bond 
@@ -98,7 +97,7 @@
       r31 = 0.0; r13 = 0.0; r32 = 0.0
       nfb_per_frame = 0.0; tot_nfb = 0.0
       r1 = 0.0; r2 = 0.0; r3 = 0.0
-      nmo = n_samples; nwat = 0 
+      nmo = 0 
       ndx_3_list = 0
       index_mol = 0
       index_mol1 = 0; index_mol2 = 0
@@ -117,9 +116,8 @@
       !To obtain the total number of water pairs
       n_H = nat * 2/3 
       n_O = nat / 3
+      nmo = n_samples 
       allocate(nfb(n_H))          
-      close(10)
-      !============================
 
       delta_t = ns * delta_t0 ! unit: ps
       nmo_effective = nint(max_time_for_corr/delta_t) + 1 
@@ -250,59 +248,101 @@
           ENDDO Ohost
       ENDDO tLOOP
 
+      ! bond = 1
       OLOOP: DO k_O1 = 1, n_O ! Indices of self-indices of Host O
+          freeoh = 0
+          nfreeoh = 0 ! The number of freeoh-ed times for k-th OH group
+          m1 = 3 * k_O1 -2 ! Total-index of the Host (O1) 
+          idx_H = O_info(k_O1,1)%H_ids(1) ! 1: the fisrt time step
+          k_H = (idx_H + 1) * 2/3 - 1
+          time: DO jj = 1, nmo
+              nf(jj) = 0.0
+              freeoh_exist(jj) = .False.
+              index_mol = grid_index(atom_info(m1,jj)%coord(1), &
+                atom_info(m1,jj)%coord(2),divx,divy,nb_divx)  
+
+              ! Check if O1 is in one of the two interfaces
+              !For surf 1
+              condition1 = atom_in_surf1(surf_info(index_mol,jj)%coord(1),&
+                    atom_info(m1,jj)%coord(3), thickness )
+              !For surf 2 
+              condition2 = atom_in_surf2(surf_info(index_mol,jj)%coord(2),&
+                    atom_info(m1,jj)%coord(3), thickness )
+
+              !The following condition establish interface free OH groups, 
+              !ie., check if the OH group is free OH AND is in the interface.
+              IF ((condition1 .OR. condition2) .AND. H_info(k_H,jj)%IsFree .eqv. .True.) THEN
+                  nf(jj) = 1.0 
+                  freeoh_exist(jj) = .True.
+                  freeoh = freeoh + nf(jj) ! To calculate ave population of free OH over starting points for a OH group
+              ENDIF
+          ENDDO time
+          nfb(k_H) = freeoh 
+          nfreeoh_exist(k_H) = nfreeoh
+          tot_nfb = tot_nfb + freeoh
+          tot_nfreeoh = tot_nfreeoh + nfreeoh_exist(k_H)
+          !==============================================
+          !Calcualte the correlation function C_freeOH(t)
+          !==============================================
+          if (nfb(k_H) > nfb_min) THEN
+              DO mt = 0, nmo_effective-1 ! The time interval
+                  scalar = 0.0
+                  DO j = 1, nmo-nmo_effective, start_step ! How many steps? (nmo-nmo_effective-1)/start_step + 1 
+                      tmp = nf(j) * nf(j+mt)
+                      scalar = scalar + tmp 
+                  ENDDO
+                  corr_nf(mt+1) = corr_nf(mt+1) + scalar !sum_C_freeOH_k(t)
+              ENDDO
+          endif
+      ENDDO OLOOP
+
+      ! bond = 2
+      OLOOP2: DO k_O1 = 1, n_O ! Indices of self-indices of Host O
         freeoh = 0
         nfreeoh = 0 ! The number of freeoh-ed times for k-th OH group
         m1 = 3 * k_O1 -2 ! Total index of the Host (O1) 
-        OHBOND: DO bond = 1, 2
-            idx_H = O_info(k_O1,1)%H_ids(bond) ! 1: the fisrt time step
-            if (bond == 1) then
-                k_H = (idx_H + 1) * 2/3 - 1
-            else
-                k_H = (idx_H ) * 2/3
-            endif
-            time: DO jj = 1, nmo
-                nf(jj) = 0.0
-                freeoh_exist(jj) = .False.
-                index_mol = grid_index(atom_info(m1,jj)%coord(1), &
-                  atom_info(m1,jj)%coord(2),divx,divy,nb_divx)  
+        idx_H = O_info(k_O1,1)%H_ids(2) ! 1: the fisrt time step
+        k_H = (idx_H ) * 2/3
+        time2: DO jj = 1, nmo
+            nf(jj) = 0.0
+            freeoh_exist(jj) = .False.
+            index_mol = grid_index(atom_info(m1,jj)%coord(1), &
+              atom_info(m1,jj)%coord(2),divx,divy,nb_divx)  
 
-                ! Check if O1 is in one of the two interfaces
-                !For surf 1
-                condition1 = atom_in_surf1(surf_info(index_mol,jj)%coord(1),&
-                      atom_info(m1,jj)%coord(3), thickness )
-                !For surf 2 
-                condition2 = atom_in_surf2(surf_info(index_mol,jj)%coord(2),&
-                      atom_info(m1,jj)%coord(3), thickness )
+            ! Check if O1 is in one of the two interfaces
+            !For surf 1
+            condition1 = atom_in_surf1(surf_info(index_mol,jj)%coord(1),&
+                  atom_info(m1,jj)%coord(3), thickness )
+            !For surf 2 
+            condition2 = atom_in_surf2(surf_info(index_mol,jj)%coord(2),&
+                  atom_info(m1,jj)%coord(3), thickness )
 
-                !The following condition establish interface free OH groups, 
-                !ie., check if the OH group is free OH AND is in the interface.
-                IF ((condition1 .OR. condition2) .AND. H_info(k_H,jj)%IsFree .eqv. .True.) THEN
-                    nf(jj) = 1.0 
-                    freeoh_exist(jj) = .True.
-                    freeoh = freeoh + nf(jj) ! To calculate ave population of free OH over starting points for a OH group
-                ENDIF
-
-            ENDDO time
-            nfb(k_H) = freeoh 
-            nfreeoh_exist(k_H) = nfreeoh
-            tot_nfb = tot_nfb + freeoh
-            tot_nfreeoh = tot_nfreeoh + nfreeoh_exist(k_H)
-            !==============================================
-            !Calcualte the correlation function C_freeOH(t)
-            !==============================================
-            if (nfb(k_H) > nfb_min) THEN
-                DO mt = 0, nmo_effective-1 ! The time interval
-                    scalar = 0.0
-                    DO j = 1, nmo-nmo_effective, start_step ! How many steps? (nmo-nmo_effective-1)/start_step + 1 
-                        tmp = nf(j) * nf(j+mt)
-                        scalar = scalar + tmp 
-                    ENDDO
-                    corr_nf(mt+1) = corr_nf(mt+1) + scalar !sum_C_freeOH_k(t)
+            !The following condition establish interface free OH groups, 
+            !ie., check if the OH group is free OH AND is in the interface.
+            IF ((condition1 .OR. condition2) .AND. H_info(k_H,jj)%IsFree .eqv. .True.) THEN
+                nf(jj) = 1.0 
+                freeoh_exist(jj) = .True.
+                freeoh = freeoh + nf(jj) ! To calculate ave population of free OH over starting points for a OH group
+            ENDIF
+        ENDDO time2
+        nfb(k_H) = freeoh 
+        nfreeoh_exist(k_H) = nfreeoh
+        tot_nfb = tot_nfb + freeoh
+        tot_nfreeoh = tot_nfreeoh + nfreeoh_exist(k_H)
+        !==============================================
+        !Calcualte the correlation function C_freeOH(t)
+        !==============================================
+        if (nfb(k_H) > nfb_min) THEN
+            DO mt = 0, nmo_effective-1 ! The time interval
+                scalar = 0.0
+                DO j = 1, nmo-nmo_effective, start_step ! How many steps? (nmo-nmo_effective-1)/start_step + 1 
+                    tmp = nf(j) * nf(j+mt)
+                    scalar = scalar + tmp 
                 ENDDO
-            endif
-        ENDDO OHBOND
-      ENDDO OLOOP
+                corr_nf(mt+1) = corr_nf(mt+1) + scalar !sum_C_freeOH_k(t)
+            ENDDO
+        endif
+      ENDDO OLOOP2
       nfb_per_frame = tot_nfb/REAL(nmo,rk)
       ave_nf = nfb_per_frame/REAL(n_H,rk) 
       !==========================================
@@ -310,7 +350,7 @@
       !==========================================
       n_freeoh = 0 
       DO k = 1, n_H
-          IF ( nf(k) > nfb_min ) THEN
+          IF ( nfb(k) > nfb_min ) THEN
               n_freeoh = n_freeoh + 1      
           ENDIF
       ENDDO
