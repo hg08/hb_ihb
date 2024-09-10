@@ -83,10 +83,16 @@ gnuplot plot_Fig5_${system}.gp
 rm tmp single_fit_c2_${system}.log double_fit_c2_${system}.log
 
 
+
 #plot FigS16 in general in logscale for x and y axis
 cp plot_nf_loglog_template.gp ./plot_S16_loglog_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_S16_loglog_${system}.gp
 gnuplot ./plot_S16_loglog_${system}.gp
+
+#plot FigS17 in general
+cp plot_nfacf_template.gp ./plot_nfacf_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_nfacf_${system}.gp
+gnuplot ./plot_nfacf_${system}.gp
 
 #plot Fig6 in general
 cp plot_6_template.gp ./plot_6_${system}.gp
