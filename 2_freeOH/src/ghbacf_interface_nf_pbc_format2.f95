@@ -252,7 +252,7 @@
       OLOOP: DO k_O1 = 1, n_O ! Indices of self-indices of Host O
           freeoh = 0
           nfreeoh = 0 ! The number of freeoh-ed times for k-th OH group
-          m1 = 3 * k_O1 -2 ! Total index of the Host (O1) 
+          m1 = 3 * k_O1 -2 ! Total-index of the Host (O1) 
           idx_H = O_info(k_O1,1)%H_ids(1) ! 1: the fisrt time step
           k_H = (idx_H + 1) * 2/3 - 1
           time: DO jj = 1, nmo
@@ -295,6 +295,7 @@
               ENDDO
           endif
       ENDDO OLOOP
+
       ! bond = 2
       OLOOP2: DO k_O1 = 1, n_O ! Indices of self-indices of Host O
         freeoh = 0
