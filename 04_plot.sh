@@ -88,6 +88,9 @@ cp plot_nf_loglog_template.gp ./plot_S16_loglog_${system}.gp
 sed -i "s/SYSTEM/${system}/g" plot_S16_loglog_${system}.gp
 gnuplot ./plot_S16_loglog_${system}.gp
 
-
+#plot Fig6 in general
+cp plot_6_template.gp ./plot_6_${system}.gp
+sed -i "s/SYSTEM/${system}/g" plot_6_${system}.gp
+gnuplot ./plot_6_${system}.gp
 
 cd ..
