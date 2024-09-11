@@ -31,19 +31,19 @@ set format y "%3.1f"
 # Add arrows and labels for both plots
 dash_length = 4  # Length of the dash
 dash_space = 1    # Space between dashes, adjust this to change the spacing
-set arrow 1 from 2, graph 0.12 to 2, graph 0.35 nohead dashtype (dash_length, dash_space) linecolor rgb "#878787" linewidth 5 front
+set arrow 1 from 2.8, graph 0.12 to 2.8, graph 0.35 nohead dashtype (dash_length, dash_space) linecolor rgb "#878787" linewidth 5 front
 
 # Set up the triangle as an arrowhead
 triangle_width = 0.08  # Adjust this value to change the width of the triangle
 y_coord1=0.37
 y_coord2=0.33
 set object 1 polygon from \
-     2, graph y_coord1 to \
-     2 + triangle_width, graph y_coord2 to \
-     2 - triangle_width, graph y_coord2 to \
-     2, graph y_coord1
+     2.8, graph y_coord1 to \
+     2.8 + triangle_width, graph y_coord2 to \
+     2.8 - triangle_width, graph y_coord2 to \
+     2.8, graph y_coord1
 set object 1 fc rgb "#878787" fillstyle solid noborder front
-set label 3 at 2, graph 0.08 "increase d" center font "Arial,32" textcolor rgb "black"
+set label 3 at 2.8, graph 0.08 "increase d" center font "Arial,32" textcolor rgb "black"
 
 plot_interval = 3  # Change this value to adjust the plotting frequency
 
@@ -55,7 +55,7 @@ plot_interval = 3  # Change this value to adjust the plotting frequency
 set origin 0, 0.0
 set size 1.1, 1.4
 set border 1+2+4+8
-set ylabel "n_@f^{(s)}(t)"
+set ylabel "c_@f^{(s)}(t)"
 set xlabel "t (ps)"
 set label 1 "(a)" right at graph 0.1, graph 0.95
 set label 2 "R-{/Symbol b} def." left at graph 0.13, graph 0.95
@@ -81,7 +81,7 @@ set origin 1.05, 0.0
 set size 1.1, 1.4
 set border 1+2+4+8
 set xlabel "t (ps)"
-set ylabel "n_@f^{(s)}(t)"
+set ylabel "c_@f^{(s)}(t)"
 set label 1 "(b)" right at graph 0.1, graph 0.95
 set label 2 "R-{/Symbol q} def." left at graph 0.13, graph 0.95
 plot [0.0:xmax] \

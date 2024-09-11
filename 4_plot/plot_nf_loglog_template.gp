@@ -59,7 +59,7 @@ plot_interval = 3  # Change this value to adjust the plotting frequency
 set origin 0, 0.0
 set size 1.1, 1.4
 set border 1+2+4+8
-set ylabel "n_@f^{(s)}(t)"
+set ylabel "c_@f^{(s)}(t)"
 set xlabel "t (ps)"
 set label 1 "(a)" right at graph 0.99, graph 0.95
 set label 2 "R-{/Symbol b} def." left at graph 0.03, graph 0.65
