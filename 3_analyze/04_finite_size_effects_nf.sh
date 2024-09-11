@@ -1,6 +1,6 @@
 # the input
 arr_d=(1 2 3 4 5 6)
-arr_nwat=(125 216)
+arr_nwat=(125 216 512)
 arr_ref=(1 2 5 10)
 arr_calc_type=(2_freeOH_nf)
 arr_criterion=(1 2)
