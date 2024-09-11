@@ -24,14 +24,14 @@ xmin=122
 xmax=515
 
 set xrange [xmin : xmax]
-set yrange [0 : 1.0]
+set yrange [0 : 0.6]
 set xtics 100 
 set mxtics 2
-set ytics 0.50 
+set ytics 0.20 
 set mytics 2
 set format y "%2.1f"
 #====
-#plot
+#plot A part 1
 #====
 set origin 0, 0 
 set size 1.1, 1.4
@@ -42,9 +42,9 @@ set xtics (125,216,343,512)
 set xlabel "Number of water molecules"
 set ylabel "c(t^*=5)"
 #set label 2 "ADH criterion" right at graph 0.40, graph 0.95
-set label 1 "(a)" left at graph 0.01, graph 0.95
+set label 1 "(c)" left at graph 0.01, graph 0.95
 set label 2 "scenario 1 (LC)" right at graph 0.95, graph 0.95
-set key left at graph 0.07, graph 0.95
+set key left at graph 0.07, graph 0.9
 #set arrow 1 from 2.8, graph 0.95 to 3.6, graph 0.95 nohead ls 20000 
 #set arrow 2 from 2.8, graph 0.85 to 3.6, graph 0.85 nohead ls 10000
 plot [xmin:xmax] \
@@ -53,7 +53,25 @@ plot [xmin:xmax] \
 "../3_analyze/output/240ps-mbx-pol_1_case1_c_at_ref5_2A.dat" u 1:3 with line ls 10021 title "2 \305",\
 "../3_analyze/output/240ps-mbx-pol_1_case1_c_at_ref5_2A.dat" u 1:3:4 with yerrorbars ls 10021 notitle,\
 "../3_analyze/output/240ps-mbx-pol_1_case1_c_at_ref5_3A.dat" u 1:3 with line ls 10023 title "3 \305",\
-"../3_analyze/output/240ps-mbx-pol_1_case1_c_at_ref5_3A.dat" u 1:3:4 with yerrorbars ls 10023 notitle,\
+"../3_analyze/output/240ps-mbx-pol_1_case1_c_at_ref5_3A.dat" u 1:3:4 with yerrorbars ls 10023 notitle
+#====
+#plot A part 2
+#====
+set origin 0, 0 
+set size 1.1, 1.4
+set xlabel 'Number of water molecules' 
+set border 1+2+4+8
+#set ylabel "{/Symbol t}@^{(s)}_a (ps)"
+set xtics (125,216,343,512)
+set xlabel "Number of water molecules"
+#set ylabel "c(t^*=5)"
+#set label 2 "ADH criterion" right at graph 0.40, graph 0.95
+#set label 1 "(a)" left at graph 0.01, graph 0.95
+set label 2 "scenario 1 (LC)" right at graph 0.95, graph 0.95
+set key left at graph 0.40, graph 0.9
+#set arrow 1 from 2.8, graph 0.95 to 3.6, graph 0.95 nohead ls 20000 
+#set arrow 2 from 2.8, graph 0.85 to 3.6, graph 0.85 nohead ls 10000
+plot [xmin:xmax] \
 "../3_analyze/output/240ps-mbx-pol_1_case1_c_at_ref5_4A.dat" u 1:3 with line ls 10027 title "4 \305",\
 "../3_analyze/output/240ps-mbx-pol_1_case1_c_at_ref5_4A.dat" u 1:3:4 with yerrorbars ls 10027 notitle,\
 "../3_analyze/output/240ps-mbx-pol_1_case1_c_at_ref5_5A.dat" u 1:3 with line ls 10028 title "5 \305",\
@@ -70,8 +88,8 @@ set origin shift, 0
 set size 1.1, 1.4
 set xlabel 'Number of water molecules' 
 set border 1+2+4+8
-set ylabel "c^{(s)(t^*=5)}"
-set label 1 "(b)" left at graph 0.01, graph 0.95
+set ylabel "c^{(s)}(t^*=5)"
+set label 1 "(d)" left at graph 0.01, graph 0.95
 set label 2 "scenario 2 (IHB)" right at graph 0.95, graph 0.95
 #set arrow 1 from 2.8, graph 0.95 to 3.6, graph 0.95 nohead ls 20000 
 #set arrow 2 from 2.8, graph 0.85 to 3.6, graph 0.85 nohead ls 10000
