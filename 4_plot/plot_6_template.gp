@@ -39,12 +39,12 @@ set size 1.1, 1.4
 set xlabel "d (\305)" 
 set border 1+2+4+8
 #set ylabel "{/Symbol t}@^{(s)}_a (ps)"
-set ylabel "n_@{f}^{(s)}(t*)"
-#set label 2 "ADH criterion" right at graph 0.40, graph 0.95
-set label 1 " R-{/Symbol b} def." left at graph 0.05, graph 0.95
-set label 2 " R-{/Symbol q} def." left at graph 0.05, graph 0.85
-set arrow 1 from 2.6, graph 0.95 to 3.4, graph 0.95 nohead ls 20000 
-set arrow 2 from 2.6, graph 0.85 to 3.4, graph 0.85 nohead ls 10000
+set ylabel "c_@{f}^{(s)}(t*)"
+set label 1 "R-{/Symbol b} def." left at graph 0.13, graph 0.95
+set label 2 "R-{/Symbol q} def." left at graph 0.13, graph 0.85
+set label 3 "(c)" left at graph 0.01, graph 0.95
+set arrow 1 from 2.8, graph 0.95 to 3.4, graph 0.95 nohead ls 20000 
+set arrow 2 from 2.8, graph 0.85 to 3.4, graph 0.85 nohead ls 10000
 plot [xmin:xmax] \
              input_case2_nf_criterion1_ref i 0 u 1:2 with line ls 20021 notitle "R-{/Symbol b}: t* = 1 ps",\
              input_case2_nf_criterion1_ref i 0 u 1:2:3 with yerrorbars ls 10021 notitle,\
