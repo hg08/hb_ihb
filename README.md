@@ -1,6 +1,6 @@
 # Instantaneous hydrogen bond dynamics 
 
-Source codes for the paper [Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics](https://doi.org/10.1021/acs.jctc.4c00457 ) [arxiv](https://arxiv.org/abs/2204.13941)
+Source codes for the paper [Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics](https://doi.org/10.1021/acs.jctc.4c00457). 
 
 <p align='center'>
 <img src="4_plot/TOC.png" width="60%"/>
@@ -19,7 +19,6 @@ We have placed the AIMD simulation codes in `cp2k_code` and the MD simulation co
 - `2_case2`: Calculations for the second scenario. 
 - `3_analyze`: Codes to analyze the two scenarios.
 - `4_plot`: Code for visualizations.
-
 
 
 ## Installation
@@ -52,3 +51,9 @@ Place the trajectory file and corresponding json files in `m2_traj` folder. And 
 6. `04_plot.sh`
 
 By defaut, these above script would process the trajectory corresponding to the latest json file in `m2_traj`. You can also specify the json file by add the json filename as the arugment of these commands. 
+
+## Citation
+```
+Gang Huang and Jie Huang, Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics, Journal of Chemical Theory and Computation,
+DOI: 10.1021/acs.jctc.4c00457, 2024
+```
