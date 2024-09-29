@@ -47,7 +47,7 @@ Place the trajectory file and corresponding json files in `m2_traj` folder. And 
 5. `03_run_statistics.sh`
 6. `04_plot.sh`
 
-By default, the above scripts will process the trajectory corresponding to the latest JSON file in m2_traj. You can also specify the JSON file by adding the filename as an argument to these commands. If you have any questions about the code, feel free to open an issue.
+By default, the above scripts will process the trajectory corresponding to the latest JSON file in `m2_traj`. You can also specify the JSON file by adding the filename as an argument to these commands. If you have any questions about the code, feel free to [open an issue](https://github.com/hg08/hb_ihb/issues/new).
 
 ## Citation
 Cited as:
