@@ -1,5 +1,4 @@
-# Instantaneous hydrogen bond dynamics 
-
+# Instantaneous Hydrogen Bond Dynamics 
 Source codes for the paper [Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics](https://doi.org/10.1021/acs.jctc.4c00457). 
 
 <p align='center'>
@@ -7,7 +6,6 @@ Source codes for the paper [Revisiting the Thickness of the Air-Water Interface 
 </p>
 
 ## Abstract
-
 The air-water interface plays a crucial role in many aspects of science, because of its unique properties, such as a two-dimensional hydrogen bond (HB) network and completely different HB dynamics compared to bulk water. However, accurately determining the boundary of interfacial and bulk water, that is, the thickness of the air-water interface, still challenges experimentalists. Various simulation-based methods have been developed to estimate the thickness, converging on a range of approximately 3--10 (Å). In this study, we introduce a novel approach, grounded in density functional theory-based molecular dynamics and deep potential molecular dynamics simulations, to measure the air-water interface thickness, offering a different perspective based on prior research. To capture realistic HB dynamics in the air-water interface, two extreme scenarios of the interface HB dynamics are obtained: one underestimates the interface HB dynamics, while the other overestimates it. Surprisingly, our results suggest that the interface HB dynamics in both scenarios converges as the thickness of the air-water interface increases to 4 (Å). This convergence point, indicative of the realistic interface thickness, is also validated by our calculation of anisotropic decay of OH stretch and the free OH dynamics at the air-water interface.
 
 ## Overview
@@ -19,7 +17,6 @@ We have placed the AIMD simulation codes in `cp2k_code` and the MD simulation co
 - `2_case2`: Calculations for the second scenario. 
 - `3_analyze`: Codes to analyze the two scenarios.
 - `4_plot`: Code for visualizations.
-
 
 ## Installation
 The codes are written in `bash`, `fortran` and `python`, and have been tested on Ubuntu.  To use the codes, several prerequisites need to be installed:
@@ -53,7 +50,21 @@ Place the trajectory file and corresponding json files in `m2_traj` folder. And 
 By defaut, these above script would process the trajectory corresponding to the latest json file in `m2_traj`. You can also specify the json file by add the json filename as the arugment of these commands. 
 
 ## Citation
-```
-Gang Huang and Jie Huang, Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics, Journal of Chemical Theory and Computation,
+Cited as:
+> Gang Huang and Jie Huang, Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics, Journal of Chemical Theory and Computation,
 DOI: 10.1021/acs.jctc.4c00457, 2024
+
+Or
+
+```
+@article{huang2024,
+  title = {Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics},
+  url = {http://dx.doi.org/10.1021/acs.jctc.4c00457},
+  DOI = {10.1021/acs.jctc.4c00457},
+  journal = {Journal of Chemical Theory and Computation},
+  publisher = {American Chemical Society (ACS)},
+  author = {Huang, Gang and Huang, Jie},
+  year = {2024},
+  month = sep 
+}
 ```
