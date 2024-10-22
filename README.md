@@ -57,14 +57,15 @@ DOI: 10.1021/acs.jctc.4c00457, 2024
 Or
 
 ```
-@article{huang2024,
-  title = {Revisiting the Thickness of the Air-Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics},
+@article{Huang2024,
+  title = {Revisiting the Thickness of the Air–Water Interface from Two Extremes of Interface Hydrogen Bond Dynamics},
+  ISSN = {1549-9626},
   url = {http://dx.doi.org/10.1021/acs.jctc.4c00457},
   DOI = {10.1021/acs.jctc.4c00457},
   journal = {Journal of Chemical Theory and Computation},
   publisher = {American Chemical Society (ACS)},
-  author = {Huang, Gang and Huang, Jie},
+  author = {Huang,  Gang and Huang,  Jie},
   year = {2024},
-  month = sep 
+  month = oct 
 }
 ```
